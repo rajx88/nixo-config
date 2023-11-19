@@ -25,34 +25,29 @@
                 type = "luks";
                 name = "crypted";
                 # disable settings.keyFile if you want to use interactive password entry
-                #passwordFile = "/tmp/secret.key"; # Interactive
-                #settings = {
+                # passwordFile = "/tmp/secret.key"; # Interactive
+                # settings = {
                 #  allowDiscards = true;
                 #  keyFile = "/tmp/secret.key";
                 #};
-                additionalKeyFiles = [ "/tmp/additionalSecret.key" ];
+                # additionalKeyFiles = [ "/tmp/additionalSecret.key" ];
                 content = {
                   type = "btrfs";
-                  # BTRFS partition is not mounted as it doesn't set a mountpoint explicitly
+                  extraArgs = [ "-f" ];
                   subvolumes = {
-                    # This subvolume will not be mounted
-                    "SYSTEM" = { };
-                    # mounted as "/"
-                    "SYSTEM/rootfs" = {
+                    "/root" = {
                       mountpoint = "/";
-                    };
-                    # mounted as "/nix"
-                    "SYSTEM/nix" = {
                       mountOptions = [ "compress=zstd" "noatime" ];
+                    };
+                    "/nix" = {
                       mountpoint = "/nix";
-                    };
-                    # This subvolume will not be mounted
-                    "DATA" = { };
-                    # mounted as "/home"
-                    "DATA/home" = {
-                      mountOptions = [ "compress=zstd" ];
+                      mountOptions = [ "compress=zstd" "noatime" ];
+                    }; 
+                    "/home" = {
                       mountpoint = "/home";
+                      mountOptions = [ "compress=zstd" "noatime" ];
                     };
+                  };
                 };
               };
             };
