@@ -10,11 +10,11 @@ sudo nix run --extra-experimental-features nix-command --extra-experimental-feat
 
 ```
 ```bash
-nixos-generate-config --no-filesystems --root /mnt
+sudo nixos-generate-config --no-filesystems --root /mnt
 ```
 
 ```bash
-mv /tmp/disko-config.nix /mnt/etc/nixos
+sudo mv /tmp/disko-config.nix /mnt/etc/nixos
 ```
 
 ```bash
@@ -27,6 +27,6 @@ imports =
 ```
 
 ```bash
-nixos-install
-reboot
+sudo nixos-install
+sudo reboot
 ```
