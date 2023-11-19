@@ -18,6 +18,10 @@ sudo mv /tmp/disko-config.nix /mnt/etc/nixos
 ```
 
 ```bash
+sudo nano /mnt/etc/nixos/configuration.nix
+```
+
+```bash
 imports =
  [ # Include the results of the hardware scan.
    ./hardware-configuration.nix
