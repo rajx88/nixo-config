@@ -33,25 +33,26 @@
                 additionalKeyFiles = [ "/tmp/additionalSecret.key" ];
                 content = {
                   type = "btrfs";
-                  extraArgs = [ "-f" ];
+                  # BTRFS partition is not mounted as it doesn't set a mountpoint explicitly
                   subvolumes = {
-                    "/root" = {
+                    # This subvolume will not be mounted
+                    "SYSTEM" = { };
+                    # mounted as "/"
+                    "SYSTEM/rootfs" = {
                       mountpoint = "/";
-                      mountOptions = [ "compress=zstd" "noatime" ];
                     };
-                    "/home" = {
-                      mountpoint = "/home";
+                    # mounted as "/nix"
+                    "SYSTEM/nix" = {
                       mountOptions = [ "compress=zstd" "noatime" ];
-                    };
-                    "/nix" = {
                       mountpoint = "/nix";
-                      mountOptions = [ "compress=zstd" "noatime" ];
                     };
-                    "/swap" = {
-                      mountpoint = "/.swapvol";
-                      swap.swapfile.size = "20M";
+                    # This subvolume will not be mounted
+                    "DATA" = { };
+                    # mounted as "/home"
+                    "DATA/home" = {
+                      mountOptions = [ "compress=zstd" ];
+                      mountpoint = "/home";
                     };
-                  };
                 };
               };
             };
