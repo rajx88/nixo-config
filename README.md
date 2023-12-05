@@ -6,9 +6,14 @@ curl https://gitlab.com/rajkohlen/nixos-config/-/raw/main/disko-config.nix -o /t
 ```
 
 ```bash
-sudo nix run --extra-experimental-features nix-command --extra-experimental-features flakes github:nix-community/disko -- --mode disko /tmp/disko-config.nix
+sudo nix run github:nix-community/disko -- --mode disko /tmp/disko-config.nix --arg disks '[ "/dev/nvme0n1" ]'
+```
+if the above command does not work use the command below:
+```bash
+sudo nix run --extra-experimental-features nix-command --extra-experimental-features flakes github:nix-community/disko -- --mode disko /tmp/disko-config.nix --arg disks '[ "/dev/nvme0n1" ]'
 
 ```
+
 ```bash
 sudo nixos-generate-config --no-filesystems --root /mnt
 ```
