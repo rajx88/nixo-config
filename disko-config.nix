@@ -19,6 +19,13 @@
                 ];
               };
             };
+             encryptedSwap = {
+              size = "48G";
+              content = {
+                type = "swap";
+                randomEncryption = true;
+              };
+            };
             luks = {
               size = "100%";
               content = {
