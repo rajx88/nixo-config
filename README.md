@@ -1,5 +1,14 @@
 # Nixos Config
 
+insert the following in `/etc/nixos/configuration.nix`:
+
+```nix
+nix = {
+  package = pkgs.nixFlakes;
+  extraOptions = "experimental-features = nix-command flakes";
+}
+```
+This is only needed when starting from scratch.
 
 ```bash
 curl https://gitlab.com/rajkohlen/nixos-config/-/raw/main/disko-config.nix -o /tmp/disko-config.nix
@@ -13,7 +22,6 @@ if the above command does not work use the command below:
 sudo nix run --extra-experimental-features nix-command --extra-experimental-features flakes github:nix-community/disko -- --mode disko /tmp/disko-config.nix --arg disks '[ "/dev/nvme0n1" ]'
 
 ```
-
 ```bash
 sudo nixos-generate-config --no-filesystems --root /mnt
 ```
