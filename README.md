@@ -13,7 +13,10 @@ This is only needed when starting from scratch.
 ```bash
 curl https://gitlab.com/rajkohlen/nixos-config/-/raw/main/disko-config.nix -o /tmp/disko-config.nix
 ```
-
+The following is used to see the disks. This is then used as argument in the disko run.
+```bash
+lsblk 
+```
 ```bash
 sudo nix run github:nix-community/disko -- --mode disko /tmp/disko-config.nix --arg disks '[ "/dev/nvme0n1" ]'
 ```
