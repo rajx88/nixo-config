@@ -3,8 +3,7 @@
 
   inputs = {
     # Nixpkgs
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     # Also see the 'unstable-packages' overlay at 'overlays/default.nix'.
 
     # Home manager
@@ -20,23 +19,19 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    hyprland = {
+      url = "github:hyprwm/hyprland";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    home-manager,
-    hardware,
-    disko,
-    ...
-  } @ inputs: 
+ outputs = { self, nixpkgs, home-manager, disko, ... }@inputs:
   let
     inherit (self) outputs;
-
-    systems = [
-      # "aarch64-linux"
-      "x86_64-linux"
-    ];
+    
+    lib = nixpkgs.lib // home-manager.lib;
+    systems = [ "x86_64-linux" "aarch64-linux" ];
 
     forAllSystems = nixpkgs.lib.genAttrs systems;
 
@@ -64,7 +59,7 @@
     # NixOS configuration entrypoint
     # Available through 'nixos-rebuild --flake .#your-hostname'
     nixosConfigurations = {
-      akarnae= nixpkgs.lib.nixosSystem {
+      akarnae= lib.nixosSystem {
         modules = [ 
           disko.nixosModules.disko
 	  { disko.devices.disk.main.device = "/dev/nvme0n1"; }
@@ -77,7 +72,7 @@
     # Standalone home-manager configuration entrypoint
     # Available through 'home-manager --flake .#your-username@your-hostname'
     homeConfigurations = {
-      "rajkoh@akarnae" = home-manager.lib.homeManagerConfiguration {
+      "rajkoh@akarnae" = lib.homeManagerConfiguration {
         extraSpecialArgs = {inherit inputs outputs;};
         modules = [ ./home/rajkoh/akarnae.nix ];
       };

@@ -6,6 +6,7 @@
     ./fish.nix
     ./git.nix
     ./ssh.nix
+    ./zsh.nix
   ];
   home.packages = with pkgs; [
     bottom # System viewer
