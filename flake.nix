@@ -33,10 +33,17 @@
     lib = nixpkgs.lib // home-manager.lib;
     systems = [ "x86_64-linux" "aarch64-linux" ];
 
-    forAllSystems = nixpkgs.lib.genAttrs systems;
+    forAllSystems = f: lib.genAttrs systems (system: f pkgsFor.${system});
 
-  in {
-    
+    pkgsFor = lib.genAttrs systems (system: import nixpkgs {
+      inherit system;
+      config.allowUnfree = true;
+    });
+
+  in 
+  {
+    inherit lib;
+
     # Your custom packages and modifications, exported as overlays
     overlays = import ./overlays {inherit inputs;};
 
@@ -73,8 +80,9 @@
     # Available through 'home-manager --flake .#your-username@your-hostname'
     homeConfigurations = {
       "rajkoh@akarnae" = lib.homeManagerConfiguration {
-        extraSpecialArgs = {inherit inputs outputs;};
+        extraSpecialArgs = { inherit inputs outputs; };
         modules = [ ./home/rajkoh/akarnae.nix ];
+        pkgs = pkgsFor.x86_64-linux;
       };
     };
   };
