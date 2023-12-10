@@ -2,12 +2,13 @@
 { pkgs, inputs, outputs, ... }: {
   imports = [
     inputs.home-manager.nixosModules.home-manager
+    ./gamemode.nix
     ./locale.nix
     ./nix.nix
     ./openssh.nix
     ./podman.nix
     ./steam-hardware.nix
-    ./gamemode.nix
+    ./zsh.nix
   ] ++ (builtins.attrValues outputs.nixosModules);
 
   home-manager.extraSpecialArgs = { inherit inputs outputs; };
