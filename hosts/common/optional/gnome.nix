@@ -1,6 +1,7 @@
 {
   services = {
     xserver = {
+      enable = true;
       desktopManager.gnome = {
         enable = true;
       };
@@ -13,5 +14,5 @@
   };
   # Fix broken stuff
   services.avahi.enable = false;
-  networking.networkmanager.enable = true;
+  networking.networkmanager.enable = false;
 }
