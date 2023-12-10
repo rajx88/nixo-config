@@ -1,14 +1,10 @@
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 
 {
   programs.firefox = {
     enable = true;
-    profiles.rajkoh= {
+    profiles.rajkoh = {
       bookmarks = { };
-      extensions = with pkgs.inputs.firefox-addons; [
-        ublock-origin
-        1password 
-      ];
     };
   };
 
