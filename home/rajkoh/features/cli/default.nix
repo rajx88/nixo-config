@@ -1,10 +1,12 @@
 { pkgs, ... }: {
   imports = [
+    ./bash.nix
     ./bat.nix
     ./direnv.nix
     ./fish.nix
     ./git.nix
     ./ssh.nix
+    ./tmux.nix
     ./zsh.nix
   ];
   home.packages = with pkgs; [
@@ -22,5 +24,7 @@
     ltex-ls # Spell checking LSP
 
     gnumake
+
+    neofetch
   ];
 }

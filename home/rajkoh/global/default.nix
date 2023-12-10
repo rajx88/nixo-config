@@ -35,6 +35,9 @@
     sessionPath = [ "$HOME/.local/bin" ];
     sessionVariables = {
       FLAKE = "$HOME/nix-config";
+      EDITOR = "nvim";
+      TERM = "alacritty";
+      BROWSER = "firefox";
     };
   };
 }
