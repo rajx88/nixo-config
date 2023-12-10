@@ -1,5 +1,5 @@
 {
-  programs.zsh= {
+  programs.bash = {
     enable = true;
     enableCompletion = true;
   };
