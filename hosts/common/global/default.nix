@@ -8,6 +8,7 @@
     ./openssh.nix
     ./podman.nix
     ./steam-hardware.nix
+    ./systemd.nix
     ./zsh.nix
   ] ++ (builtins.attrValues outputs.nixosModules);
 

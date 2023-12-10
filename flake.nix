@@ -69,9 +69,9 @@
       akarnae= lib.nixosSystem {
         modules = [ 
           disko.nixosModules.disko
-	  { disko.devices.disk.main.device = "/dev/nvme0n1"; }
-	  ./hosts/akarnae
-	];
+	        { disko.devices.disk.main.device = "/dev/nvme0n1"; }
+	        ./hosts/akarnae
+	      ];
         specialArgs = {inherit inputs outputs;};
       };
     };
