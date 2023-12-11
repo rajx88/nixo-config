@@ -4,3 +4,6 @@ rb:
 
 hm:
 	home-manager switch --flake .#rajkoh@akarnae
+
+update:
+	nix flake update
