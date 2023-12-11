@@ -4,12 +4,14 @@
     ./1password.nix
     ./alacritty
     ./discord.nix
+    ./ferdium.nix
     ./firefox.nix
     ./fonts.nix
     # ./gtk.nix
-    # ./qt.nix
+    ./qt.nix
     ./vscode.nix
     ./wezterm
+    ./whatsapp.nix
   ];
   
 }
