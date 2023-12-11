@@ -1,5 +1,5 @@
 
-rebuild:
+rb:
 	sudo nixos-rebuild switch --flake .#akarnae
 
 hm:

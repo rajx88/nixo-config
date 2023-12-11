@@ -5,6 +5,5 @@
     ./features/desktop/gnome
   ];
   
-  xdg.enable = true;
 
 }

@@ -28,6 +28,8 @@
     git.enable = true;
   };
 
+  xdg.enable = true;
+  
   home = {
     username = lib.mkDefault "rajkoh";
     homeDirectory = lib.mkDefault "/home/${config.home.username}";

@@ -1,6 +1,6 @@
 { config, pkgs, lib, inputs, ... }: {
   imports = [ 
-    inputs.hardware.nixosModules.common-cpu-intel
+    inputs.hardware.nixosModules.common-cpu-intel-cpu-only
     inputs.hardware.nixosModules.common-gpu-nvidia
     inputs.hardware.nixosModules.common-pc-ssd
    
@@ -24,9 +24,6 @@
    boot = {
      kernelPackages = pkgs.linuxKernel.packages.linux_zen;
    };
-
-   # Load nvidia driver for Xorg and Wayland
-   services.xserver.videoDrivers = ["nvidia"];
 
    hardware = {
      opengl = {
