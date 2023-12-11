@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }: 
+{
   imports = [
     ./bash.nix
     ./bat.nix
@@ -7,11 +8,12 @@
     ./git.nix
     ./ssh.nix
     ./starship
-    ./tmux.nix
+    ./tmux
     ./zsh
   ];
   home.packages = with pkgs; [
     bottom # System viewer
+    broot
     eza # Better ls
     ripgrep # Better grep
     fd # Better find
