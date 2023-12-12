@@ -7,16 +7,33 @@ let
   hasNeovim = config.programs.neovim.enable;
 in
 {
+
   programs.zsh= {
     enable = true;
-    # enableCompletion = true;
+    # set the ZDOTDIR
     dotDir = ".config/zsh";
+    enableCompletion = true;
+
+    sessionVariables = {
+      MINIKUBE_HOME = "${config.xdg.dataHome}/minikube";
+    };
 
     autocd = true;
     cdpath = [
       "."
       "$HOME"
     ];
+
+    localVariables = {
+      ZSH_INCLUDES= "$ZDOTDIR/includes";
+    };
+
+    initExtra = ''
+        for file in "$ZSH_INCLUDES"/.*.zsh; do
+            source "$file"
+        done
+      ''
+    };
 
     history = {
       extended = true;
@@ -34,6 +51,12 @@ in
       tree = mkIf hasEza"eza --icons --tree -abghHliS";
  
       grep = "grep --color";
+      
+      # vim
+      vim = mkIf hasNeovim "nvim";   
+      vi = "vim";
+      v = "vim";
+
     };
 
     zsh-abbr = {
@@ -41,6 +64,8 @@ in
       # initExtra = 
       abbreviations = {
 
+        asdfup="asdf plugin update --all";
+        
         jqless = "jq -C | less -r";
 
         # nix swik
@@ -60,10 +85,6 @@ in
         hm = "home-manager --flake .";
         hms = "home-manager switch --flake .#";
 
-        # vim
-        vim = mkIf hasNeovim "nvim";
-        vi = "vim";
-        v = "vim";
         # code
         c = "code";
 
@@ -110,7 +131,6 @@ in
         { name = "zsh-users/zsh-autosuggestions"; }
         { name = "zsh-users/zsh-syntax-highlighting"; }
         { name = "zsh-users/zsh-completions"; }
-        { name = "zsh-users/zsh-autosuggestions"; }
         { name = "romkatv/zsh-defer"; }
         # { name = "command-not-found"; from = "oh-my-zsh";  as = "plugin"; }
         # { name = "olets/zsh-abbr"; }
