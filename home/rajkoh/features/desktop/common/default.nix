@@ -1,4 +1,3 @@
-{ pkgs, ... }:
 {
   imports = [
     ./1password.nix
@@ -7,7 +6,7 @@
     ./ferdium.nix
     ./firefox.nix
     ./fonts.nix
-    # ./gtk.nix
+    ./gtk.nix
     ./qt.nix
     ./vscode.nix
     ./wezterm
