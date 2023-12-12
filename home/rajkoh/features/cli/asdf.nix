@@ -12,7 +12,7 @@
   programs.zsh = {
     enable = true;
     initExtra = ''
-      [[ ! -f "${ASDF_DIR}/plugins/java/set-java-home.zsh" ]] || . "${ASDF_DIR}/plugins/java/set-java-home.zsh"
+      [[ ! -f "${config.xdg.dataHome}/asdf/plugins/java/set-java-home.zsh" ]] || . "${config.xdg.dataHome}/asdf/plugins/java/set-java-home.zsh"
     '';
 
     # initExtraBeforeCompInit = ''
