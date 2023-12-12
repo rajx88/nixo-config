@@ -24,25 +24,46 @@ in
       "$HOME"
     ];
 
-    localVariables = {
-      ZSH_INCLUDES= "$ZDOTDIR/includes";
-    };
+    # localVariables = {
+    #   ZSH_INCLUDES= "$ZDOTDIR/includes";
+    # };
+
+    profileExtra = ''
+
+      zstyle ':completion:*' menu select
+
+      setopt complete_aliases
+      setopt complete_in_word
+      setopt glob_complete
+    '';
 
     initExtra = ''
-        for file in "$ZSH_INCLUDES"/.*.zsh; do
-            source "$file"
-        done
-      ''
-    };
+      
+      typeset -U path PATH
+      path=($HOME/.local/bin $path)
+
+      fortune | cowsay -f flaming-sheep 
+      '';
+
+    initExtraBeforeCompInit = ''
+      fpath=(~/.local/completions $fpath ${config.xdg.cacheHome}/completions)
+    '';
 
     history = {
       extended = true;
+      ignoreDups = true;
+      expireDuplicatesFirst = true;
+      size = 100000;
+      save = 100000;
       path = "${config.xdg.dataHome}/zsh/zsh_history";
     };
 
     shellAliases = {
+      # no output
+      cd = ">/dev/null cd";
+
       # zsh file related
-      szsh="source $ZDOTDIR/.zshrc";
+      szsh = "source $ZDOTDIR/.zshrc";
 
       # ls
       ls = mkIf hasEza "eza --icons";
