@@ -9,13 +9,17 @@
     asdf-vm
   ];
 
-  # programs.zsh = {
-  #   enable = true;
-  #   initExtraBeforeCompInit = ''
-  #     [[ ! -f "${config.xdg.dataHome}/asdf/asdf.sh" ]] || . "${config.xdg.dataHome}/asdf/asdf.sh"
+  programs.zsh = {
+    enable = true;
+    initExtra = ''
+      [[ ! -f "${ASDF_DIR}/plugins/java/set-java-home.zsh" ]] || . "${ASDF_DIR}/plugins/java/set-java-home.zsh"
+    '';
 
-  #     # append completions to fpath
-  #     fpath=($fpath ${config.xdg.dataHome}/asdf/completions)
-  #   '';
-  # };
+    # initExtraBeforeCompInit = ''
+    #   [[ ! -f "${config.xdg.dataHome}/asdf/asdf.sh" ]] || . "${config.xdg.dataHome}/asdf/asdf.sh"
+
+    #   # append completions to fpath
+    #   fpath=($fpath ${config.xdg.dataHome}/asdf/completions)
+    # '';
+  };
 }
