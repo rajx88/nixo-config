@@ -1,9 +1,9 @@
 { pkgs, config, ... }: 
 {
 
-  home.file.".tool-versions".text = ''
-    kubectl 1.28.4
-  '';
+  # home.file.".tool-versions".text = ''
+  #   kubectl 1.28.4
+  # '';
 
   home.packages = with pkgs; [
     asdf-vm
