@@ -1,7 +1,6 @@
 { pkgs, ... }: 
 {
   imports = [
-    ./asdf.nix
     ./bash.nix
     ./bat.nix
     ./direnv.nix
