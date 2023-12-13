@@ -19,7 +19,7 @@
   environment = {
     # needed for completion for system packages
     pathsToLink = [ "/share/zsh" ];
-    sessionVariables.NIXOS_OZONE_WL = "1";
+    # sessionVariables.NIXOS_OZONE_WL = "1";
   };
 
   networking = {
