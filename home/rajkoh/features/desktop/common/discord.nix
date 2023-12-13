@@ -1,5 +1,12 @@
 { pkgs, lib, ... }:
 
 {
-  home.packages = with pkgs; [ discord ];
+
+  home.packages = with pkgs; [ 
+    # discord
+    (discord.override {
+      withOpenASAR = true;
+      withVencord = true; 
+    })
+  ];
 }
