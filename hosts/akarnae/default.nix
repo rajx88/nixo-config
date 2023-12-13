@@ -16,8 +16,11 @@
 
   ];
 
-  # needed for completion for system packages
-  environment.pathsToLink = [ "/share/zsh" ];
+  environment = {
+    # needed for completion for system packages
+    pathsToLink = [ "/share/zsh" ];
+    sessionVariables.NIXOS_OZONE_WL = "1";
+  };
 
   networking = {
     hostName = "akarnae";
