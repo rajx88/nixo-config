@@ -9,8 +9,8 @@
     ./nvim
     ./ssh.nix
     ./starship
-    ./tmux
-    ./zsh
+    ./tmux.nix
+    ./zsh.nix
   ];
 
   home.packages = with pkgs; [
@@ -30,10 +30,9 @@
     ltex-ls # Spell checking LSP
 
     gnumake # make Makefile
+    gcc
 
     neofetch # nix btw
-
-    thefuck # fuck?
 
     neo-cowsay # mooooooooo
     fortune-kind # fortune

@@ -4,7 +4,6 @@ let
   hasPackage = pname: lib.any (p: p ? pname && p.pname == pname) config.home.packages;
   hasRipgrep = hasPackage "ripgrep";
   hasEza = hasPackage "eza";
-  hasNeovim = config.programs.neovim.enable;
 in
 {
 
@@ -72,11 +71,6 @@ in
       tree = mkIf hasEza"eza --icons --tree -abghHliS";
  
       grep = "grep --color";
-      
-      # vim
-      vim = mkIf hasNeovim "nvim";   
-      vi = "vim";
-      v = "vim";
 
     };
 
