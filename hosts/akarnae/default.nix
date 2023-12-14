@@ -7,12 +7,12 @@
     ./hardware-configuration.nix
     ./disko-config.nix
 
-    ../common/global
-    ../common/users/rajkoh
+    ../_common/global
+    ../_common/users/rajkoh
 
-    ../common/optional/systemd-boot.nix
-    ../common/optional/gnome.nix
-    ../common/optional/pipewire.nix
+    ../_common/optional/systemd-boot.nix
+    ../_common/optional/gnome.nix
+    ../_common/optional/pipewire.nix
 
   ];
 
