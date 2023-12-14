@@ -12,8 +12,6 @@ in
       "audio"
     ] ++ ifTheyExist [
       "network"
-      "wireshark"
-      "i2c"
       "docker"
       "podman"
       "git"

@@ -1,0 +1,90 @@
+{pkgs, ...}:
+{
+
+  programs.tmux = {
+    enable = true;
+    clock24 = false;
+
+    prefix = "M-f";
+
+    baseIndex = 1;
+    newSession = true;
+    # Stop tmux+escape craziness.
+    escapeTime = 0;
+    keyMode = "vi";
+    mouse = true;
+
+    plugins = with pkgs; [
+      # set some default keybindings, e.g. prefix + r for reload
+      # for more information go to https://github.com/tmux-plugins/tmux-sensible
+      tmuxPlugins.sensible
+      # resurrect and continuum
+      tmuxPlugins.resurrect
+      {
+        plugin = tmuxPlugins.continuum;
+        extraConfig = ''
+          set -g @continuum-restore 'on'
+          set -g @continuum-save-interval '60' # minutes
+        '';
+      }
+      tmuxPlugins.vim-tmux-navigator
+      tmuxPlugins.yank
+      tmuxPlugins.open
+
+      # styling
+      {
+        plugin = tmuxPlugins.catppuccin;
+        extraConfig = ''
+          set -g @catppuccin_flavour 'mocha'
+          set -g @catppuccin_pill_theme_enabled on
+        '';
+      }
+    ];
+
+    extraConfig = ''
+
+      #########################################
+      ####        general tmux options     ####
+      #########################################
+      set -ga terminal-overrides ",screen-256color*:Tc"
+      set-option -g default-terminal "screen-256color"
+
+      set -g status-style 'bg=#333333 fg=#5eacd3'
+
+      # Allow tmux to set the terminal title
+      set -g set-titles on
+
+      # re-number windows when one is closed
+      set -g renumber-windows on
+      # Allow automatic renaming of windows
+      set -g allow-rename on
+      set -g automatic-rename on
+
+      ############################
+      ####        binds       ####
+      ############################
+      # Split windows
+      unbind %
+      unbind '"'
+      bind \\ split-window -h -c "#{pane_current_path}"
+      bind - split-window -v -c "#{pane_current_path}"
+
+      # bind control Y to sync panes
+      bind C-Y set-window-option synchronize-panes
+
+      ###################################
+      ####        vim keybinds       ####
+      ###################################
+      # act like vim
+      bind h select-pane -L
+      bind j select-pane -D
+      bind k select-pane -U
+      bind l select-pane -R
+
+      bind -T copy-mode-vi v send-keys -X begin-selection
+      bind -T copy-mode-vi C-v send-keys -X rectangle-toggle
+      bind -T copy-mode-vi y send-keys -X copy-pipe-and-cancel 'xclip -in -selection clipboard'
+
+    '';
+  };
+}

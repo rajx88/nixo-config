@@ -3,7 +3,6 @@
     ./1password.nix
     ./alacritty
     ./discord.nix
-    ./ferdium.nix
     ./firefox.nix
     ./fonts.nix
     ./gtk.nix

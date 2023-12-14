@@ -16,11 +16,10 @@
 
   ];
 
-  environment = {
-    # needed for completion for system packages
-    pathsToLink = [ "/share/zsh" ];
-  
-  };
+  # environment = {
+  #   # needed for completion for system packages
+  #   pathsToLink = [ "/share/zsh" ];
+  # };
 
   networking = {
     hostName = "akarnae";
@@ -31,6 +30,7 @@
      kernelPackages = pkgs.linuxKernel.packages.linux_zen;
    };
 
+  services.hardware.openrgb.enable = true;
   hardware = {
     opengl = {
       enable = true;
