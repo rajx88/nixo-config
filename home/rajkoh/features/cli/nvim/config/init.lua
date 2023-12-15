@@ -1,1 +1,1 @@
-require("rajkohlen")
+require 'rajkohlen'

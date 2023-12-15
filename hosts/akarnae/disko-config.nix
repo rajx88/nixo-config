@@ -1,9 +1,9 @@
-{ disks ? [ "/dev/nvme0n1" ], ... }:{
+{ disks ? [ "/dev/nvme0n1" ], ... }: {
   disko.devices = {
     disk = {
       main = {
         type = "disk";
-        device =  builtins.elemAt disks 0;
+        device = builtins.elemAt disks 0;
         content = {
           type = "gpt";
           partitions = {
@@ -19,7 +19,7 @@
                 ];
               };
             };
-             encryptedSwap = {
+            encryptedSwap = {
               size = "48G";
               content = {
                 type = "swap";
@@ -49,7 +49,7 @@
                     "/nix" = {
                       mountpoint = "/nix";
                       mountOptions = [ "compress=zstd" "noatime" ];
-                    }; 
+                    };
                     "/home" = {
                       mountpoint = "/home";
                       mountOptions = [ "compress=zstd" "noatime" ];
