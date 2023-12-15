@@ -1,9 +1,9 @@
 { config, pkgs, lib, inputs, ... }: {
-  imports = [ 
+  imports = [
     inputs.hardware.nixosModules.common-cpu-intel-cpu-only
     inputs.hardware.nixosModules.common-gpu-nvidia
     inputs.hardware.nixosModules.common-pc-ssd
-   
+
     ./hardware-configuration.nix
     ./disko-config.nix
 
@@ -26,9 +26,9 @@
     useDHCP = lib.mkForce true;
   };
 
-   boot = {
-     kernelPackages = pkgs.linuxKernel.packages.linux_zen;
-   };
+  boot = {
+    kernelPackages = pkgs.linuxKernel.packages.linux_zen;
+  };
 
   services.hardware.openrgb.enable = true;
   hardware = {

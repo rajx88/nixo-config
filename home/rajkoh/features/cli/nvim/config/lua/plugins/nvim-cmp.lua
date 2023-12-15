@@ -63,5 +63,5 @@ return {
         { name = 'luasnip' },
       },
     }
-  end
+  end,
 }

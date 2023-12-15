@@ -1,4 +1,4 @@
-{pkgs, ...} :
+{ pkgs, ... }:
 
 {
   systemd = {
@@ -20,5 +20,5 @@
         unitConfig.DefaultDependencies = "no";
       };
     };
-  }; 
+  };
 }

@@ -1,3 +1,4 @@
-require("rajkohlen.core.keymaps")
-require("rajkohlen.core.options")
-require("rajkohlen.core.lazy")
+require 'rajkohlen.core.keymaps'
+require 'rajkohlen.core.options'
+require 'rajkohlen.core.lazy'
+

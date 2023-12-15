@@ -5,10 +5,12 @@
     ./firefox.nix
     ./fonts.nix
     ./gtk.nix
+    # ./obsidian.nix
     ./qt.nix
+    ./spotify.nix
     ./vscode.nix
     ./wezterm
     ./whatsapp.nix
   ];
-  
+
 }

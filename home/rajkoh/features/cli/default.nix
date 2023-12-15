@@ -1,4 +1,4 @@
-{ pkgs, ... }: 
+{ pkgs, ... }:
 {
   imports = [
     ./bash.nix
@@ -30,7 +30,7 @@
     ltex-ls # Spell checking LSP
 
     gnumake # make Makefile
-    gcc
+    # gcc
 
     neofetch # nix btw
 
@@ -39,5 +39,8 @@
     zoxide # A fast cd command that learns your habits
 
     lazygit
+
+    zip
+    unzip
   ];
 }

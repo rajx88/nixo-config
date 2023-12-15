@@ -1,15 +1,68 @@
-{ config, pkgs, ... }:
-
 {
+  config,
+  pkgs,
+  ...
+}: {
   imports = [
-
   ];
   home.sessionVariables.EDITOR = "nvim";
+
+  # home.packages = with pkgs; [
+  #   efm-langserver
+  #   go
+  #   nodejs
+  # ];
 
   programs.neovim = {
     enable = true;
     viAlias = true;
     vimAlias = true;
+    extraPackages = with pkgs; [
+      efm-langserver
+      nodejs
+      go
+      gcc
+      cargo
+      rustc
+
+      # Nix
+      nil
+      alejandra
+      statix
+
+      # go
+      golangci-lint
+
+      # shell
+      shellcheck
+      shfmt
+      beautysh
+
+      # Lua
+      stylua
+      luajitPackages.luarocks-nix
+
+      # Python
+      # pyright
+      # python-debug
+      # black
+
+      # Typescript
+      # nodePackages.typescript-language-server
+
+      # docker
+      hadolint
+
+      # yaml json etc.
+      ansible-lint
+      prettierd
+      eslint_d
+      nodePackages_latest.fixjson
+
+      # Telescope tools
+      ripgrep
+      fd
+    ];
   };
 
   xdg = {
@@ -44,9 +97,8 @@
         ];
         terminal = true;
         type = "Application";
-        categories = [ "Utility" "TextEditor" ];
+        categories = ["Utility" "TextEditor"];
       };
     };
   };
-
 }

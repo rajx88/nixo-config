@@ -3,7 +3,7 @@ let ifTheyExist = groups: builtins.filter (group: builtins.hasAttr group config.
 in
 {
   users.mutableUsers = true;
-  users.users.rajkoh= {
+  users.users.rajkoh = {
     isNormalUser = true;
     shell = pkgs.zsh;
     extraGroups = [

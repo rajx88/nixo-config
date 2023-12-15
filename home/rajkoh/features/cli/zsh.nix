@@ -7,7 +7,7 @@ let
 in
 {
 
-  programs.zsh= {
+  programs.zsh = {
     enable = true;
     # set the ZDOTDIR
     dotDir = ".config/zsh";
@@ -67,9 +67,9 @@ in
       # ls
       ls = mkIf hasEza "eza --icons";
       #  ll="eza --icons --group-directories-first -al"
-      ll = mkIf hasEza"eza --icons -abghHliS";
-      tree = mkIf hasEza"eza --icons --tree -abghHliS";
- 
+      ll = mkIf hasEza "eza --icons -abghHliS";
+      tree = mkIf hasEza "eza --icons --tree -abghHliS";
+
       grep = "grep --color";
 
     };
@@ -79,8 +79,8 @@ in
       # initExtra = 
       abbreviations = {
 
-        asdfup="asdf plugin update --all";
-        
+        asdfup = "asdf plugin update --all";
+
         jqless = "jq -C | less -r";
 
         # nix swik

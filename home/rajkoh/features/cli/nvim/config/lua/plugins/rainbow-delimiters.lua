@@ -23,6 +23,5 @@ return {
         'RainbowDelimiterCyan',
       },
     }
-  end
-
+  end,
 }
