@@ -1,6 +1,9 @@
-{ config, pkgs, inputs, ... }:
-
 {
+  config,
+  pkgs,
+  inputs,
+  ...
+}: {
   gtk = {
     enable = true;
     iconTheme = {
@@ -12,5 +15,4 @@
   services.xsettingsd = {
     enable = true;
   };
-
 }

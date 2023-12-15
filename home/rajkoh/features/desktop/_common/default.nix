@@ -12,5 +12,4 @@
     ./wezterm
     ./whatsapp.nix
   ];
-
 }
