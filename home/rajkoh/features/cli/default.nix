@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   imports = [
     ./bash.nix
     ./bat.nix
@@ -15,7 +14,7 @@
 
   home.packages = with pkgs; [
     bottom # System viewer
-    broot # file viewer 
+    broot # file viewer
     eza # Better ls
     ripgrep # Better grep
     fd # Better find
@@ -26,6 +25,7 @@
 
     nil # Nix LSP
     nixfmt # Nix formatter
+    alejandra # Nix formatter
 
     ltex-ls # Spell checking LSP
 

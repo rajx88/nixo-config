@@ -1,6 +1,8 @@
-{ pkgs, config, ... }:
 {
-
+  pkgs,
+  config,
+  ...
+}: {
   # home.file.".tool-versions".text = ''
   #   kubectl 1.28.4
   # '';

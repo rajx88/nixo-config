@@ -1,12 +1,15 @@
-{ pkgs, lib, config, ... }:
-let
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}: let
   inherit (lib) mkIf;
   hasPackage = pname: lib.any (p: p ? pname && p.pname == pname) config.home.packages;
   hasRipgrep = hasPackage "ripgrep";
   hasEza = hasPackage "eza";
   hasNeovim = config.programs.neovim.enable;
-in
-{
+in {
   programs.fish = {
     enable = true;
     shellAbbrs = rec {
@@ -33,7 +36,6 @@ in
       vim = mkIf hasNeovim "nvim";
       vi = vim;
       v = vim;
-
     };
   };
 }

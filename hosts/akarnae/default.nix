@@ -1,4 +1,10 @@
-{ config, pkgs, lib, inputs, ... }: {
+{
+  config,
+  pkgs,
+  lib,
+  inputs,
+  ...
+}: {
   imports = [
     inputs.hardware.nixosModules.common-cpu-intel-cpu-only
     inputs.hardware.nixosModules.common-gpu-nvidia
@@ -13,12 +19,11 @@
     ../_common/optional/systemd-boot.nix
     ../_common/optional/gnome.nix
     ../_common/optional/pipewire.nix
-
   ];
 
   # environment = {
   #   # needed for completion for system packages
-  #   pathsToLink = [ "/share/zsh" ];
+  #   pathsToLink = ["/share/zsh"];
   # };
 
   networking = {
@@ -51,9 +56,9 @@
 
       # Use the NVidia open source kernel module (not to be confused with the
       # independent third-party "nouveau" open source driver).
-      # Support is limited to the Turing and later architectures. Full list of 
-      # supported GPUs is at: 
-      # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus 
+      # Support is limited to the Turing and later architectures. Full list of
+      # supported GPUs is at:
+      # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus
       # Only available from driver 515.43.04+
       # Currently alpha-quality/buggy, so false is currently the recommended setting.
       open = false;
@@ -64,12 +69,9 @@
 
       # Optionally, you may need to select the appropriate driver version for your specific GPU.
       package = config.boot.kernelPackages.nvidiaPackages.stable;
-
     };
   };
-
 
   # DO NOT TOUCH BEFORE GOOGLING IT.
   system.stateVersion = "23.11"; # Did you read the comment?
 }
-

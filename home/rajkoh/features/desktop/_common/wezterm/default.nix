@@ -1,7 +1,8 @@
-{ config, pkgs, ... }:
-
 {
-
+  config,
+  pkgs,
+  ...
+}: {
   xdg = {
     configFile."wezterm" = {
       source = ./config;

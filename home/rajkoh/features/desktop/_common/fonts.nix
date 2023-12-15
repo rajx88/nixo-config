@@ -1,7 +1,6 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   fonts.fontconfig.enable = true;
   home.packages = with pkgs; [
-    (nerdfonts.override { fonts = [ "CascadiaCode" "Hack" "DejaVuSansMono" ]; })
+    (nerdfonts.override {fonts = ["CascadiaCode" "Hack" "DejaVuSansMono"];})
   ];
 }

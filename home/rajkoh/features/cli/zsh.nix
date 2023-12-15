@@ -1,12 +1,14 @@
-{ pkgs, lib, config, ... }:
-let
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}: let
   inherit (lib) mkIf;
   hasPackage = pname: lib.any (p: p ? pname && p.pname == pname) config.home.packages;
   hasRipgrep = hasPackage "ripgrep";
   hasEza = hasPackage "eza";
-in
-{
-
+in {
   programs.zsh = {
     enable = true;
     # set the ZDOTDIR
@@ -28,7 +30,6 @@ in
     # };
 
     profileExtra = ''
-
       zstyle ':completion:*' menu select
 
       setopt complete_aliases
@@ -37,12 +38,11 @@ in
     '';
 
     initExtra = ''
-      
       typeset -U path PATH
       path=($HOME/.local/bin $path)
 
-      fortune | cowsay -f flaming-sheep 
-      '';
+      fortune | cowsay -f flaming-sheep
+    '';
 
     initExtraBeforeCompInit = ''
       fpath=(~/.local/completions $fpath ${config.xdg.cacheHome}/completions)
@@ -71,14 +71,12 @@ in
       tree = mkIf hasEza "eza --icons --tree -abghHliS";
 
       grep = "grep --color";
-
     };
 
     zsh-abbr = {
       enable = true;
-      # initExtra = 
+      # initExtra =
       abbreviations = {
-
         asdfup = "asdf plugin update --all";
 
         jqless = "jq -C | less -r";
@@ -143,10 +141,10 @@ in
       enable = true;
       zplugHome = "${config.xdg.configHome}/zsh/zplug";
       plugins = [
-        { name = "zsh-users/zsh-autosuggestions"; }
-        { name = "zsh-users/zsh-syntax-highlighting"; }
-        { name = "zsh-users/zsh-completions"; }
-        { name = "romkatv/zsh-defer"; }
+        {name = "zsh-users/zsh-autosuggestions";}
+        {name = "zsh-users/zsh-syntax-highlighting";}
+        {name = "zsh-users/zsh-completions";}
+        {name = "romkatv/zsh-defer";}
         # { name = "command-not-found"; from = "oh-my-zsh";  as = "plugin"; }
         # { name = "olets/zsh-abbr"; }
         # {name = "Tarrasch/zsh-bd"; }
