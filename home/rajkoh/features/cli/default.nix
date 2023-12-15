@@ -24,7 +24,6 @@
     jq # JSON pretty printer and manipulator
 
     nil # Nix LSP
-    nixfmt # Nix formatter
     alejandra # Nix formatter
 
     ltex-ls # Spell checking LSP

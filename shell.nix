@@ -18,6 +18,8 @@
       nix
       home-manager
       git
+
+      alejandra
     ];
   };
 }
