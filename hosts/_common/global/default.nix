@@ -14,6 +14,7 @@
       ./openssh.nix
       ./podman.nix
       ./steam-hardware.nix
+      ./systemd-initrd.nix
       ./systemd.nix
       ./zsh.nix
     ]
