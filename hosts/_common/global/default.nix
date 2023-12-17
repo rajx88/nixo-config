@@ -35,13 +35,12 @@
 
   hardware.enableRedistributableFirmware = true;
 
-  xdg = {
-    portal = {
-      enable = true;
-      extraPortals = with pkgs; [
-        xdg-desktop-portal-wlr
-        xdg-desktop-portal-hyprland
-      ];
-    };
-  };
+  # xdg.portal = {
+  #   enable = true;
+  #   extraPortals = with pkgs; [
+  #     # xdg-desktop-portal-gtk
+  #     xdg-desktop-portal-wlr
+  #     xdg-desktop-portal-hyprland
+  #   ];
+  # };
 }

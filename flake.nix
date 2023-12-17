@@ -1,5 +1,5 @@
 {
-  description = "Your new nix config";
+  description = "nixos configuration";
 
   inputs = {
     # Nixpkgs
@@ -23,6 +23,16 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    hyprland-plugins = {
+      url = "github:misterio77/hyprland-plugins/flake-winwrap";
+      inputs.hyprland.follows = "hyprland";
+    };
+
+    nh = {
+      url = "github:viperml/nh";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     alejandra = {
       url = "github:kamadorueda/alejandra/3.0.0";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -40,7 +50,7 @@
     inherit (self) outputs;
 
     lib = nixpkgs.lib // home-manager.lib;
-        systems = [
+    systems = [
       "aarch64-linux"
       "i686-linux"
       "x86_64-linux"
