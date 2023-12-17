@@ -103,11 +103,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1702735279,
-        "narHash": "sha256-SztEzDOE/6bDNnWWvnRbSHPVrgewLwdSei1sxoZFejM=",
+        "lastModified": 1702814335,
+        "narHash": "sha256-Qck7BAMi3eydzT1WFOzp/SgECetyPpOn1dLgmxH2ebQ=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "e9b9ecef4295a835ab073814f100498716b05a96",
+        "rev": "e4dba0bd01956170667458be7b45f68170a63651",
         "type": "github"
       },
       "original": {
@@ -127,16 +127,37 @@
         "xdph": "xdph"
       },
       "locked": {
-        "lastModified": 1702675213,
-        "narHash": "sha256-Sl5gAPzCvYmXw7jo7ISzz/djhprOstFLRyznfxq2JIw=",
+        "lastModified": 1702843774,
+        "narHash": "sha256-opBgknktZijqvRsx6eUOzMbZpLq/HnZXMQOx54h064I=",
         "owner": "hyprwm",
         "repo": "hyprland",
-        "rev": "b1b8d732e64ecf527baef010ad2f28ed3b8c4ac1",
+        "rev": "763d5fa05f7d0191182a1d6cd827415a65293f99",
         "type": "github"
       },
       "original": {
         "owner": "hyprwm",
         "repo": "hyprland",
+        "type": "github"
+      }
+    },
+    "hyprland-plugins": {
+      "inputs": {
+        "hyprland": [
+          "hyprland"
+        ]
+      },
+      "locked": {
+        "lastModified": 1700864712,
+        "narHash": "sha256-eFRgQ8VWd6C24jLg7u1hGs1n8DqEgefT2ueOHdeeUV8=",
+        "owner": "misterio77",
+        "repo": "hyprland-plugins",
+        "rev": "069330413b5b2db30f762a1ca9e72f2ace25acb3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "misterio77",
+        "ref": "flake-winwrap",
+        "repo": "hyprland-plugins",
         "type": "github"
       }
     },
@@ -165,6 +186,26 @@
         "type": "github"
       }
     },
+    "nh": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1702567580,
+        "narHash": "sha256-lmO5UWwCyFD1WhwHru6Xb0zSRBGcIyqhyX3vVSGNTR0=",
+        "owner": "viperml",
+        "repo": "nh",
+        "rev": "bd225f25992098122d83b28579a710d4181e0008",
+        "type": "github"
+      },
+      "original": {
+        "owner": "viperml",
+        "repo": "nh",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1702312524,
@@ -188,6 +229,8 @@
         "hardware": "hardware",
         "home-manager": "home-manager",
         "hyprland": "hyprland",
+        "hyprland-plugins": "hyprland-plugins",
+        "nh": "nh",
         "nixpkgs": "nixpkgs"
       }
     },

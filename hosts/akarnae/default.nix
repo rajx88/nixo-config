@@ -35,7 +35,20 @@
     kernelPackages = pkgs.linuxKernel.packages.linux_zen;
   };
 
+  # boot.loader.systemd-boot = {
+  #   extraEntries = {
+  #     "nvidia-drm.modeset=1"
+  #   }
+  # };
+
+  programs = {
+    # adb.enable = true;
+    dconf.enable = true;
+    # kdeconnect.enable = true;
+  };
+
   services.hardware.openrgb.enable = true;
+
   hardware = {
     opengl = {
       enable = true;

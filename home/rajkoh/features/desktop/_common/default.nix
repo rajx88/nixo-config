@@ -12,4 +12,5 @@
     ./wezterm
     ./whatsapp.nix
   ];
+  xdg.portal.enable = true;
 }
