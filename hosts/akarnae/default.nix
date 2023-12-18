@@ -17,7 +17,7 @@
     ../_common/users/rajkoh
 
     ../_common/optional/systemd-boot.nix
-    ../_common/optional/gnome.nix
+    # ../_common/optional/gnome.nix
     ../_common/optional/pipewire.nix
   ];
 
