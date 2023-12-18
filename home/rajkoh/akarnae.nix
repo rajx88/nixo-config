@@ -6,7 +6,7 @@
   imports = [
     ./global
 
-    ./features/desktop/gnome
+    # ./features/desktop/gnome
     ./features/desktop/hyprland
   ];
 
@@ -15,12 +15,11 @@
   #  ------   -----   ------
   monitors = [
     {
-      name = "DP-3";
+      name = "HDMI-3";
       width = 2560;
       height = 1440;
       x = 0;
       workspace = "3";
-      enabled = false;
     }
     {
       name = "DP-1";
