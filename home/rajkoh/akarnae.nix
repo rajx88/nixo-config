@@ -15,7 +15,7 @@
   #  ------   -----   ------
   monitors = [
     {
-      name = "HDMI-3";
+      name = "HDMI-A-1";
       width = 2560;
       height = 1440;
       x = 0;
@@ -25,6 +25,7 @@
       name = "DP-1";
       width = 2560;
       height = 1440;
+      refreshRate = 144;
       x = 2560;
       workspace = "1";
       primary = true;
@@ -33,6 +34,7 @@
       name = "DP-2";
       width = 2560;
       height = 1440;
+      refreshRate = 144;
       x = 5120;
       workspace = "2";
     }

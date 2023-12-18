@@ -23,7 +23,7 @@
     # The hyprland package to use
     package = pkgs.inputs.hyprland.hyprland;
     # Whether to enable XWayland
-    # xwayland.enable = true;
+    xwayland.enable = true;
 
     # Optional
     # Whether to enable hyprland-session.target on hyprland startup
@@ -42,6 +42,7 @@
     settings = {
       bind = let
         swaylock = "${config.programs.swaylock.package}/bin/swaylock";
+        wofi = "${config.programs.wofi.package}/bin/wofi";
 
         grimblast = "${pkgs.inputs.hyprwm-contrib.grimblast}/bin/grimblast";
         gtk-play = "${pkgs.libcanberra-gtk3}/bin/canberra-gtk-play";
@@ -67,6 +68,12 @@
           ",XF86Launch5,exec,${swaylock} -S --grace 2"
           ",XF86Launch4,exec,${swaylock} -S --grace 2"
           "SUPER,backspace,exec,${swaylock} -S --grace 2"
+        ])
+        ++
+        # Launcher
+        (lib.optionals config.programs.wofi.enable [
+          "SUPER,x,exec,${wofi} -S drun -x 10 -y 10 -W 25% -H 60%"
+          "SUPER,d,exec,${wofi} -S run"
         ]);
 
       monitor = map (

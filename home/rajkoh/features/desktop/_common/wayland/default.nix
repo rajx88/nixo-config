@@ -1,7 +1,9 @@
 {pkgs, ...}: {
   imports = [
-    ./waybar.nix
+    ./swayidle.nix
     ./swaylock.nix
+    ./waybar.nix
+    ./wofi.nix
   ];
 
   xdg.mimeApps.enable = true;
