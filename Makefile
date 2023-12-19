@@ -1,7 +1,7 @@
 
 b: rb hm
 
-u: update rb hm
+u: update 
 
 rb:
 	sudo nixos-rebuild switch --flake .#akarnae
