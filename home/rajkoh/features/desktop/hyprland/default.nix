@@ -23,7 +23,7 @@
     # The hyprland package to use
     package = pkgs.inputs.hyprland.hyprland;
     # Whether to enable XWayland
-    xwayland.enable = true;
+    # xwayland.enable = true;
 
     # Optional
     # Whether to enable hyprland-session.target on hyprland startup
@@ -40,6 +40,60 @@
     # enableNvidiaPatches = true;
 
     settings = {
+      general = {
+        # See https://wiki.hyprland.org/Configuring/Variables/ for more
+
+        gaps_in = 5;
+        gaps_out = 5;
+        border_size = 2;
+        layout = "dwindle";
+        # layout = "master";
+      };
+
+      input = {
+        kb_layout = "us";
+
+        follow_mouse = 1;
+
+        touchpad = {
+          natural_scroll = false;
+        };
+
+        sensitivity = 0; # -1.0 - 1.0, 0 means no modification.    }
+      };
+
+      dwindle = {
+        # See https://wiki.hyprland.org/Configuring/Dwindle-Layout/ for more
+        pseudotile = true; # master switch for pseudotiling. Enabling is bound to mainMod + P in the keybinds section below
+        preserve_split = true; # you probably want this
+      };
+
+      master = {
+        # See https://wiki.hyprland.org/Configuring/Master-Layout/ for more
+        new_is_master = true;
+      };
+
+      decoration = {
+        rounding = 5;
+        blur = {
+          enabled = true;
+          size = 6;
+          passes = 2;
+          new_optimizations = true;
+          ignore_opacity = true;
+          xray = true;
+          # blurls = waybar
+        };
+        active_opacity = 1.0;
+        inactive_opacity = 0.8;
+        fullscreen_opacity = 1.0;
+
+        drop_shadow = true;
+        shadow_range = 30;
+        shadow_render_power = 3;
+        "col.shadow" = "0 x66000000";
+      };
+
       bind = let
         swaylock = "${config.programs.swaylock.package}/bin/swaylock";
         wofi = "${config.programs.wofi.package}/bin/wofi";
@@ -67,7 +121,8 @@
         (lib.optionals config.programs.swaylock.enable [
           ",XF86Launch5,exec,${swaylock} -S --grace 2"
           ",XF86Launch4,exec,${swaylock} -S --grace 2"
-          "SUPER,backspace,exec,${swaylock} -S --grace 2"
+          # "SUPER,backspace,exec,${swaylock} -S --grace 2"
+          "SUPER,backspace,exec,${swaylock} --clock --indicator --screenshots --effect-scale 0.4 --effect-vignette 0.2:0.5 --effect-blur 4x2 --datestr '%a %e.%m.%Y' --timestr '%k:%M'"
         ])
         ++
         # Launcher
