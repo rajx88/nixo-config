@@ -1,7 +1,6 @@
 {pkgs, ...}: {
   imports = [
     ./dunst.nix
-    ./ly.nix
     ./swayidle.nix
     ./swaylock.nix
     ./thunar.nix
