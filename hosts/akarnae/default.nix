@@ -34,6 +34,7 @@
 
   boot = {
     kernelPackages = pkgs.linuxKernel.packages.linux_zen;
+    # kernelParams = ["nvidia.NVreg_PreserveVideoMemoryAllocations=1"];
   };
 
   # boot.loader.systemd-boot = {
