@@ -22,10 +22,10 @@
     ../_common/optional/pipewire.nix
   ];
 
-  # environment = {
-  #   # needed for completion for system packages
-  #   pathsToLink = ["/share/zsh"];
-  # };
+  environment = {
+    # needed for completion for system packages
+    pathsToLink = ["/share/zsh"];
+  };
 
   networking = {
     hostName = "akarnae";
