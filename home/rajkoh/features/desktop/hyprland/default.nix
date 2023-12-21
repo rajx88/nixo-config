@@ -7,7 +7,7 @@
   imports = [
     # Include the results of the hardware scan
     ../_common
-    ../_common/wayland
+    ../wayland
 
     ./basic-binds.nix
   ];

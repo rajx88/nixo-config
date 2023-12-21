@@ -1,7 +1,12 @@
 {pkgs, ...}: {
   programs.vscode = {
     enable = true;
-    extensions = with pkgs.vscode-extensions; [
-    ];
+    userSettings = {
+      # needed for hyprland will crash imeediately without it
+      "window.titleBarStyle"= "custom";
+    };
+    # package = pkgs.vscodium;
+    # extensions = with pkgs.vscode-extensions; [
+    # ];
   };
 }
