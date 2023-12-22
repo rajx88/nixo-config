@@ -43,8 +43,8 @@
       general = {
         # See https://wiki.hyprland.org/Configuring/Variables/ for more
 
-        gaps_in = 5;
-        gaps_out = 5;
+        gaps_in = 8;
+        gaps_out = 8;
         border_size = 2;
         layout = "dwindle";
         # layout = "master";
@@ -74,7 +74,7 @@
       };
 
       decoration = {
-        rounding = 5;
+        rounding = 10;
         blur = {
           enabled = true;
           size = 6;
@@ -85,13 +85,13 @@
           # blurls = waybar
         };
         active_opacity = 1.0;
-        inactive_opacity = 0.95;
+        inactive_opacity = 0.9;
         fullscreen_opacity = 1.0;
 
         drop_shadow = true;
         shadow_range = 30;
         shadow_render_power = 3;
-        "col.shadow" = "0 x66000000";
+        "col.shadow" = "0x66000000";
       };
 
       bind = let
