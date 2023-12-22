@@ -10,7 +10,7 @@
   hyprctl = "${config.wayland.windowManager.hyprland.package}/bin/hyprctl";
 
   isLocked = "${pgrep} -x ${swaylock}";
-  lockTime = 10 * 60; # TODO: configurable desktop (10 min)/laptop (4 min)
+  lockTime = 10 * 60; # TODO: make this configurable for different hosts
 
   # Makes two timeouts: one for when the screen is not locked (lockTime+timeout) and one for when it is.
   afterLockTimeout = {
@@ -36,8 +36,7 @@ in {
       [
         {
           timeout = lockTime;
-          # command = "${swaylock} -i ${config.wallpaper} --daemonize --grace 15";
-          command = "${swaylock} --daemonize --grace 15";
+          command = "${swaylock} --daemonize --grace 15 --clock --indicator --screenshots --effect-scale 0.4 --effect-vignette 0.2:0.5 --effect-blur 4x2 --datestr '%a %e.%m.%Y' --timestr '%k:%M'";
         }
       ]
       ++
@@ -48,13 +47,6 @@ in {
         resumeCommand = "${pactl} set-source-mute @DEFAULT_SOURCE@ no";
       })
       ++
-      # Turn off RGB
-      # (lib.optionals config.services.rgbdaemon.enable (afterLockTimeout {
-      #   timeout = 20;
-      #   command = "systemctl --user stop rgbdaemon";
-      #   resumeCommand = "systemctl --user start rgbdaemon";
-      # }))
-      # ++
       # Turn off displays (hyprland)
       (lib.optionals config.wayland.windowManager.hyprland.enable (afterLockTimeout {
         timeout = 40;

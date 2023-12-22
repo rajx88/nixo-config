@@ -85,7 +85,7 @@
           # blurls = waybar
         };
         active_opacity = 1.0;
-        inactive_opacity = 0.8;
+        inactive_opacity = 0.95;
         fullscreen_opacity = 1.0;
 
         drop_shadow = true;
@@ -119,10 +119,8 @@
         ++
         # Screen lock
         (lib.optionals config.programs.swaylock.enable [
-          ",XF86Launch5,exec,${swaylock} -S --grace 2"
-          ",XF86Launch4,exec,${swaylock} -S --grace 2"
           # "SUPER,backspace,exec,${swaylock} -S --grace 2"
-          "SUPER,backspace,exec,${swaylock} --clock --indicator --screenshots --effect-scale 0.4 --effect-vignette 0.2:0.5 --effect-blur 4x2 --datestr '%a %e.%m.%Y' --timestr '%k:%M'"
+          "SUPER,backspace,exec,${swaylock} --grace 2 --clock --indicator --screenshots --effect-scale 0.4 --effect-vignette 0.2:0.5 --effect-blur 4x2 --datestr '%a %e.%m.%Y' --timestr '%k:%M'"
         ])
         ++
         # Launcher
