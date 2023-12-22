@@ -53,11 +53,12 @@
       input = {
         kb_layout = "us";
 
-        follow_mouse = 1;
+        follow_mouse = 2;
+        mouse_refocus = false;
 
-        touchpad = {
-          natural_scroll = false;
-        };
+        # touchpad = {
+        #   natural_scroll = false;
+        # };
 
         sensitivity = 0; # -1.0 - 1.0, 0 means no modification.    }
       };
@@ -66,6 +67,7 @@
         # See https://wiki.hyprland.org/Configuring/Dwindle-Layout/ for more
         pseudotile = true; # master switch for pseudotiling. Enabling is bound to mainMod + P in the keybinds section below
         preserve_split = true; # you probably want this
+        split_width_multiplier = 1.35;
       };
 
       master = {

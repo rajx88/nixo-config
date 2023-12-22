@@ -5,12 +5,10 @@
     ./firefox.nix
     ./fonts.nix
     ./gtk.nix
-    # ./obsidian.nix
     ./playerctl.nix
     ./qt.nix
     ./spotify.nix
     ./vscode.nix
-    # ./wezterm
     ./whatsapp.nix
   ];
   xdg.portal.enable = true;
