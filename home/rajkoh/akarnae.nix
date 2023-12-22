@@ -8,6 +8,10 @@
 
     # ./features/desktop/gnome
     ./features/desktop/hyprland
+
+    # ./features/desktop/optional/obsidian.nix
+    ./features/desktop/optional/plexplayer.nix
+    ./features/games
   ];
 
   #  ------   -----   ------
