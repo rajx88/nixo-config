@@ -12,6 +12,5 @@
         withVencord = true;
       })
     ];
-
   };
 }

@@ -1,4 +1,8 @@
-{pkgs, config, ...}: {
+{
+  pkgs,
+  config,
+  ...
+}: {
   # home.packages = with pkgs; [
   #   dunst
   # ];
@@ -33,7 +37,6 @@
       };
 
       fullscreen_delay_everything = {fullscreen = "delay";};
-
     };
   };
 }
