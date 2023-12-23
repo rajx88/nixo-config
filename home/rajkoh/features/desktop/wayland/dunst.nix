@@ -15,7 +15,7 @@
         alignment = "center";
         corner_radius = 16;
         follow = "mouse";
-        font = "Inter 9";
+        font = config.fontProfiles.monospace.family;
         format = "<b>%s</b>\\n%b";
         frame_width = 1;
         offset = "5x5";
