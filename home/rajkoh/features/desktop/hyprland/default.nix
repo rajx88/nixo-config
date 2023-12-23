@@ -99,6 +99,8 @@
       bind = let
         swaylock = "${config.programs.swaylock.package}/bin/swaylock";
         wofi = "${config.programs.wofi.package}/bin/wofi";
+        playerctl = "${config.services.playerctld.package}/bin/playerctl";
+        playerctld = "${config.services.playerctld.package}/bin/playerctld";
 
         grimblast = "${pkgs.inputs.hyprwm-contrib.grimblast}/bin/grimblast";
         gtk-play = "${pkgs.libcanberra-gtk3}/bin/canberra-gtk-play";
@@ -115,9 +117,15 @@
           # Program bindings
           "SUPER,Return,exec,${terminal}"
           "SUPER,e,exec,${editor}"
-          "SUPER,v,exec,${editor}"
           "SUPER,b,exec,${browser}"
         ]
+        ++ (lib.optionals config.services.playerctld.enable [
+          # Media control
+          ",XF86AudioNext,exec,${playerctl} next"
+          ",XF86AudioPrev,exec,${playerctl} previous"
+          ",XF86AudioPlay,exec,${playerctl} play-pause"
+          ",XF86AudioStop,exec,${playerctl} stop"
+        ])
         ++
         # Screen lock
         (lib.optionals config.programs.swaylock.enable [
