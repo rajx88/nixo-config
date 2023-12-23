@@ -22,25 +22,26 @@
       name = "HDMI-A-1";
       width = 2560;
       height = 1440;
+      refreshRate = 144;
       x = 0;
-      workspace = "3";
+      workspace = "1";
     }
     {
       name = "DP-1";
       width = 2560;
       height = 1440;
-      refreshRate = 144;
+      refreshRate = 240;
       x = 2560;
-      workspace = "1";
+      workspace = "2";
       primary = true;
     }
     {
       name = "DP-2";
       width = 2560;
       height = 1440;
-      refreshRate = 144;
+      refreshRate = 240;
       x = 5120;
-      workspace = "2";
+      workspace = "3";
     }
   ];
 }
