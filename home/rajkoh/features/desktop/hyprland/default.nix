@@ -103,8 +103,8 @@
           xray = true;
           # blurls = waybar
         };
-        active_opacity = 1.0;
-        inactive_opacity = 0.9;
+        active_opacity = 0.95;
+        inactive_opacity = 0.8;
         fullscreen_opacity = 1.0;
 
         drop_shadow = true;
@@ -115,12 +115,15 @@
 
       bind = let
         swaylock = "${config.programs.swaylock.package}/bin/swaylock";
-        wofi = "${config.programs.wofi.package}/bin/wofi";
+
+        fuzzel = "${config.programs.fuzzel.package}/bin/fuzzel";
+
         playerctl = "${config.services.playerctld.package}/bin/playerctl";
         playerctld = "${config.services.playerctld.package}/bin/playerctld";
 
-        grimblast = "${pkgs.inputs.hyprwm-contrib.grimblast}/bin/grimblast";
-        gtk-play = "${pkgs.libcanberra-gtk3}/bin/canberra-gtk-play";
+        grim = "${pkgs.grim}/bin/grim";
+        slurp = "${pkgs.slurp}/bin/slurp";
+        pactl = "${pkgs.pulseaudio}/bin/pactl";
 
         gtk-launch = "${pkgs.gtk3}/bin/gtk-launch";
         xdg-mime = "${pkgs.xdg-utils}/bin/xdg-mime";
@@ -133,8 +136,17 @@
         [
           # Program bindings
           "SUPER,Return,exec,${terminal}"
-          "SUPER,e,exec,${editor}"
+          "SUPER,v,exec,${editor}"
           "SUPER,b,exec,${browser}"
+
+          # Volume
+          ",XF86AudioRaiseVolume,exec,${pactl} set-sink-volume @DEFAULT_SINK@ +5%"
+          ",XF86AudioLowerVolume,exec,${pactl} set-sink-volume @DEFAULT_SINK@ -5%"
+          ",XF86AudioMute,exec,${pactl} set-sink-mute @DEFAULT_SINK@ toggle"
+          "SHIFT,XF86AudioMute,exec,${pactl} set-source-mute @DEFAULT_SOURCE@ toggle"
+          ",XF86AudioMicMute,exec,${pactl} set-source-mute @DEFAULT_SOURCE@ toggle"
+          # Screenshotting
+          "SUPERSHIFT,s,exec,${grim} -t jpeg -g ${slurp} ~/screenshots/$(date +%Y-%m-%d_%H-%m-%s).jpg"
         ]
         ++ (lib.optionals config.services.playerctld.enable [
           # Media control
@@ -151,9 +163,8 @@
         ])
         ++
         # Launcher
-        (lib.optionals config.programs.wofi.enable [
-          "SUPER,x,exec,${wofi} -S drun -x 10 -y 10 -W 25% -H 60%"
-          "SUPER,d,exec,${wofi} -S run"
+        (lib.optionals config.programs.fuzzel.enable [
+          "SUPER,d,exec,${fuzzel}"
         ]);
 
       monitor = map (

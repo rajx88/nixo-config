@@ -28,6 +28,7 @@
   };
 
   networking = {
+    networkmanager.enable = true;
     hostName = "akarnae";
     useDHCP = lib.mkForce true;
   };
