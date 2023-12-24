@@ -17,6 +17,7 @@ in {
       ]
       ++ ifTheyExist [
         "network"
+        "networkmanager"
         "docker"
         "podman"
         "git"
