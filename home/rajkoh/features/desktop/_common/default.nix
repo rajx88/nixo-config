@@ -1,7 +1,7 @@
-{
+{pkgs, ...}: {
   imports = [
     ./alacritty
-    ./discord.nix
+    ./discord
     ./firefox.nix
     ./fonts.nix
     ./gtk.nix
@@ -12,4 +12,8 @@
     ./whatsapp.nix
   ];
   xdg.portal.enable = true;
+
+  home.packages = with pkgs; [
+    xdg-utils
+  ];
 }

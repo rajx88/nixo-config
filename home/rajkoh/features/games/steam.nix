@@ -28,11 +28,11 @@
     /*
     ini
     */
-    ''      lol
-            [Desktop Entry]
-            Name=Steam Session
-            Exec=${pkgs.gamescope}/bin/gamescope -W ${toString monitor.width} -H ${toString monitor.height} -O ${monitor.name} -e -- steam -gamepadui
-            Type=Application
+    ''
+      [Desktop Entry]
+      Name=Steam Session
+      Exec=${pkgs.gamescope}/bin/gamescope -W ${toString monitor.width} -H ${toString monitor.height} -O ${monitor.name} -e -- steam -gamepadui
+      Type=Application
     '';
 in {
   home.packages = with pkgs; [
