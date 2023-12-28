@@ -1,8 +1,9 @@
 {lib, ...}: {
   wayland.windowManager.hyprland.settings = {
+    "$mod" = "SUPER";
     bindm = [
-      "SUPER,mouse:272,movewindow"
-      "SUPER,mouse:273,resizewindow"
+      "$mod,mouse:272,movewindow"
+      "$mod,mouse:273,resizewindow"
     ];
 
     bind = let
@@ -43,68 +44,66 @@
       };
     in
       [
-        "SUPERSHIFT,q,killactive"
-        "SUPERSHIFT,e,exit"
+        "$mod SHIFT,q,killactive"
+        "$mod SHIFT,e,exit"
 
-        "SUPER,s,togglesplit"
-        "SUPER,f,fullscreen,1"
-        "SUPERSHIFT,f,fullscreen,0"
-        "SUPERSHIFT,space,togglefloating"
+        "$mod,s,togglesplit"
+        "$mod,f,fullscreen,1"
+        "$mod SHIFT,f,fullscreen,0"
+        "$mod SHIFT,space,togglefloating"
 
-        "SUPER,minus,splitratio,-0.25"
-        "SUPERSHIFT,minus,splitratio,-0.3333333"
+        "$mod,minus,splitratio,-0.25"
 
-        "SUPER,equal,splitratio,0.25"
-        "SUPERSHIFT,equal,splitratio,0.3333333"
+        "$mod,equal,splitratio,0.25"
 
-        "SUPER,g,togglegroup"
-        "SUPER,t,lockactivegroup,toggle"
-        "SUPER,apostrophe,changegroupactive,f"
-        "SUPERSHIFT,apostrophe,changegroupactive,b"
+        "$mod,g,togglegroup"
+        "$mod,t,lockactivegroup,toggle"
+        "$mod,apostrophe,changegroupactive,f"
+        "$mod SHIFT,apostrophe,changegroupactive,b"
 
-        "SUPER,u,togglespecialworkspace"
-        "SUPERSHIFT,u,movetoworkspacesilent,special"
+        "$mod,u,togglespecialworkspace"
+        "$mod SHIFT,u,movetoworkspacesilent,special"
       ]
       ++
       # Change workspace
       (map (
-          n: "SUPER,${n},workspace,name:${n}"
+          n: "$mod,${n},workspace,name:${n}"
         )
         workspaces)
       ++
       # Move window to workspace
       (map (
-          n: "SUPERSHIFT,${n},movetoworkspacesilent,name:${n}"
+          n: "$mod SHIFT,${n},movetoworkspacesilent,name:${n}"
         )
         workspaces)
       ++
       # Move focus
       (lib.mapAttrsToList (
-          key: direction: "SUPER,${key},movefocus,${direction}"
+          key: direction: "$mod,${key},movefocus,${direction}"
         )
         directions)
       ++
       # Swap windows
       (lib.mapAttrsToList (
-          key: direction: "SUPERSHIFT,${key},swapwindow,${direction}"
+          key: direction: "$mod SHIFT,${key},swapwindow,${direction}"
         )
         directions)
       ++
       # Move windows
       (lib.mapAttrsToList (
-          key: direction: "SUPERCONTROL,${key},movewindoworgroup,${direction}"
+          key: direction: "$mod CONTROL,${key},movewindoworgroup,${direction}"
         )
         directions)
       ++
       # Move monitor focus
       (lib.mapAttrsToList (
-          key: direction: "SUPERALT,${key},focusmonitor,${direction}"
+          key: direction: "$mod ALT,${key},focusmonitor,${direction}"
         )
         directions)
       ++
       # Move workspace to other monitor
       (lib.mapAttrsToList (
-          key: direction: "SUPERALTSHIFT,${key},movecurrentworkspacetomonitor,${direction}"
+          key: direction: "$mod ALT SHIFT,${key},movecurrentworkspacetomonitor,${direction}"
         )
         directions);
   };

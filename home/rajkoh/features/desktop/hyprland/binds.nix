@@ -5,6 +5,8 @@
   ...
 }: {
   wayland.windowManager.hyprland.settings = {
+    "$mod" = "SUPER";
+
     bind = let
       swaylock = "${config.programs.swaylock.package}/bin/swaylock";
 
@@ -27,9 +29,9 @@
     in
       [
         # Program bindings
-        "SUPER,Return,exec,${terminal}"
-        "SUPER,v,exec,${editor}"
-        "SUPER,b,exec,${browser}"
+        "$mod,Return,exec,${terminal}"
+        "$mod,v,exec,${editor}"
+        "$mod,b,exec,${browser}"
 
         # Volume
         ",XF86AudioRaiseVolume,exec,${pactl} set-sink-volume @DEFAULT_SINK@ +5%"
@@ -38,7 +40,7 @@
         "SHIFT,XF86AudioMute,exec,${pactl} set-source-mute @DEFAULT_SOURCE@ toggle"
         ",XF86AudioMicMute,exec,${pactl} set-source-mute @DEFAULT_SOURCE@ toggle"
         # Screenshotting
-        "SUPERSHIFT,s,exec,${grim} -t jpeg -g ${slurp} ~/screenshots/$(date +%Y-%m-%d_%H-%m-%s).jpg"
+        "$mod SHIFT,p,exec,${grim} -t jpeg -g \"$(slurp)\" ${config.xdg.userDirs.pictures}/scrnsht/$(date +%Y-%m-%d_%H-%m-%s).jpg"
       ]
       ++ (lib.optionals config.services.playerctld.enable [
         # Media control
@@ -50,13 +52,13 @@
       ++
       # Screen lock
       (lib.optionals config.programs.swaylock.enable [
-        # "SUPER,backspace,exec,${swaylock} -S --grace 2"
-        "SUPER,backspace,exec,${swaylock} --grace 2 --clock --indicator --screenshots --effect-scale 0.4 --effect-vignette 0.2:0.5 --effect-blur 4x2 --datestr '%a %e.%m.%Y' --timestr '%k:%M'"
+        # "$mod,backspace,exec,${swaylock} -S --grace 2"
+        "$mod,backspace,exec,${swaylock} --grace 2 --clock --indicator --screenshots --effect-scale 0.4 --effect-vignette 0.2:0.5 --effect-blur 4x2 --datestr '%a %e.%m.%Y' --timestr '%k:%M'"
       ])
       ++
       # Launcher
       (lib.optionals config.programs.fuzzel.enable [
-        "SUPER,d,exec,${fuzzel}"
+        "$mod,d,exec,${fuzzel}"
       ]);
   };
 }
