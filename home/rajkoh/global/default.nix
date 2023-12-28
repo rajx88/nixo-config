@@ -28,7 +28,7 @@
     };
   };
 
-  #systemd.user.startServices = "sd-switch";
+  systemd.user.startServices = "sd-switch";
 
   programs = {
     home-manager.enable = true;
@@ -55,7 +55,7 @@
   home = {
     username = lib.mkDefault "rajkoh";
     homeDirectory = lib.mkDefault "/home/${config.home.username}";
-    stateVersion = lib.mkDefault "22.05";
+    stateVersion = lib.mkDefault "23.11";
     sessionPath = ["$HOME/.local/bin"];
     sessionVariables = {
       FLAKE = "$HOME/nix-config";
