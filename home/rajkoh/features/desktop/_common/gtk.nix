@@ -14,13 +14,13 @@
       name = "rose-pine";
       package = pkgs.rose-pine-gtk-theme;
     };
+    iconTheme = {
+      name = "rose-pine";
+      package = pkgs.rose-pine-icon-theme;
+    };
     font = {
       name = config.fontProfiles.regular.family;
       size = 12;
-    };
-    iconTheme = {
-      name = "Papirus";
-      package = pkgs.papirus-icon-theme;
     };
   };
 

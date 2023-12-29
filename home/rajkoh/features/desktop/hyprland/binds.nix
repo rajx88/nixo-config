@@ -26,12 +26,15 @@
       terminal = config.home.sessionVariables.TERM;
       browser = defaultApp "x-scheme-handler/https";
       editor = defaultApp "text/plain";
+
+      files = "${pkgs.xfce.thunar}/bin/thunar";
     in
       [
         # Program bindings
         "$mod,Return,exec,${terminal}"
         "$mod,v,exec,${editor}"
         "$mod,b,exec,${browser}"
+        "$mod,e,exec,${files}"
 
         # Volume
         ",XF86AudioRaiseVolume,exec,${pactl} set-sink-volume @DEFAULT_SINK@ +5%"
