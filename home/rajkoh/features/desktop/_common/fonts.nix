@@ -2,8 +2,10 @@
   fontProfiles = {
     enable = true;
     monospace = {
-      family = "Hack Nerd Font";
-      package = pkgs.nerdfonts.override {fonts = ["CascadiaCode" "Hack" "DejaVuSansMono"];};
+      family = "Hack Nerd Font Mono";
+      # family = "CaskaydiaMono Nerd Font Mono";
+      # package = pkgs.nerdfonts.override {fonts = ["CascadiaCode" "Hack" "DejaVuSansMono"];};
+      package = pkgs.nerdfonts;
     };
     regular = {
       family = "Fira Sans";
