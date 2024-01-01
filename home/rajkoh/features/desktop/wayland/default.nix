@@ -6,7 +6,7 @@
     ./swayidle.nix
     ./swaylock.nix
     ./thunar.nix
-    ./waybar.nix
+    ./waybar
     # ./wofi.nix
   ];
 
