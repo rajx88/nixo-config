@@ -1,4 +1,12 @@
 {pkgs, ...}: {
+  home.packages = with pkgs; [
+    # noto-fonts-color-emoji
+    twemoji-color-font
+    # openmoji-color
+    # openmoji-black
+    symbola
+  ];
+
   fontProfiles = {
     enable = true;
     monospace = {
