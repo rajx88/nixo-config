@@ -12,6 +12,8 @@
     # ./features/desktop/optional/obsidian.nix
     ./features/desktop/optional/plexplayer.nix
     ./features/games
+
+    ./features/dev/jetbrains-toolbox.nix
   ];
 
   home.sessionVariables = {
