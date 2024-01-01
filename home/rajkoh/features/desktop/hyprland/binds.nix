@@ -28,6 +28,8 @@
       editor = defaultApp "text/plain";
 
       files = "${pkgs.xfce.thunar}/bin/thunar";
+
+      passman = "${pkgs._1password-gui}/bin/1password";
     in
       [
         # Program bindings
@@ -35,6 +37,7 @@
         "$mod,v,exec,${editor}"
         "$mod,b,exec,${browser}"
         "$mod,e,exec,${files}"
+        "$mod,p,exec,${passman}"
 
         # Volume
         ",XF86AudioRaiseVolume,exec,${pactl} set-sink-volume @DEFAULT_SINK@ +5%"
