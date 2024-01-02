@@ -19,11 +19,13 @@ in {
     bind = let
       script = "${pkgs.python3}/bin/python3 ${config.xdg.configHome}/hypr/scripts/wall-changer.py";
     in [
-      "$mod SHIFT,r,exec, ${script} ${wallpaper}"
+      "$mod SHIFT,r,exec, ${script} -d ${wallpaper}"
     ];
 
-    exec = [
-      "${pkgs.swaybg}/bin/swaybg -i ${wallpaper}/wall-01.jpg -m fill"
+    exec = let
+      randomWallpaper = "${pkgs.python3}/bin/python3 ${config.xdg.configHome}/hypr/scripts/wall-changer.py -m random ${wallpaper}";
+    in [
+      "${pkgs.swaybg}/bin/swaybg -i ${randomWallpaper} -m fill"
     ];
   };
 }
