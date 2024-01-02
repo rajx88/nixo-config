@@ -2,7 +2,6 @@
   imports = [
     ./dunst.nix
     ./fuzzel.nix
-    ./hyprpaper
     ./swayidle.nix
     ./swaylock.nix
     ./thunar.nix

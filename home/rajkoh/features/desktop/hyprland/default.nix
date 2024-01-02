@@ -9,12 +9,15 @@
     ../_common
     ../wayland
 
-    ./basic-binds.nix
-    ./binds.nix
-    ./decoration.nix
-    ./monitor.nix
-    ./windowrules.nix
-    ./workspace.nix
+    ./waypaper.nix
+
+    ./config/basic-binds.nix
+    ./config/binds.nix
+    ./config/decoration.nix
+    ./config/animations.nix
+    ./config/monitor.nix
+    ./config/windowrules.nix
+    ./config/workspace.nix
   ];
 
   xdg.portal = {
@@ -37,6 +40,7 @@
       # Same as default, but stop graphical-session too
       extraCommands = lib.mkBefore [
         "systemctl --user stop graphical-session.target"
+        "systemctl --user stop hyprland-session.target"
         "systemctl --user start hyprland-session.target"
       ];
     };

@@ -10,7 +10,8 @@
   fontProfiles = {
     enable = true;
     monospace = {
-      family = "Hack Nerd Font Mono";
+      # family = "OpenDyslexicM Nerd Font Mono";
+      family = "SauceCodePro Nerd Font Mono";
       # family = "CaskaydiaMono Nerd Font Mono";
       # package = pkgs.nerdfonts.override {fonts = ["CascadiaCode" "Hack" "DejaVuSansMono"];};
       package = pkgs.nerdfonts;

@@ -78,6 +78,8 @@
       # };
 
       font = {
+        # size = 10;
+
         normal = {
           family = "${config.fontProfiles.monospace.family}";
           style = "Regular";

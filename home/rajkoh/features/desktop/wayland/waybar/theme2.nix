@@ -48,7 +48,7 @@ in {
 
         network = {
           tooltip = false;
-          format-wifi = "  {essid}";
+          format-wifi = " {essid}";
           format-ethernet = "";
         };
         backlight = {
@@ -64,7 +64,7 @@ in {
             warning = 30;
             critical = 20;
           };
-          format = "{icon}  {capacity}%";
+          format = "{icon} {capacity}%";
           format-charging = " {capacity}%";
           format-plugged = " {capacity}%";
           format-alt = "{time} {icon}";
@@ -80,12 +80,12 @@ in {
         };
         cpu = {
           interval = 15;
-          format = "  {}%";
+          format = " {}%";
           max-length = 10;
         };
         memory = {
           interval = 30;
-          format = "  {}%";
+          format = " {}%";
           max-length = 10;
         };
         "custom/media" = {
@@ -102,7 +102,7 @@ in {
           on-click = "${playerctl} play-pause";
         };
         "custom/launcher" = {
-          # format = " ";
+          # format = "";
           format = " ";
           on-click = "${fuzzel}";
         };
@@ -111,12 +111,12 @@ in {
           format = " ";
         };
         "custom/updates" = {
-          # implement nix update check
+          # TODO: implement nix update check
           format = "{} Update(s)";
           exec = "checkupdates | wc -l";
           exec-if = "[[ $(checkupdates | wc -l) != 0 ]]";
           interval = 15;
-          on-click = "alacritty -e paru -Syu && notify-send 'The system has been updated' ";
+          on-click = "$TERM -e paru -Syu && notify-send 'The system has been updated' ";
         };
       };
     };
@@ -129,7 +129,7 @@ in {
         * {
         	border: none;
         	border-radius: 10;
-          font-family: ${config.fontProfiles.regular.family};
+          font-family: ${config.fontProfiles.monospace.family};
         	font-size: 15px;
         	min-height: 10px;
         }
