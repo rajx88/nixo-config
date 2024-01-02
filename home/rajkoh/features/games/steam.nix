@@ -24,7 +24,7 @@
 
   monitor = lib.head (lib.filter (m: m.primary) config.monitors);
   steam-session =
-    pkgs.writeTextDir "share/wayland-sessions/steam-sesson.desktop"
+    pkgs.writeTextDir "share/wayland-sessions/steam-session.desktop"
     /*
     ini
     */
