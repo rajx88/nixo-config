@@ -9,6 +9,7 @@
     ./qt.nix
     ./spotify.nix
     ./vscode.nix
+    ./wallpapers
     ./whatsapp.nix
   ];
   xdg.portal.enable = true;
