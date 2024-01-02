@@ -20,6 +20,8 @@
       git
 
       alejandra
+
+      python3
     ];
   };
 }
