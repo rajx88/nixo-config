@@ -10,7 +10,6 @@
   ];
 
   xdg.configFile."waypaper/config.ini" = {
-    symlink = false;
     text =
       /*
       ini

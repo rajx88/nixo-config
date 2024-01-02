@@ -39,6 +39,8 @@
 
     lazygit
 
+    killall
+
     zip
     unzip
   ];
