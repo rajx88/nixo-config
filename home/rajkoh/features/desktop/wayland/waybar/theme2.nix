@@ -10,6 +10,7 @@
   pactl = "${pkgs.pulseaudio}/bin/pactl";
   playerctl = "${config.services.playerctld.package}/bin/playerctl";
   fuzzel = "${config.programs.fuzzel.package}/bin/fuzzel";
+  wlogout = "${config.programs.wlogout.package}/bin/wlogout";
 in {
   programs.waybar = {
     # https://github.com/theCode-Breaker/riverwm/blob/main/waybar/river/config-river
@@ -109,6 +110,7 @@ in {
         "custom/power" = {
           # TODO: add logout, reboot, shutdown
           format = " ";
+          on-click = "${wlogout}";
         };
         "custom/updates" = {
           # TODO: implement nix update check
