@@ -23,7 +23,7 @@ in {
     ];
 
     exec = [
-      "${pkgs.swaybg}/bin/swaybg -i ${wallpaper}/wall-01.jpg --mode fill"
+      "${pkgs.swaybg}/bin/swaybg -i ${wallpaper}/wall-01.jpg -m fill"
     ];
   };
 }
