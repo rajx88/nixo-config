@@ -9,7 +9,7 @@
     ../_common
     ../wayland
 
-    ./waypaper.nix
+    ./swaybg.nix
 
     ./config/basic-binds.nix
     ./config/binds.nix
