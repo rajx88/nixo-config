@@ -3,6 +3,7 @@ import os
 import time
 import random
 import sys
+import argparse
 
 IMAGE_EXTENSIONS =  ['.gif', '.jpg', '.jpeg', '.png']
 
@@ -66,14 +67,18 @@ def get_random_file(folder):
         return None
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: wall-changer.py <folder>")
-        sys.exit(1)
 
-    directory = sys.argv[1]
-    print(directory)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--mode", "-m", help="mode")
+    parser.add_argument("--directory", "-d", help="directory")
+    args = parser.parse_args()
 
-    file = get_random_file(directory)
+    if args.mode == "random":
+        result = get_random_file(args.directory)
+        print(result)
+        sys.exit(0)
+
+    file = get_random_file(args.directory)
 
     if file is not None:
         change_wallpaper(file)
