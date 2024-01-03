@@ -46,7 +46,6 @@
       pictures = lib.mkDefault "${config.home.homeDirectory}/Pictures";
       videos = lib.mkDefault "${config.home.homeDirectory}/Videos";
       extraConfig = {
-        XDG_SCRNSHT_DIR = "${config.xdg.userDirs.pictures}/scrnsht";
         XDG_GAMES_DIR = "${config.home.homeDirectory}/games";
       };
     };
