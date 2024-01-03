@@ -59,7 +59,8 @@
     sessionPath = ["$HOME/.local/bin"];
     sessionVariables = {
       FLAKE = "$HOME/nix-config";
-      TERM = "alacritty";
+      # TERM = "alacritty";
+      TERM = "wezterm";
       BROWSER = "firefox";
     };
   };
