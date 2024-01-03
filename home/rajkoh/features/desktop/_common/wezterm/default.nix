@@ -3,15 +3,17 @@
   pkgs,
   ...
 }: {
-  # xdg = {
-  #   configFile."wezterm" = {
-  #     source = ./config;
-  #     recursive = true;
-  #   };
-  # };
+  xdg = {
+    configFile."wezterm" = {
+      source = ./config;
+      target = "wezterm/lua";
+      recursive = true;
+    };
+  };
 
   programs.wezterm = {
     enable = true;
+    enableZshIntegration = true;
 
     extraConfig =
       /*
@@ -40,11 +42,13 @@
             "monospace",
         }
 
+        config.colors = require('lua/tokyonight_night').colors()
+
         config.window_close_confirmation = "NeverPrompt"
         -- hide tab bar if only one tab is open
         config.hide_tab_bar_if_only_one_tab = true
 
-        config.enable_wayland = true
+        config.enable_wayland = false
 
         -- and finally, return the configuration to wezterm
         return config
