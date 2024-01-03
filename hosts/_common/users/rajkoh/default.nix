@@ -5,6 +5,10 @@
 }: let
   ifTheyExist = groups: builtins.filter (group: builtins.hasAttr group config.users.groups) groups;
 in {
+  imports = [
+    ../../optional/1password.nix
+  ];
+
   users.mutableUsers = true;
   users.users.rajkoh = {
     isNormalUser = true;
@@ -28,18 +32,6 @@ in {
   };
 
   home-manager.users.rajkoh = import ../../../../home/rajkoh/${config.networking.hostName}.nix;
-
-  # this needs to be here to integrate with the browser plugin
-  # todo make this conditional for different hosts???
-  programs = {
-    _1password = {
-      enable = true;
-    };
-    _1password-gui = {
-      enable = true;
-      polkitPolicyOwners = ["rajkoh"];
-    };
-  };
 
   security.pam.services = {swaylock = {};};
 }

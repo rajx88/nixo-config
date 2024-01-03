@@ -7,13 +7,18 @@
     ./global
 
     # ./features/desktop/gnome
-    ./features/desktop/hyprland
+    ./features/desktop/wm/hyprland
 
+    ./features/desktop/optional/discord
     # ./features/desktop/optional/obsidian.nix
     ./features/desktop/optional/plexplayer.nix
+    ./features/desktop/optional/spotify.nix
+    ./features/desktop/optional/whatsapp.nix
+
     ./features/games
 
     ./features/dev/jetbrains-toolbox.nix
+    ./features/dev/vscode.nix
   ];
 
   home.sessionVariables = {
