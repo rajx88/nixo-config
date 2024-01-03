@@ -1,5 +1,4 @@
-
-b: rb hm
+b: hm rb
 
 u: update 
 

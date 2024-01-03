@@ -22,10 +22,8 @@ in {
       "$mod SHIFT,r,exec, ${script} -d ${wallpaper}"
     ];
 
-    exec = let
-      randomWallpaper = "${pkgs.python3}/bin/python3 ${config.xdg.configHome}/hypr/scripts/wall-changer.py -m random ${wallpaper}";
-    in [
-      "${pkgs.swaybg}/bin/swaybg -i ${randomWallpaper} -m fill"
+    exec = [
+      "${pkgs.swaybg}/bin/swaybg -i ${wallpaper}/wall-01.jpg -m fill"
     ];
   };
 }
