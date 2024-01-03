@@ -6,7 +6,7 @@
     ./swaylock.nix
     ./thunar.nix
     ./waybar
-    ./wlogout.nix
+    ./wlogout
     # ./wofi.nix
   ];
 

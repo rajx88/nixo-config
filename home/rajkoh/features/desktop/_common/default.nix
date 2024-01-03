@@ -10,6 +10,7 @@
     ./spotify.nix
     ./vscode.nix
     ./wallpapers
+    ./wezterm
     ./whatsapp.nix
   ];
   xdg.portal.enable = true;

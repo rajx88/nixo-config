@@ -110,7 +110,10 @@ in {
         "custom/power" = {
           # TODO: add logout, reboot, shutdown
           format = " ";
-          on-click = "${wlogout}";
+          on-click = "${wlogout} -c 5 -r 5 -p layer-shell";
+
+          # "format" = "";
+          # "on-click" = "swaynag -t warning -m 'Power Menu Options' -b 'Logout' 'swaymsg exit' -b 'Suspend' 'swaymsg exec systemctl suspend' -b 'shutdown' 'systemctl shutdown'"
         };
         "custom/updates" = {
           # TODO: implement nix update check
