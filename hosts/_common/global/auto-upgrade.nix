@@ -1,8 +1,6 @@
 {
   config,
   inputs,
-  pkgs,
-  lib,
   ...
 }: let
   isClean = inputs.self ? rev;
