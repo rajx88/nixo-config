@@ -10,10 +10,11 @@
     ./features/desktop/wm/hyprland
 
     ./features/desktop/optional/discord
-    # ./features/desktop/optional/obsidian.nix
-    ./features/desktop/optional/plexplayer.nix
     ./features/desktop/optional/spotify.nix
     ./features/desktop/optional/whatsapp.nix
+    # not working for some reason
+    # ./features/desktop/optional/obsidian.nix
+    # ./features/desktop/optional/plexplayer.nix
 
     ./features/games
 
