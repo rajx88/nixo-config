@@ -31,6 +31,7 @@ in {
     packages = [pkgs.home-manager];
   };
 
+  # homemanager module
   home-manager.users.rajkoh = import ../../../../home/rajkoh/${config.networking.hostName}.nix;
 
   security.pam.services = {swaylock = {};};

@@ -8,6 +8,7 @@
   imports =
     [
       inputs.home-manager.nixosModules.home-manager
+      ./auto-upgrade.nix
       ./gamemode.nix
       ./locale.nix
       ./nix.nix
