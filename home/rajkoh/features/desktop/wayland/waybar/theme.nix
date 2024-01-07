@@ -33,7 +33,7 @@ in {
           "backlight"
           "pulseaudio"
           "battery"
-          "clock#date"
+          # "clock#date"
           "clock#time"
           "custom/power"
         ];
@@ -80,14 +80,15 @@ in {
         "clock#time" = {
           interval = 1;
           format = "{:%H:%M:%S}";
-          tooltip = false;
+          tooltip-format = "{:%e-%m-%Y}";
+          tooltip = true;
         };
 
         "clock#date" = {
           interval = 10;
           format = " {:%e %b %Y}"; # Icon: calendar-alt
-          tooltip-format = "{:%e-%m-%Y}";
         };
+
         cpu = {
           interval = 15;
           format = " {}%";
@@ -98,24 +99,11 @@ in {
           format = " {}%";
           max-length = 10;
         };
-        # "custom/media" = {
-        #   interval = 30;
-        #   format = "{icon} {}";
-        #   return-type = "json";
-        #   max-length = 20;
-        #   format-icons = {
-        #     spotify = " ";
-        #     default = " ";
-        #   };
-        #   escape = true;
-        #   exec = "${mediaplayerscript} 2> /dev/null";
-        #   on-click = "${playerctl} play-pause";
-        # };
         "custom/launcher" = {
           # format = "";
           format = " ";
           on-click = "${fuzzel}";
-          on-click-right = "killall fuzzel";
+          # on-click-right = "killall fuzzel";
         };
         "custom/power" = {
           format = " ";
