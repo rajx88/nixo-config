@@ -13,12 +13,14 @@
   wlogout = "${config.programs.wlogout.package}/bin/wlogout";
 in {
   programs.waybar = {
-    # https://github.com/theCode-Breaker/riverwm/blob/main/waybar/river/config-river
     settings = {
       primary = {
         layer = "top";
-        modules-left = ["custom/launcher" "cpu" "memory" "custom/media" "tray"];
-        modules-center =
+        position = "top";
+
+        height = 30;
+
+        modules-left =
           (lib.optionals hasSway [
             "sway/workspaces"
             "sway/mode"
@@ -27,101 +29,157 @@ in {
             "hyprland/workspaces"
             "hyprland/submap"
           ]);
-        modules-right = [
-          "custom/updates"
-          "backlight"
-          "pulseaudio"
-          "clock"
-          "battery"
-          "custom/power"
-        ];
 
-        pulseaudio = {
+        modules-center =
+          (lib.optionals hasSway [
+            "sway/window"
+          ])
+          ++ (lib.optionals hasHyprland [
+            "hyprland/window"
+          ]);
+
+        modules-right = [
+          "network"
+          "memory"
+          "cpu"
+          "temperature"
+          "custom/keyboard-layout"
+          "battery"
+          "tray"
+          "clock#date"
+          "clock#time"
+        ];
+        # -------------------------------------------------------------------------
+        # Modules
+        # -------------------------------------------------------------------------
+
+        battery = {
+          interval = 10;
+          states = {
+            warning = 30;
+            critical = 15;
+          };
+          # Connected to AC
+          format = "  {icon}  {capacity}%"; # Icon: bolt
+          # Not connected to AC
+          format-discharging = "{icon}  {capacity}%";
+          format-icons = [
+            "" # Icon: battery-full
+            "" # Icon: battery-three-quarters
+            "" # Icon: battery-half
+            "" # Icon: battery-quarter
+            "" # Icon: battery-empty
+          ];
+          tooltip = true;
+        };
+        "clock#time" = {
+          interval = 1;
+          format = "{:%H:%M:%S}";
           tooltip = false;
-          scroll-step = 5;
-          format = "{icon} {volume}%";
-          format-muted = "{icon} {volume}%";
-          on-click = "${pactl} set-sink-mute @DEFAULT_SINK@ toggle";
-          format-icons = {
-            default = ["" "" ""];
+        };
+
+        "clock#date" = {
+          interval = 10;
+          format = "  {:%e %b %Y}"; # Icon: calendar-alt
+          tooltip-format = "{:%e %B %Y}";
+        };
+
+        cpu = {
+          interval = 5;
+          format = "  {usage}% ({load})"; # Icon: microchip
+          states = {
+            warning = 70;
+            critical = 90;
+          };
+        };
+
+        "custom/keyboard-layout" = {
+          exec = "swaymsg -t get_inputs | grep -m1 'xkb_active_layout_name' | cut -d '\"' -f4";
+          # Interval set only as a fallback; as the value is updated by signal
+          interval = 30;
+          format = "  {}"; # Icon: keyboard
+          # Signal sent by Sway key binding (~/.config/sway/key-bindings)
+          signal = 1; # SIGHUP
+          tooltip = false;
+        };
+
+        memory = {
+          interval = 5;
+          format = "  {}%"; # Icon: memory
+          states = {
+            warning = 70;
+            critical = 90;
           };
         };
 
         network = {
-          tooltip = false;
-          format-wifi = " {essid}";
-          format-ethernet = "";
+          interval = 5;
+          format-wifi = "  {essid} ({signalStrength}%)"; # Icon: wifi
+          format-ethernet = "  {ifname}: {ipaddr}/{cidr}"; # Icon: ethernet
+          format-disconnected = "⚠  Disconnected";
+          tooltip-format = "{ifname}: {ipaddr}";
         };
-        backlight = {
-          tooltip = false;
-          format = " {}%";
-          interval = 1;
-          on-scroll-up = "light -A 5";
-          on-scroll-down = "light -U 5";
-        };
-        battery = {
-          states = {
-            good = 95;
-            warning = 30;
-            critical = 20;
-          };
-          format = "{icon} {capacity}%";
-          format-charging = " {capacity}%";
-          format-plugged = " {capacity}%";
-          format-alt = "{time} {icon}";
-          format-icons = ["" "" "" "" ""];
-        };
-        tray = {
-          icon-size = 18;
-          spacing = 10;
-        };
-        clock = {
-          interval = 1;
-          format = "{:%Y-%m-%d %H:%M:%S}";
-        };
-        cpu = {
-          interval = 15;
-          format = " {}%";
-          max-length = 10;
-        };
-        memory = {
-          interval = 30;
-          format = " {}%";
-          max-length = 10;
-        };
-        "custom/media" = {
-          interval = 30;
-          format = "{icon} {}";
-          return-type = "json";
-          max-length = 20;
-          format-icons = {
-            spotify = " ";
-            default = " ";
-          };
-          escape = true;
-          exec = "$HOME/.config/waybar/mediaplayer.py 2> /dev/null";
-          on-click = "${playerctl} play-pause";
-        };
-        "custom/launcher" = {
-          # format = "";
-          format = " ";
-          on-click = "${fuzzel}";
-        };
-        "custom/power" = {
-          # TODO: add logout, reboot, shutdown
-          format = " ";
-          on-click = "${wlogout} -c 5 -r 5 -p layer-shell";
 
-          # "format" = "";
-          # "on-click" = "swaynag -t warning -m 'Power Menu Options' -b 'Logout' 'swaymsg exit' -b 'Suspend' 'swaymsg exec systemctl suspend' -b 'shutdown' 'systemctl shutdown'"
+        "sway/mode" = {
+          format = "<span style=\"italic\">  {}</span>"; # Icon: expand-arrows-alt
+          tooltip = false;
         };
-        "custom/updates" = {
-          # TODO: implement nix update check
-          format = "{} Update(s)";
-          exec = "checkupdates | wc -l";
-          exec-if = "[[ $(checkupdates | wc -l) != 0 ]]";
-          interval = 15;
-          on-click = "$TERM -e paru -Syu && notify-send 'The system has been updated' ";
+
+        "sway/window" = {
+          format = "{}";
+          max-length = 120;
+        };
+
+        "sway/workspaces" = {
+          all-outputs = false;
+          disable-scroll = true;
+          format = "{icon} {name}";
+          format-icons = {
+            "1:www" = "龜"; # Icon: firefox-browser
+            "2:mail" = ""; # Icon: mail
+            "3:editor" = ""; # Icon: code
+            "4:terminals" = ""; # Icon: terminal
+            "5:portal" = ""; # Icon: terminal
+            "urgent" = "";
+            "focused" = "";
+            "default" = "";
+          };
+        };
+
+        #pulseaudio= {
+        #    #scroll-step= 1;
+        #    format= "{icon}  {volume}%";
+        #    format-bluetooth= "{icon}  {volume}%";
+        #    format-muted= "";
+        #    format-icons= {
+        #        headphones= "";
+        #        handsfree= "";
+        #        headset= "";
+        #        phone= "";
+        #        portable= "";
+        #        car= "";
+        #        default= ["" ""]
+        #    };
+        #    on-click= "pavucontrol"
+        #};
+
+        temperature = {
+          critical-threshold = 80;
+          interval = 5;
+          format = "{icon}  {temperatureC}°C";
+          format-icons = [
+            "" # Icon: temperature-empty
+            "" # Icon: temperature-quarter
+            "" # Icon: temperature-half
+            "" # Icon: temperature-three-quarters
+            "" # Icon: temperature-full
+          ];
+          tooltip = true;
+        };
+
+        tray = {
+          icon-size = 21;
+          spacing = 10;
         };
       };
     };
@@ -131,252 +189,199 @@ in {
       css
       */
       ''
+        /* =============================================================================
+         *
+         * Waybar configuration
+         *
+         * Configuration reference: https://github.com/Alexays/Waybar/wiki/Configuration
+         *
+         * =========================================================================== */
+
+        /* -----------------------------------------------------------------------------
+         * Keyframes
+         * -------------------------------------------------------------------------- */
+
+        @keyframes blink-warning {
+            70% {
+                color: white;
+            }
+
+            to {
+                color: white;
+                background-color: orange;
+            }
+        }
+
+        @keyframes blink-critical {
+            70% {
+              color: white;
+            }
+
+            to {
+                color: white;
+                background-color: red;
+            }
+        }
+
+
+        /* -----------------------------------------------------------------------------
+         * Base styles
+         * -------------------------------------------------------------------------- */
+
+        /* Reset all styles */
         * {
-        	border: none;
-        	border-radius: 10;
-          font-family: ${config.fontProfiles.monospace.family};
-        	font-size: 15px;
-        	min-height: 10px;
+            border: none;
+            border-radius: 0;
+            min-height: 0;
+            margin: 0;
+            padding: 0;
         }
 
-        window#waybar {
-        	background: transparent;
+        /* The whole bar */
+        #waybar {
+            background: #323232;
+            color: white;
+            font-family: Cantarell, Noto Sans, sans-serif;
+            font-size: 13px;
         }
 
-        window#waybar.hidden {
-        	opacity: 0.2;
+        /* Each module */
+        #battery,
+        #clock,
+        #cpu,
+        #custom-keyboard-layout,
+        #memory,
+        #mode,
+        #network,
+        #pulseaudio,
+        #temperature,
+        #tray {
+            padding-left: 10px;
+            padding-right: 10px;
         }
 
-        #window {
-        	margin-top: 6px;
-        	padding-left: 10px;
-        	padding-right: 10px;
-        	border-radius: 10px;
-        	transition: none;
-            color: transparent;
-        	background: transparent;
-        }
-        #tags {
-        	margin-top: 6px;
-        	margin-left: 12px;
-        	font-size: 4px;
-        	margin-bottom: 0px;
-        	border-radius: 10px;
-        	background: #161320;
-        	transition: none;
-        }
 
-        #tags button {
-        	transition: none;
-        	color: #B5E8E0;
-        	background: transparent;
-        	font-size: 16px;
-        	border-radius: 2px;
-        }
-
-        #tags button.occupied {
-        	transition: none;
-        	color: #F28FAD;
-        	background: transparent;
-        	font-size: 4px;
-        }
-
-        #tags button.focused {
-        	color: #ABE9B3;
-            border-top: 2px solid #ABE9B3;
-            border-bottom: 2px solid #ABE9B3;
-        }
-
-        #tags button:hover {
-        	transition: none;
-        	box-shadow: inherit;
-        	text-shadow: inherit;
-        	color: #FAE3B0;
-            border-color: #E8A2AF;
-            color: #E8A2AF;
-        }
-
-        #tags button.focused:hover {
-            color: #E8A2AF;
-        }
-
-        #network {
-        	margin-top: 6px;
-        	margin-left: 8px;
-        	padding-left: 10px;
-        	padding-right: 10px;
-        	margin-bottom: 0px;
-        	border-radius: 10px;
-        	transition: none;
-        	color: #161320;
-        	background: #bd93f9;
-        }
-
-        #pulseaudio {
-        	margin-top: 6px;
-        	margin-left: 8px;
-        	padding-left: 10px;
-        	padding-right: 10px;
-        	margin-bottom: 0px;
-        	border-radius: 10px;
-        	transition: none;
-        	color: #1A1826;
-        	background: #FAE3B0;
-        }
+        /* -----------------------------------------------------------------------------
+         * Module styles
+         * -------------------------------------------------------------------------- */
 
         #battery {
-        	margin-top: 6px;
-        	margin-left: 8px;
-        	padding-left: 10px;
-        	padding-right: 10px;
-        	margin-bottom: 0px;
-        	border-radius: 10px;
-        	transition: none;
-        	color: #161320;
-        	background: #B5E8E0;
-        }
-
-        #battery.charging, #battery.plugged {
-        	color: #161320;
-            background-color: #B5E8E0;
-        }
-
-        #battery.critical:not(.charging) {
-            background-color: #B5E8E0;
-            color: #161320;
-            animation-name: blink;
-            animation-duration: 0.5s;
             animation-timing-function: linear;
             animation-iteration-count: infinite;
             animation-direction: alternate;
         }
 
-        @keyframes blink {
-            to {
-                background-color: #BF616A;
-                color: #B5E8E0;
-            }
+        #battery.warning {
+            color: orange;
         }
 
-        #backlight {
-        	margin-top: 6px;
-        	margin-left: 8px;
-        	padding-left: 10px;
-        	padding-right: 10px;
-        	margin-bottom: 0px;
-        	border-radius: 10px;
-        	transition: none;
-        	color: #161320;
-        	background: #F8BD96;
+        #battery.critical {
+            color: red;
         }
+
+        #battery.warning.discharging {
+            animation-name: blink-warning;
+            animation-duration: 3s;
+        }
+
+        #battery.critical.discharging {
+            animation-name: blink-critical;
+            animation-duration: 2s;
+        }
+
         #clock {
-        	margin-top: 6px;
-        	margin-left: 8px;
-        	padding-left: 10px;
-        	padding-right: 10px;
-        	margin-bottom: 0px;
-        	border-radius: 10px;
-        	transition: none;
-        	color: #161320;
-        	background: #ABE9B3;
-        	/*background: #1A1826;*/
+            font-weight: bold;
+        }
+
+        #cpu {
+          /* No styles */
+        }
+
+        #cpu.warning {
+            color: orange;
+        }
+
+        #cpu.critical {
+            color: red;
         }
 
         #memory {
-        	margin-top: 6px;
-        	margin-left: 8px;
-        	padding-left: 10px;
-        	margin-bottom: 0px;
-        	padding-right: 10px;
-        	border-radius: 10px;
-        	transition: none;
-        	color: #161320;
-        	background: #DDB6F2;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+            animation-direction: alternate;
         }
-        #cpu {
-        	margin-top: 6px;
-        	margin-left: 8px;
-        	padding-left: 10px;
-        	margin-bottom: 0px;
-        	padding-right: 10px;
-        	border-radius: 10px;
-        	transition: none;
-        	color: #161320;
-        	background: #96CDFB;
+
+        #memory.warning {
+            color: orange;
+        }
+
+        #memory.critical {
+            color: red;
+            animation-name: blink-critical;
+            animation-duration: 2s;
+        }
+
+        #mode {
+            background: #64727D;
+            border-top: 2px solid white;
+            /* To compensate for the top border and still have vertical centering */
+            padding-bottom: 2px;
+        }
+
+        #network {
+            /* No styles */
+        }
+
+        #network.disconnected {
+            color: orange;
+        }
+
+        #pulseaudio {
+            /* No styles */
+        }
+
+        #pulseaudio.muted {
+            /* No styles */
+        }
+
+        #custom-spotify {
+            color: rgb(102, 220, 105);
+        }
+
+        #temperature {
+            /* No styles */
+        }
+
+        #temperature.critical {
+            color: red;
         }
 
         #tray {
-        	margin-top: 6px;
-        	margin-left: 8px;
-        	padding-left: 10px;
-        	margin-bottom: 0px;
-        	padding-right: 10px;
-        	border-radius: 10px;
-        	transition: none;
-        	color: #B5E8E0;
-        	background: #161320;
+            /* No styles */
         }
 
-        #custom-launcher {
-        	font-size: 24px;
-        	margin-top: 6px;
-        	margin-left: 8px;
-        	padding-left: 10px;
-        	padding-right: 5px;
-        	border-radius: 10px;
-        	transition: none;
-            color: #89DCEB;
-            background: #161320;
+        #window {
+            font-weight: bold;
         }
 
-        #custom-power {
-        	font-size: 20px;
-        	margin-top: 6px;
-        	margin-left: 8px;
-        	margin-right: 8px;
-        	padding-left: 10px;
-        	padding-right: 5px;
-        	margin-bottom: 0px;
-        	border-radius: 10px;
-        	transition: none;
-        	color: #161320;
-        	background: #F28FAD;
+        #workspaces button {
+            border-top: 2px solid transparent;
+            /* To compensate for the top border and still have vertical centering */
+            padding-bottom: 2px;
+            padding-left: 10px;
+            padding-right: 10px;
+            color: #888888;
         }
 
-        #custom-wallpaper {
-        	margin-top: 6px;
-        	margin-left: 8px;
-        	padding-left: 10px;
-        	padding-right: 10px;
-        	margin-bottom: 0px;
-        	border-radius: 10px;
-        	transition: none;
-        	color: #161320;
-        	background: #C9CBFF;
+        #workspaces button.focused {
+            border-color: #4c7899;
+            color: white;
+            background-color: #285577;
         }
 
-        #custom-updates {
-        	margin-top: 6px;
-        	margin-left: 8px;
-        	padding-left: 10px;
-        	padding-right: 10px;
-        	margin-bottom: 0px;
-        	border-radius: 10px;
-        	transition: none;
-        	color: #161320;
-        	background: #E8A2AF;
-        }
-
-        #custom-media {
-        	margin-top: 6px;
-        	margin-left: 8px;
-        	padding-left: 10px;
-        	padding-right: 10px;
-        	margin-bottom: 0px;
-        	border-radius: 10px;
-        	transition: none;
-        	color: #161320;
-        	background: #F2CDCD;
+        #workspaces button.urgent {
+            border-color: #c9545d;
+            color: #c9545d;
         }
       '';
   };
