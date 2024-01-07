@@ -65,6 +65,10 @@
       # Launcher
       (lib.optionals config.programs.fuzzel.enable [
         "$mod,d,exec,${fuzzel}"
-      ]);
+      ])
+      ++ [
+        # reload waybar
+        "$mod SHIFT,w,exec,systemctl --user restart waybar"
+      ];
   };
 }
