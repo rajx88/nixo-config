@@ -26,7 +26,7 @@ in {
           ])
           ++ (lib.optionals hasHyprland [
             "hyprland/workspaces"
-            "hyprland/submap"
+            # "hyprland/submap"
           ]);
         modules-right = [
           "custom/updates"
@@ -79,7 +79,7 @@ in {
         };
         "clock#time" = {
           interval = 1;
-          format = "{:%H:%M:%S}";
+          format = " {:%e %b %Y %H:%M:%S}";
           tooltip-format = "{:%e-%m-%Y}";
           tooltip = true;
         };
@@ -87,6 +87,7 @@ in {
         "clock#date" = {
           interval = 10;
           format = " {:%e %b %Y}"; # Icon: calendar-alt
+          tooltip-format = "{:%e-%m-%Y}";
         };
 
         cpu = {
@@ -104,19 +105,20 @@ in {
           format = " ";
           on-click = "${fuzzel}";
           # on-click-right = "killall fuzzel";
+          tooltip = false;
         };
         "custom/power" = {
           format = " ";
           on-click = "${wlogout} -c 5 -r 5 -p layer-shell";
         };
-        "custom/updates" = {
-          # TODO: implement nix update check
-          format = "{} Update(s)";
-          exec = "checkupdates | wc -l";
-          exec-if = "[[ $(checkupdates | wc -l) != 0 ]]";
-          interval = 15;
-          on-click = "$TERM -e paru -Syu && notify-send 'The system has been updated' ";
-        };
+        # "custom/updates" = {
+        #   # TODO: implement nix update check
+        #   format = "{} Update(s)";
+        #   exec = "checkupdates | wc -l";
+        #   exec-if = "[[ $(checkupdates | wc -l) != 0 ]]";
+        #   interval = 15;
+        #   on-click = "$TERM -e paru -Syu && notify-send 'The system has been updated' ";
+        # };
       };
     };
 
