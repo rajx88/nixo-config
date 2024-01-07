@@ -7,10 +7,10 @@
   hasSway = config.wayland.windowManager.sway.enable;
   hasHyprland = config.wayland.windowManager.hyprland.enable;
 in {
-  xdg.configFile."waybar" = {
-    source = ./scripts;
-    recursive = true;
-  };
+  # xdg.configFile."waybar" = {
+  #   source = ./scripts;
+  #   recursive = true;
+  # };
 
   # Let it try to start a few more times
   systemd.user.services.waybar = {
@@ -18,7 +18,7 @@ in {
   };
 
   imports = [
-    ./theme2.nix
+    ./theme.nix
   ];
 
   programs.waybar = {
