@@ -91,12 +91,12 @@ in {
         };
 
         cpu = {
-          interval = 15;
+          interval = 10;
           format = " {}%";
           max-length = 10;
         };
         memory = {
-          interval = 30;
+          interval = 10;
           format = " {}%";
           max-length = 10;
         };
