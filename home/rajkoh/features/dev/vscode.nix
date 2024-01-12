@@ -12,7 +12,7 @@
       "editor.fontFamily" = "${config.fontProfiles.monospace.family}, Consolas, 'Courier New', monospace";
       "editor.fontSize" = 14;
     };
-    # package = pkgs.vscodium;
+    package = pkgs.vscodium;
 
     # Can search for a package:
     # https://search.nixos.org/packages?channel=23.11&from=0&size=50&sort=relevance&type=packages&query=vscode-extensions
