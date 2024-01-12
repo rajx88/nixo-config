@@ -11,6 +11,8 @@
   ];
   xdg.portal.enable = true;
 
+  services.gnome-keyring.enable = true;
+
   home.packages = with pkgs; [
     xdg-utils
   ];
