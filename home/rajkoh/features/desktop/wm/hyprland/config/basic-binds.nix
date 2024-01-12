@@ -45,7 +45,6 @@
     in
       [
         "$mod SHIFT,q,killactive"
-        "$mod SHIFT,e,exit"
 
         "$mod,s,togglesplit"
         "$mod,f,fullscreen,1"

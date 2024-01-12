@@ -8,6 +8,7 @@
 }: {
   imports =
     [
+      inputs.impermanence.nixosModules.home-manager.impermanence
       ../features/cli
     ]
     ++ (builtins.attrValues outputs.homeManagerModules);
@@ -57,10 +58,23 @@
     stateVersion = lib.mkDefault "23.11";
     sessionPath = ["$HOME/.local/bin"];
     sessionVariables = {
-      FLAKE = "$HOME/nix-config";
+      FLAKE = "$HOME/nixos-config";
       # TERM = "alacritty";
       TERM = "wezterm";
       BROWSER = "firefox";
+    };
+
+    persistence = {
+      "/persist/home/rajkoh" = {
+        directories = [
+          "Documents"
+          "Downloads"
+          "Pictures"
+          "Videos"
+          ".local/bin"
+        ];
+        allowOther = true;
+      };
     };
   };
 }

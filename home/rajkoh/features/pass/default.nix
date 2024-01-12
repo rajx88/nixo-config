@@ -13,4 +13,8 @@
   services.pass-secret-service = {
     enable = true;
   };
+
+  home.persistence = {
+    "/persist/home/rajkoh".directories = [".password-store"];
+  };
 }
