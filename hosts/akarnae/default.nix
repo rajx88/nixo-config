@@ -18,7 +18,6 @@
 
     ../_common/optional/systemd-boot.nix
     ../_common/optional/greetd.nix
-    # ../_common/optional/gnome.nix
     ../_common/optional/pipewire.nix
   ];
 
