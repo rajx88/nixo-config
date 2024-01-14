@@ -1,5 +1,9 @@
 # Nixos Config
 
+```
+nix run github:nix-community/nixos-anywhere -- --flake .#akarnae
+```
+
 insert the following in `/etc/nixos/configuration.nix`:
 
 ```nix
