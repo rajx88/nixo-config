@@ -7,9 +7,6 @@
     enable = true;
     profiles.rajkoh = {
       bookmarks = {};
-      extensions = with pkgs.inputs.firefox-addons; [
-        ublock-origin
-      ];
     };
   };
 
@@ -21,7 +18,7 @@
     "x-scheme-handler/https" = ["firefox.desktop"];
   };
 
-  home.persistence = {
-    # "/persist/home/rajkoh".directories = [".mozilla/firefox"];
-  };
+  # home.persistence = {
+  #   # "/persist/home/rajkoh".directories = [".mozilla/firefox"];
+  # };
 }

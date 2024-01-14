@@ -17,6 +17,6 @@
   ];
 
   home.persistence = {
-    "/persist/home/misterio".directories = [".config/discord"];
+    "/persist/home/rajkoh".directories = [".config/discord"];
   };
 }

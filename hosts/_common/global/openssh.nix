@@ -9,7 +9,7 @@
     settings = {
       # Harden
       PasswordAuthentication = false;
-      PermitRootLogin = false;
+      PermitRootLogin = "no";
     };
   };
 

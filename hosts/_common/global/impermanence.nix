@@ -3,15 +3,9 @@
   inputs,
   config,
   ...
-}: {
-  imports = [
-    inputs.impermanence.nixosModules.impermanence
-  ];
-
-  fileSystems."/persist".neededForBoot = true;
-  fileSystems."/var/log".neededForBoot = true;
-
-  boot.initrd.postDeviceCommands = lib.mkAfter ''
+}: let
+  hostname = config.networking.hostName;
+  wipeScript = ''
     mkdir /btrfs_tmp
     mount /dev/nvme0n1/root /btrfs_tmp
     if [[ -e /btrfs_tmp/root ]]; then
@@ -35,17 +29,38 @@
     btrfs subvolume create /btrfs_tmp/root
     umount /btrfs_tmp
   '';
+  phase1Systemd = config.boot.initrd.systemd.enable;
+in {
+  imports = [
+    inputs.impermanence.nixosModules.impermanence
+  ];
+
+  fileSystems."/persist".neededForBoot = true;
+
+  boot.initrd = {
+    supportedFilesystems = ["btrfs"];
+    postDeviceCommands = lib.mkIf (!phase1Systemd) (lib.mkBefore wipeScript);
+    systemd.services.restore-root = lib.mkIf phase1Systemd {
+      description = "Rollback btrfs rootfs";
+      wantedBy = ["initrd.target"];
+      before = ["sysroot.mount"];
+      unitConfig.DefaultDependencies = "no";
+      serviceConfig.Type = "oneshot";
+      script = wipeScript;
+    };
+  };
 
   environment.persistence = {
     "/persist" = {
       directories = [
         "/var/lib/systemd"
         "/var/lib/nixos"
-        "/var/log"
+        # "/var/log"
         "/srv"
       ];
     };
   };
+
   programs.fuse.userAllowOther = true;
 
   system.activationScripts.persistent-dirs.text = let
