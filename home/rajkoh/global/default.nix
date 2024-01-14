@@ -39,6 +39,7 @@
     enable = true;
     userDirs = {
       enable = true;
+      createDirectories = true;
       desktop = lib.mkDefault "${config.home.homeDirectory}/Desktop";
       documents = lib.mkDefault "${config.home.homeDirectory}/Documents";
       download = lib.mkDefault "${config.home.homeDirectory}/Downloads";
@@ -46,7 +47,7 @@
       pictures = lib.mkDefault "${config.home.homeDirectory}/Pictures";
       videos = lib.mkDefault "${config.home.homeDirectory}/Videos";
       extraConfig = {
-        XDG_GAMES_DIR = "${config.home.homeDirectory}/games";
+        XDG_GAMES_DIR = "${config.home.homeDirectory}/Games";
       };
     };
   };
