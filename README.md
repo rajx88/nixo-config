@@ -4,6 +4,10 @@
 nix run github:nix-community/nixos-anywhere -- --flake .#akarnae
 ```
 
+```
+nixos-install --flake '.#ultra' --impure
+```
+
 insert the following in `/etc/nixos/configuration.nix`:
 
 ```nix
