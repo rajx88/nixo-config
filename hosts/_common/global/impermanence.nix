@@ -7,11 +7,11 @@
   hostname = config.networking.hostName;
   wipeScript = ''
     mkdir /btrfs_tmp
-    mount /dev/nvme0n1/root /btrfs_tmp
-    if [[ -e /btrfs_tmp/root ]]; then
+    mount /dev/mapper/crypted /btrfs_tmp
+    if [[ -e /btrfs_tmp/crypted/@/root ]]; then
         mkdir -p /btrfs_tmp/old_roots
         timestamp=$(date --date="@$(stat -c %Y /btrfs_tmp/root)" "+%Y-%m-%-d_%H:%M:%S")
-        mv /btrfs_tmp/root "/btrfs_tmp/old_roots/$timestamp"
+        mv /btrfs_tmp/crypted/@/root "/btrfs_tmp/old_roots/$timestamp"
     fi
 
     delete_subvolume_recursively() {
@@ -26,7 +26,7 @@
         delete_subvolume_recursively "$i"
     done
 
-    btrfs subvolume create /btrfs_tmp/root
+    btrfs subvolume create /btrfs_tmp/crypted/@/root
     umount /btrfs_tmp
   '';
   phase1Systemd = config.boot.initrd.systemd.enable;
