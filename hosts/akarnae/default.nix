@@ -21,6 +21,12 @@
     ../_common/optional/pipewire.nix
   ];
 
+  host.filesystem = {
+    btrfs.enable = true;
+    encryption.enable = true;
+    impermanence.enable = true;
+  };
+
   environment = {
     # needed for completion for system packages
     pathsToLink = ["/share/zsh"];

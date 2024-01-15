@@ -10,7 +10,6 @@
       inputs.home-manager.nixosModules.home-manager
       ./auto-upgrade.nix
       ./gamemode.nix
-      ./impermanence.nix
       ./locale.nix
       ./nix.nix
       ./openssh.nix
