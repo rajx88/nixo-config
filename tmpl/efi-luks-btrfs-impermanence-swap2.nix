@@ -56,12 +56,30 @@ in {
                     "/root-blank" = {
                       mountOptions = ["compress=zstd" "noatime"];
                     };
+                    "/home" = {};
+                    "/home/active" = {
+                      mountpoint = "/home";
+                      mountOptions = ["compress=zstd" "noatime"];
+                    };
+                    "/home/snapshots" = {
+                      mountpoint = "/home/.snapshots";
+                      mountOptions = ["compress=zstd" "noatime"];
+                    };
                     "/nix" = {
                       mountpoint = "/nix";
                       mountOptions = ["compress=zstd" "noatime"];
                     };
-                    "/persist" = {
+                    "/persist" = {};
+                    "/persist/active" = {
                       mountpoint = "/persist";
+                      mountOptions = ["compress=zstd" "noatime"];
+                    };
+                    "/persist/snapshots" = {
+                      mountpoint = "/persist/.snapshots";
+                      mountOptions = ["compress=zstd" "noatime"];
+                    };
+                    "/log" = {
+                      mountpoint = "/var/log";
                       mountOptions = ["compress=zstd" "noatime"];
                     };
                   };

@@ -86,8 +86,8 @@ in
 
                     echo "Restoring blank /${cfg_impermanence.root-subvol} subvolume"
                     btrfs subvolume snapshot "$MNTPOINT/${cfg_impermanence.blank-root-subvol}" "$MNTPOINT/${cfg_impermanence.root-subvol}"
-                    # mkdir -p /mnt/${cfg_impermanence.root-subvol}/mnt
-                    # umount /mnt
+
+                    umount "$MNTPOINT"
                   )
                 '';
               };
