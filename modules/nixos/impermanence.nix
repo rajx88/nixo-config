@@ -47,24 +47,6 @@ in
     config = lib.mkMerge [
       {
         boot.initrd = lib.mkMerge [
-          (lib.mkIf (cfg_impermanence.enable && !cfg_encrypt.enable) {
-            postDeviceCommands = pkgs.lib.mkBefore ''
-              mkdir -p /mnt
-              mount -o subvol=/ /dev/disk/by-partlabel/rootfs /mnt
-              btrfs subvolume list -o /mnt/${cfg_impermanence.root-subvol} | cut -f9 -d' ' |
-              while read subvolume; do
-                  echo "Deleting /$subvolume subvolume"
-                  btrfs subvolume delete "/mnt/$subvolume"
-              done &&
-              echo "Deleting /${cfg_impermanence.root-subvol} subvolume" &&
-              btrfs subvolume delete /mnt/${cfg_impermanence.root-subvol}
-              echo "Restoring blank /${cfg_impermanence.root-subvol} subvolume"
-              btrfs subvolume snapshot /mnt/${cfg_impermanence.blank-root-subvol} /mnt/${cfg_impermanence.root-subvol}
-              # mkdir -p /mnt/${cfg_impermanence.root-subvol}/mnt
-              umount /mnt
-            '';
-          })
-
           (lib.mkIf (cfg_impermanence.enable && cfg_encrypt.enable) {
             systemd = {
               enable = true;
@@ -82,19 +64,31 @@ in
                 unitConfig.DefaultDependencies = "no";
                 serviceConfig.Type = "oneshot";
                 script = ''
-                  mkdir -p /mnt
-                  mount -o subvol=/ /dev/mapper/${cfg_encrypt.encrypted-partition} /mnt
-                  btrfs subvolume list -o /mnt/${cfg_impermanence.root-subvol} | cut -f9 -d' ' |
-                  while read subvolume; do
-                    echo "Deleting /$subvolume subvolume"
-                    btrfs subvolume delete "/mnt/$subvolume"
-                  done &&
-                  echo "Deleting /${cfg_impermanence.root-subvol} subvolume" &&
-                  btrfs subvolume delete /mnt/${cfg_impermanence.root-subvol}
-                  echo "Restoring blank /${cfg_impermanence.root-subvol} subvolume"
-                  btrfs subvolume snapshot /mnt/${cfg_impermanence.blank-root-subvol} /mnt/${cfg_impermanence.root-subvol}
-                  # mkdir -p /mnt/${cfg_impermanence.root-subvol}/mnt
-                  umount /mnt
+
+                  mkdir /tmp -p
+                  MNTPOINT=$(mktemp -d)
+                  (
+
+                    mount -t btrfs -o subvol=/ /dev/mapper/${cfg_encrypt.encrypted-partition} "$MNTPOINT"
+                    trap 'umount "$MNTPOINT"' EXIT
+
+                    echo "Creating needed directories"
+                    mkdir -p "$MNTPOINT"/persist/var/{log,lib/{nixos,systemd}}
+
+                    echo "Cleaning root subvolume"
+                    btrfs subvolume list -o "$MNTPOINT/${cfg_impermanence.root-subvol}" | cut -f9 -d' ' |
+                    while read subvolume; do
+                      echo "Deleting /$subvolume subvolume"
+                      btrfs subvolume delete "$MNTPOINT/$subvolume"
+                    done &&
+                    echo "Deleting /${cfg_impermanence.root-subvol} subvolume" &&
+                    btrfs subvolume delete "$MNTPOINT/${cfg_impermanence.root-subvol}"
+
+                    echo "Restoring blank /${cfg_impermanence.root-subvol} subvolume"
+                    btrfs subvolume snapshot "$MNTPOINT/${cfg_impermanence.blank-root-subvol}" "$MNTPOINT/${cfg_impermanence.root-subvol}"
+                    # mkdir -p /mnt/${cfg_impermanence.root-subvol}/mnt
+                    # umount /mnt
+                  )
                 '';
               };
             };

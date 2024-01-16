@@ -3,9 +3,9 @@
 in {
   disko.devices = {
     disk = {
-      ${rawdisk} = {
+      main = {
         type = "disk";
-        device = ${rawdisk};
+        device = "${rawdisk}";
         content = {
           type = "gpt";
           partitions = {
