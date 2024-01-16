@@ -36,9 +36,8 @@ in {
               content = {
                 type = "luks";
                 name = "crypted";
-                # disable settings.keyFile if you want to use interactive password entry
-                # be sure there is no trailing newline
-                # for example use `echo -n "password" > /tmp/secret.key`
+                # disable settings.keyFile and passwordFile if you want to use interactive password entry
+                # be sure there is no trailing newline, for example use `echo -n "password" > /tmp/secret.key`
                 passwordFile = "/tmp/secret.key"; # Interactive
                 # or file based
                 settings = {
