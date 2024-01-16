@@ -53,9 +53,7 @@ in {
                       mountpoint = "/";
                       mountOptions = ["compress=zstd" "noatime"];
                     };
-                    "/root-blank" = {
-                      mountOptions = ["compress=zstd" "noatime"];
-                    };
+                    "/root-blank" = {};
                     "/nix" = {
                       mountpoint = "/nix";
                       mountOptions = ["compress=zstd" "noatime"];

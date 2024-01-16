@@ -64,31 +64,19 @@ in
                 unitConfig.DefaultDependencies = "no";
                 serviceConfig.Type = "oneshot";
                 script = ''
-
-                  mkdir /tmp -p
-                  MNTPOINT=$(mktemp -d)
-                  (
-
-                    mount -t btrfs -o subvol=/ /dev/mapper/${cfg_encrypt.encrypted-partition} "$MNTPOINT"
-                    trap 'umount "$MNTPOINT"' EXIT
-
-                    echo "Creating needed directories"
-                    mkdir -p "$MNTPOINT"/persist/var/{log,lib/{nixos,systemd}}
-
-                    echo "Cleaning root subvolume"
-                    btrfs subvolume list -o "$MNTPOINT/${cfg_impermanence.root-subvol}" | cut -f9 -d' ' |
-                    while read subvolume; do
-                      echo "Deleting /$subvolume subvolume"
-                      btrfs subvolume delete "$MNTPOINT/$subvolume"
-                    done &&
-                    echo "Deleting /${cfg_impermanence.root-subvol} subvolume" &&
-                    btrfs subvolume delete "$MNTPOINT/${cfg_impermanence.root-subvol}"
-
-                    echo "Restoring blank /${cfg_impermanence.root-subvol} subvolume"
-                    btrfs subvolume snapshot "$MNTPOINT/${cfg_impermanence.blank-root-subvol}" "$MNTPOINT/${cfg_impermanence.root-subvol}"
-
-                    umount "$MNTPOINT"
-                  )
+                  mkdir -p /mnt
+                  mount -o subvol=/ /dev/mapper/${cfg_encrypt.encrypted-partition} /mnt
+                  btrfs subvolume list -o /mnt/${cfg_impermanence.root-subvol} | cut -f9 -d' ' |
+                  while read subvolume; do
+                    echo "Deleting /$subvolume subvolume"
+                    btrfs subvolume delete "/mnt/$subvolume"
+                  done &&
+                  echo "Deleting /${cfg_impermanence.root-subvol} subvolume" &&
+                  btrfs subvolume delete /mnt/${cfg_impermanence.root-subvol}
+                  echo "Restoring blank /${cfg_impermanence.root-subvol} subvolume"
+                  btrfs subvolume snapshot /mnt/${cfg_impermanence.blank-root-subvol} /mnt/${cfg_impermanence.root-subvol}
+                  # mkdir -p /mnt/${cfg_impermanence.root-subvol}/mnt
+                  umount /mnt
                 '';
               };
             };
@@ -144,11 +132,8 @@ in
 
         fileSystems = mkIf cfg_impermanence.enable {
           "/persist" = {
-            options = ["subvol=persist/active" "compress=zstd" "noatime"];
+            options = ["subvol=persist" "compress=zstd" "noatime"];
             neededForBoot = true;
-          };
-          "/persist/.snapshots" = {
-            options = ["subvol=persist/snapshots" "compress=zstd" "noatime"];
           };
         };
 
