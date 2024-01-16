@@ -3,9 +3,9 @@
 in {
   disko.devices = {
     disk = {
-      ${rawdisk} = {
+      main = {
         type = "disk";
-        device = ${rawdisk};
+        device = "${rawdisk}";
         content = {
           type = "gpt";
           partitions = {
@@ -57,7 +57,8 @@ in {
                     "/root-blank" = {
                       mountOptions = ["compress=zstd" "noatime"];
                     };
-                    "/home" = {
+                    "/home" = {};
+                    "/home/active" = {
                       mountpoint = "/home";
                       mountOptions = ["compress=zstd" "noatime"];
                     };
@@ -69,7 +70,8 @@ in {
                       mountpoint = "/nix";
                       mountOptions = ["compress=zstd" "noatime"];
                     };
-                    "/persist" = {
+                    "/persist" = {};
+                    "/persist/active" = {
                       mountpoint = "/persist";
                       mountOptions = ["compress=zstd" "noatime"];
                     };
