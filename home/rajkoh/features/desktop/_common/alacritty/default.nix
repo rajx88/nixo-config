@@ -8,7 +8,7 @@
     enable = true;
     settings = {
       import = [
-        "${config.xdg.configHome}/alacritty/tokyonight-night.yml"
+        "${config.xdg.configHome}/alacritty/tokyonight-night.toml"
       ];
 
       # window = {
