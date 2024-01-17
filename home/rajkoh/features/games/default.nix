@@ -11,7 +11,7 @@
         allowOther = true;
         directories = [
           {
-            directory = "Games";
+            directory = "games";
             method = "symlink";
           }
         ];

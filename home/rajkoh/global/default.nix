@@ -40,14 +40,10 @@
     enable = true;
     userDirs = {
       enable = true;
-      desktop = lib.mkDefault "${config.home.homeDirectory}/Desktop";
-      documents = lib.mkDefault "${config.home.homeDirectory}/Documents";
-      download = lib.mkDefault "${config.home.homeDirectory}/Downloads";
-      music = lib.mkDefault "${config.home.homeDirectory}/Music";
-      pictures = lib.mkDefault "${config.home.homeDirectory}/Pictures";
-      videos = lib.mkDefault "${config.home.homeDirectory}/Videos";
+      createDirectories = true;
       extraConfig = {
         XDG_GAMES_DIR = "${config.home.homeDirectory}/games";
+        XDG_CODE_DIR = "${config.home.homeDirectory}/code";
       };
     };
   };
@@ -72,6 +68,7 @@
           "Pictures"
           "Videos"
           ".local/bin"
+          "code"
         ];
         allowOther = true;
       };
