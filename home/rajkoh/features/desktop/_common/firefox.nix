@@ -19,6 +19,6 @@
   };
 
   home.persistence = {
-    # "/persist/home/rajkoh".directories = [".mozilla/firefox/rajkoh"];
+    "/persist/home/rajkoh".directories = [".mozilla/firefox"];
   };
 }
