@@ -1,9 +1,12 @@
-{pkgs, ...}: {
-  home.packages = with pkgs; [
-    thunderbird
-  ];
+{
+  programs.thunderbird = {
+    enable = true;
+    profiles."rajkoh" = {
+      isDefault = true;
+    };
+  };
 
-  # home.persistence = {
-  #   "/persist/home/rajkoh".directories = [];
-  # };
+  home.persistence = {
+    "/persist/home/rajkoh".directories = [".thunderbird"];
+  };
 }
