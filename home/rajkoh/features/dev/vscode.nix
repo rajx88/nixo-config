@@ -3,6 +3,9 @@
   config,
   ...
 }: {
+  home.persistence = {
+    "/persist/home/rajkoh".directories = [".config/VSCodium/User"];
+  };
   programs.vscode = {
     enable = true;
     userSettings = {
