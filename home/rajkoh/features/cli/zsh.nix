@@ -10,7 +10,9 @@
   hasEza = hasPackage "eza";
 in {
   home.persistence = {
-    "/persist/home/rajkoh".directories = [".config/zsh"];
+    "/persist/home/rajkoh".directories = [
+      ".config/zsh"
+    ];
   };
 
   programs.zsh = {
