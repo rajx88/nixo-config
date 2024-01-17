@@ -42,7 +42,7 @@
       enable = true;
       createDirectories = true;
       extraConfig = {
-        XDG_GAMES_DIR = "${config.home.homeDirectory}/games";
+        # XDG_GAMES_DIR = "${config.home.homeDirectory}/games";
         XDG_CODE_DIR = "${config.home.homeDirectory}/code";
       };
     };
