@@ -143,17 +143,17 @@ in
         ];
 
         services = mkIf cfg_impermanence.enable {
-          btrbk = {
-            instances."btrbak" = {
-              settings = {
-                volume."/persist" = {
-                  snapshot_create = "always";
-                  subvolume = ".";
-                  snapshot_dir = ".snapshots";
-                };
-              };
-            };
-          };
+          # btrbk = {
+          #   instances."btrbak" = {
+          #     settings = {
+          #       volume."/persist" = {
+          #         snapshot_create = "always";
+          #         subvolume = ".";
+          #         snapshot_dir = ".snapshots";
+          #       };
+          #     };
+          #   };
+          # };
         };
 
         security = mkIf cfg_impermanence.enable {

@@ -4,7 +4,10 @@
   ...
 }: {
   home.persistence = {
-    "/persist/home/rajkoh".directories = [".config/VSCodium/User"];
+    "/persist/home/rajkoh".directories = [
+      ".config/VSCodium/User"
+      ".vscode-oss/extensions"
+    ];
   };
   programs.vscode = {
     enable = true;
