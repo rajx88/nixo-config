@@ -5,7 +5,7 @@
 }: {
   home.persistence = {
     "/persist/home/rajkoh".directories = [
-      ".config/VSCodium/User"
+      ".config/VSCodium"
       ".vscode-oss/extensions"
     ];
   };
