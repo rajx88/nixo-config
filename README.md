@@ -1,63 +1,81 @@
-# Nixos Config
+# Nixos Configuration
+This is my personal Nixos configuration. The steps below explain how to get the configuration up and running.
 
+## Installation
+There are a few steps to execute before installing the system. This is depending on what type of construction is chosen. For now the standard is a Luks enabled BTRFS with impermenance. The commands are wrapped inside the Makefile.
+
+### Make
+Using the following command enables a shell with the neccessary tools:
 ```bash
-nix run github:nix-community/nixos-anywhere -- --flake .#akarnae
+nix-shell -p git neovim gnumake
 ```
+
+Choose the correct disk to wipe:
+```bash
+lsblk
+```
+Format the disk the input is displayed in the terminal so be careful:
+```bash
+make format-disks-luks-btrfs-impermanence ENC_PASS=your_pass_for_the_encryption
+```
+
+For new systems execute:
+```bash
+make cp-config MACHINE=YOURMACHINEHERE
+```
+Make sure to create the default.nix file containing the configuration for this host. Add this new host to the flake.nix file.
+
+Now install the system, while installing the install will prompt for a root password:
+```bash
+make nix-install MACHINE=YOURMACHINEHERE
+```
+
+After the installation just reboot.
+```bash
+sudo reboot
+```
+
+## Manual installation
+Choose the correct disk to wipe:
+```bash
+lsblk
+```
+Format the disk the input is displayed in the terminal so be careful:
 ```bash
 echo -n "password" > /tmp/secret.key
 ```
 
+To format the disk simply execute the following:
+```bash
+sudo nix run github:nix-community/disko -- --mode disko ./tmpl/efi-luks-btrfs-impermanence-swap.nix --arg disks '[ "YOURDISKHERE" ]'
+
+```
+
+For new systems execute:
+```bash
+make 	sudo nixos-generate-config --no-filesystems --root /mnt
+mkdir -p ./hosts/YOURMACHINE
+cp /mnt/etc/nixos/hardware-configuration.nix ./hosts/YOURMACHINE/hardware-configuration.nix
+```
+Make sure to create the default.nix file containing the configuration for this host. Add this new host to the flake.nix file.
+
+Now install the system, while installing the install will prompt for a root password:
 ```bash
 sudo nixos-install --flake '.#akarnae' --impure
 ```
 
-insert the following in `/etc/nixos/configuration.nix`:
-
-```nix
-nix = {
-  package = pkgs.nixFlakes;
-  extraOptions = "experimental-features = nix-command flakes";
-}
-```
-This is only needed when starting from scratch.
-
+After the installation just reboot.
 ```bash
-curl https://gitlab.com/rajkohlen/nixos-config/-/raw/main/disko-config.nix -o /tmp/disko-config.nix
-```
-The following is used to see the disks. This is then used as argument in the disko run.
-```bash
-lsblk 
-```
-```bash
-sudo nix run github:nix-community/disko -- --mode disko /tmp/disko-config.nix --arg disks '[ "/dev/nvme0n1" ]'
-```
-if the above command does not work use the command below:
-```bash
-sudo nix run --extra-experimental-features nix-command --extra-experimental-features flakes github:nix-community/disko -- --mode disko /tmp/disko-config.nix --arg disks '[ "/dev/nvme0n1" ]'
-
-```
-```bash
-sudo nixos-generate-config --no-filesystems --root /mnt
-```
-
-```bash
-sudo mv /tmp/disko-config.nix /mnt/etc/nixos
-```
-
-```bash
-sudo nano /mnt/etc/nixos/configuration.nix
-```
-
-```bash
-imports =
- [ # Include the results of the hardware scan.
-   ./hardware-configuration.nix
-   "${builtins.fetchTarball "https://github.com/nix-community/disko/archive/master.tar.gz"}/module.nix"
-   ./disko-config.nix
- ];
-```
-
-```bash
-sudo nixos-install
 sudo reboot
+```
+
+
+## Things to look at in the future
+The following things are potentially interesting to include into this configuration.
+
+### Nixos anywhere
+This will make it easy to install Nixos on systems that are reachable from a Nixos system. At this point in time I could not find a way to locally install via nixos  anywhere hence the "manual" installation
+
+```bash
+nix run github:nix-community/nixos-anywhere -- --flake .#akarnae
 ```
