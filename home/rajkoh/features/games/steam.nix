@@ -48,7 +48,6 @@ in {
       allowOther = true;
       directories = [
         {
-          # A couple of games don't play well with bindfs
           directory = ".local/share/Steam";
           method = "symlink";
         }
