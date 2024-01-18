@@ -36,17 +36,17 @@
     git.enable = true;
   };
 
-  xdg = {
-    enable = true;
-    userDirs = {
-      enable = true;
-      createDirectories = true;
-      extraConfig = {
-        # XDG_GAMES_DIR = "${config.home.homeDirectory}/games";
-        XDG_CODE_DIR = "${config.home.homeDirectory}/code";
-      };
-    };
-  };
+  # xdg = {
+  #   enable = true;
+  #   userDirs = {
+  #     enable = true;
+  #     createDirectories = true;
+  #     extraConfig = {
+  #       # XDG_GAMES_DIR = "${config.home.homeDirectory}/games";
+  #       XDG_CODE_DIR = "${config.home.homeDirectory}/code";
+  #     };
+  #   };
+  # };
 
   home = {
     username = lib.mkDefault "rajkoh";
@@ -54,7 +54,7 @@
     stateVersion = lib.mkDefault "23.11";
     sessionPath = ["$HOME/.local/bin"];
     sessionVariables = {
-      FLAKE = "$HOME/nixos-config";
+      FLAKE = "$HOME/code/nixos-config";
       TERM = "alacritty";
       # TERM = "wezterm";
       BROWSER = "firefox";
