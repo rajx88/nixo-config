@@ -1,6 +1,6 @@
-DISK="nvme0n1"
-MACHINE="akarnae"
-ENC_PASS=""
+DISK=nvme0n1
+MACHINE=akarnae
+ENC_PASS=
 
 rb:
 	sudo nixos-rebuild switch --flake .#akarnae
@@ -14,10 +14,10 @@ update:
 	nix flake update .
 
 nix-install: 
-	sudo nixos-install --flake '.#${MACHINE}' --impure
+	sudo nixos-install --no-root-passwd --flake '.#${MACHINE}' --impure
 
 format-disks-luks-btrfs-impermanence: enc-pass
-	sudo nix run github:nix-community/disko -- --mode disko ./tmpl/efi-luks-btrfs-impermanence-swap.nix --arg disks '[ /dev/${DISK} ]'
+	sudo nix run github:nix-community/disko --extra-experimental-features nix-command --extra-experimental-features flakes -- --mode disko ./tmpl/efi-luks-btrfs-impermanence-swap.nix --arg disks '[ "/dev/${DISK}" ]'
 
 enc-pass:
 	echo -n "${ENC_PASS}" > /tmp/secret.key
