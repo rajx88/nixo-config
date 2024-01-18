@@ -8,6 +8,7 @@
 }: {
   imports =
     [
+      inputs.impermanence.nixosModules.home-manager.impermanence
       ../features/cli
     ]
     ++ (builtins.attrValues outputs.homeManagerModules);
@@ -35,22 +36,17 @@
     git.enable = true;
   };
 
-  xdg = {
-    enable = true;
-    userDirs = {
-      enable = true;
-      createDirectories = true;
-      desktop = lib.mkDefault "${config.home.homeDirectory}/Desktop";
-      documents = lib.mkDefault "${config.home.homeDirectory}/Documents";
-      download = lib.mkDefault "${config.home.homeDirectory}/Downloads";
-      music = lib.mkDefault "${config.home.homeDirectory}/Music";
-      pictures = lib.mkDefault "${config.home.homeDirectory}/Pictures";
-      videos = lib.mkDefault "${config.home.homeDirectory}/Videos";
-      extraConfig = {
-        XDG_GAMES_DIR = "${config.home.homeDirectory}/Games";
-      };
-    };
-  };
+  # xdg = {
+  #   enable = true;
+  #   userDirs = {
+  #     enable = true;
+  #     createDirectories = true;
+  #     extraConfig = {
+  #       # XDG_GAMES_DIR = "${config.home.homeDirectory}/games";
+  #       XDG_CODE_DIR = "${config.home.homeDirectory}/code";
+  #     };
+  #   };
+  # };
 
   home = {
     username = lib.mkDefault "rajkoh";
@@ -58,10 +54,24 @@
     stateVersion = lib.mkDefault "23.11";
     sessionPath = ["$HOME/.local/bin"];
     sessionVariables = {
-      FLAKE = "$HOME/nix-config";
-      # TERM = "alacritty";
-      TERM = "wezterm";
+      FLAKE = "$HOME/code/nixos-config";
+      TERM = "alacritty";
+      # TERM = "wezterm";
       BROWSER = "firefox";
+    };
+
+    persistence = {
+      "/persist/home/rajkoh" = {
+        directories = [
+          "Documents"
+          "Downloads"
+          "Pictures"
+          "Videos"
+          ".local/bin"
+          "code"
+        ];
+        allowOther = true;
+      };
     };
   };
 }

@@ -3,4 +3,7 @@
 {
   # List your module files here
   # my-module = import ./my-module.nix;
+  btrfs = import ./btrfs.nix;
+  encryption = import ./encryption.nix;
+  impermanence = import ./impermanence.nix;
 }
