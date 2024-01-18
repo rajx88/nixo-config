@@ -1,3 +1,4 @@
+read -r -s "mode: 'install' or leave blank for normal mode" mode
 # read password twice
 read -r -s -p "Enter New User Password: " p1
 echo 
@@ -13,8 +14,14 @@ elif
   exit
 fi
 
-mkpasswd -m sha-512 "$p1" | sudo tee /persist/passwords/user
+dir=/persist/passwords/user
+
+if [[ "$mode" == "install"]]; then
+    dir=/mnt/persist/passwords/user
+fi
+
+mkpasswd -m sha-512 "$p1" | sudo tee $dir
 echo
-echo "New password written to /persist/passwords/user"
+echo "New password written to $dir"
 echo "Password will become active next time you run:" 
 echo "sudo nixos-rebuild switch"
