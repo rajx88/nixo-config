@@ -1,4 +1,4 @@
-read -r -s "mode: 'install' or leave blank for normal mode" mode
+read -r -p "mode: 'install' or blank: " m1
 # read password twice
 read -r -s -p "Enter New User Password: " p1
 echo 
@@ -16,10 +16,10 @@ fi
 
 dir=/persist/passwords/user
 
-if [[ "$mode" == "install"]]; then
+if [[ "$m1" == "install" ]]; then
     dir=/mnt/persist/passwords/user
 fi
-
+echo "$dir"
 mkpasswd -m sha-512 "$p1" | sudo tee $dir
 echo
 echo "New password written to $dir"

@@ -28,3 +28,6 @@ generate-config:
 cp-config: generate-config
 	mkdir -p ./hosts/${MACHINE}
 	cp /mnt/etc/nixos/hardware-configuration.nix ./hosts/${MACHINE}/hardware-configuration.nix
+
+set-password:
+	bash  ./scripts/change-pass.sh
