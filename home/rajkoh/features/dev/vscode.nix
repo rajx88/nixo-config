@@ -3,6 +3,12 @@
   config,
   ...
 }: {
+  home.persistence = {
+    "/persist/home/rajkoh".directories = [
+      ".config/VSCodium"
+      ".vscode-oss/extensions"
+    ];
+  };
   programs.vscode = {
     enable = true;
     userSettings = {

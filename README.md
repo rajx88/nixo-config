@@ -1,5 +1,16 @@
 # Nixos Config
 
+```bash
+nix run github:nix-community/nixos-anywhere -- --flake .#akarnae
+```
+```bash
+echo -n "password" > /tmp/secret.key
+```
+
+```bash
+sudo nixos-install --flake '.#akarnae' --impure
+```
+
 insert the following in `/etc/nixos/configuration.nix`:
 
 ```nix

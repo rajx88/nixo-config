@@ -8,14 +8,8 @@
     enable = true;
     settings = {
       import = [
-        "${config.xdg.configHome}/alacritty/tokyonight-night.yml"
+        "${config.xdg.configHome}/alacritty/tokyonight-night.toml"
       ];
-
-      # window = {
-      #   opacity = 0.9;
-      #   decorations_theme_variant = "Dark";
-      #   startup_mode = "Maximized";
-      # };
 
       font = {
         # size = 10;

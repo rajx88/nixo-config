@@ -36,7 +36,7 @@ in {
       [
         {
           timeout = lockTime;
-          command = "${swaylock} --daemonize --grace 15 --clock --indicator --screenshots --effect-scale 0.4 --effect-vignette 0.2:0.5 --effect-blur 4x2 --datestr '%a %e.%m.%Y' --timestr '%k:%M'";
+          command = "${swaylock} -i \"$DEFAULT_WP\" --daemonize --grace 15";
         }
       ]
       ++
