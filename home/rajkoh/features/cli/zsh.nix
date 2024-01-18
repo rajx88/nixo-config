@@ -9,6 +9,12 @@
   hasRipgrep = hasPackage "ripgrep";
   hasEza = hasPackage "eza";
 in {
+  home.persistence = {
+    "/persist/home/rajkoh".directories = [
+      ".config/zsh"
+    ];
+  };
+
   programs.zsh = {
     enable = true;
     # set the ZDOTDIR

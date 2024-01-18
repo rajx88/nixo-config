@@ -13,6 +13,10 @@ in {
   users.users.rajkoh = {
     isNormalUser = true;
     shell = pkgs.zsh;
+
+    initialHashedPassword = "";
+    hashedPasswordFile = "/persist/passwords/user";
+
     extraGroups =
       [
         "wheel"

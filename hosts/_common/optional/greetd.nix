@@ -8,6 +8,12 @@
     };
   };
 
+  environment.persistence = {
+    "/persist".directories = [
+      "/var/cache/tuigreet/lastuser"
+    ];
+  };
+
   # environment.etc."greetd/environments".text = ''
   #   Hyprland
   # '';
