@@ -53,7 +53,7 @@ sudo nix run github:nix-community/disko -- --mode disko ./tmpl/efi-luks-btrfs-im
 
 For new systems execute:
 ```bash
-make 	sudo nixos-generate-config --no-filesystems --root /mnt
+sudo nixos-generate-config --no-filesystems --root /mnt
 mkdir -p ./hosts/YOURMACHINE
 cp /mnt/etc/nixos/hardware-configuration.nix ./hosts/YOURMACHINE/hardware-configuration.nix
 ```
