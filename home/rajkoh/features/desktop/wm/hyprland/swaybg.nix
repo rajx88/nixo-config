@@ -3,11 +3,16 @@
   config,
   ...
 }: let
-  wallpaper = "${config.xdg.dataHome}/wallpapers";
+  wallpaperDir = "${config.xdg.dataHome}/wallpapers";
 in {
-  home.packages = with pkgs; [
-    swaybg
-  ];
+  home = {
+    sessionVariables = {
+      DEFAULT_WP = "${wallpaperDir}/wall-01.jpg";
+    };
+    packages = with pkgs; [
+      swaybg
+    ];
+  };
 
   xdg.configFile."hypr" = {
     recursive = true;
@@ -19,11 +24,11 @@ in {
     bind = let
       script = "${pkgs.python3}/bin/python3 ${config.xdg.configHome}/hypr/scripts/wall-changer.py";
     in [
-      "$mod SHIFT,r,exec, ${script} -d ${wallpaper}"
+      "$mod SHIFT,r,exec, ${script} -d ${wallpaperDir}"
     ];
 
     exec = [
-      "${pkgs.swaybg}/bin/swaybg -i ${wallpaper}/wall-01.jpg -m fill"
+      "${pkgs.swaybg}/bin/swaybg -i ${wallpaperDir}/wall-01.jpg -m fill"
     ];
   };
 }
