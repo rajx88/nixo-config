@@ -9,7 +9,7 @@ in {
     ../../optional/1password.nix
   ];
 
-  users.mutableUsers = true;
+  users.mutableUsers = false;
   users.users.rajkoh = {
     isNormalUser = true;
     shell = pkgs.zsh;
