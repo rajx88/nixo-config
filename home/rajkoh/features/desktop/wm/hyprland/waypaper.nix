@@ -4,10 +4,15 @@
   lib,
   ...
 }: {
-  home.packages = with pkgs; [
-    waypaper
-    swaybg
-  ];
+  home = {
+    sessionVariables = {
+      DEFAULT_WP = "${wallpaperDir}/wall-01.jpg";
+    };
+    packages = with pkgs; [
+      waypaper
+      swaybg
+    ];
+  };
 
   xdg.configFile."waypaper/config.ini" = {
     text =

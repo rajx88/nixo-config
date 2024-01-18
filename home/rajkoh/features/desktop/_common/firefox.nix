@@ -17,4 +17,8 @@
     "x-scheme-handler/http" = ["firefox.desktop"];
     "x-scheme-handler/https" = ["firefox.desktop"];
   };
+
+  home.persistence = {
+    "/persist/home/rajkoh".directories = [".mozilla/firefox"];
+  };
 }

@@ -42,4 +42,16 @@ in {
     mangohud
     protontricks
   ];
+
+  home.persistence = {
+    "/persist/home/rajkoh" = {
+      allowOther = true;
+      directories = [
+        {
+          directory = ".local/share/Steam";
+          method = "symlink";
+        }
+      ];
+    };
+  };
 }
