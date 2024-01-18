@@ -14,4 +14,14 @@
       ];
     })
   ];
+
+  home.persistence = {
+    "/persist/home/rajkoh" = {
+      allowOther = true;
+      directories = [
+        ".config/lutris"
+        ".local/share/lutris"
+      ];
+    };
+  };
 }

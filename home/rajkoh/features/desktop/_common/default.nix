@@ -1,5 +1,6 @@
 {pkgs, ...}: {
   imports = [
+    ./1password.nix
     ./alacritty
     ./firefox.nix
     ./fonts.nix

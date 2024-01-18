@@ -11,7 +11,7 @@
     inputs.hardware.nixosModules.common-pc-ssd
 
     ./hardware-configuration.nix
-    ./disko-config.nix
+    ../../tmpl/efi-luks-btrfs-impermanence-swap.nix
 
     ../_common/global
     ../_common/users/rajkoh
@@ -20,6 +20,12 @@
     ../_common/optional/greetd.nix
     ../_common/optional/pipewire.nix
   ];
+
+  host.filesystem = {
+    btrfs.enable = true;
+    encryption.enable = true;
+    impermanence.enable = true;
+  };
 
   environment = {
     # needed for completion for system packages

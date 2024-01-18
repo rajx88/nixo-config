@@ -5,11 +5,12 @@
 }: {
   home.sessionVariables.EDITOR = "nvim";
 
-  # home.packages = with pkgs; [
-  #   efm-langserver
-  #   go
-  #   nodejs
-  # ];
+  home.persistence = {
+    "/persist/home/rajkoh".directories = [
+      ".config/nvim"
+      ".local/share/nvim"
+    ];
+  };
 
   programs.neovim = {
     enable = true;

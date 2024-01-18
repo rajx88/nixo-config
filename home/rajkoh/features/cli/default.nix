@@ -5,6 +5,7 @@
     ./direnv.nix
     ./fish.nix
     ./git.nix
+    ./gpg.nix
     ./nvim
     ./ssh.nix
     ./starship

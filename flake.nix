@@ -11,6 +11,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    impermanence.url = "github:nix-community/impermanence";
     hardware.url = "github:nixos/nixos-hardware";
 
     disko = {
