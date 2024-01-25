@@ -21,7 +21,7 @@
 
     ./features/games
 
-    ./features/pass
+    # ./features/pass
 
     ./features/dev/jetbrains-toolbox.nix
     ./features/dev/vscode.nix
