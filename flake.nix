@@ -103,6 +103,13 @@
           ./home/rajkoh/akarnae.nix
         ];
       };
+      "rickoh@arch" = lib.homeManagerConfiguration {
+        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        extraSpecialArgs = {inherit inputs outputs;};
+        modules = [
+          ./home/rickoh/generic.nix
+        ];
+      };
     };
   };
 }
