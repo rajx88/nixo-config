@@ -107,7 +107,7 @@
         pkgs = nixpkgs.legacyPackages.x86_64-linux;
         extraSpecialArgs = {inherit inputs outputs;};
         modules = [
-          ./home/non-nixos/arch.nix
+          ./home/rickoh/generic.nix
         ];
       };
     };
