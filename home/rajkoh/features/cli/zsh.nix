@@ -79,6 +79,9 @@ in {
       tree = mkIf hasEza "eza --icons --tree -abghHliS";
 
       grep = "grep --color";
+
+      # gradle related
+      gw = "./gradlew --parallel";
     };
 
     zsh-abbr = {
@@ -135,7 +138,6 @@ in {
         wkn = "watch -n 2 kubectl get pods --namespace";
 
         # gradle
-        gw = "./gradlew --parallel";
         gwcb = "gw clean build";
         gwb = "gw build";
         gwcheck = "gw checkstyleMain pmdMain spotbugsMain --continue";
