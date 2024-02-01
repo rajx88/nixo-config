@@ -10,6 +10,7 @@
     ./ssh.nix
     ./starship
     ./tmux.nix
+    ./zoxide.nix
     ./zsh.nix
   ];
 
@@ -36,7 +37,6 @@
 
     neo-cowsay # mooooooooo
     fortune-kind # fortune
-    zoxide # A fast cd command that learns your habits
 
     lazygit
 
