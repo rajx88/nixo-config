@@ -17,6 +17,7 @@
       }
       {
         condition = "gitdir:~/code/prvt/";
+        contentSuffix = "prvt-gitconfig";
         contents = {
           user = {
             email = "rajkohlen@gmail.com";
