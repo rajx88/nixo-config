@@ -14,6 +14,7 @@
     ./features/desktop/optional/whatsapp.nix
     ./features/desktop/optional/floorp.nix
     ./features/desktop/optional/thunderbird.nix
+    ./features/desktop/optional/keyring.nix
 
     # not working for some reason
     # ./features/desktop/optional/obsidian.nix
