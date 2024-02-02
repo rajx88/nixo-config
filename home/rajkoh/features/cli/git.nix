@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  config,
+  ...
+}: {
   programs.git = {
     enable = true;
     package = pkgs.gitAndTools.gitFull;
@@ -13,7 +17,14 @@
       }
       {
         condition = "gitdir:~/code/prvt/";
-        path = "${config.xdg.configHome}/git/prvt.inc";
+        contents = {
+          user = {
+            email = "rajkohlen@gmail.com";
+            name = "rajkohlen";
+          };
+
+          core.sshCommand = "ssh -i ${config.home.homeDirectory}/.ssh/id_ed25519";
+        };
       }
     ];
   };
