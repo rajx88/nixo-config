@@ -17,29 +17,29 @@
     viAlias = true;
     vimAlias = true;
     extraPackages = with pkgs; [
-      efm-langserver
-      nodejs
-      go
-      gcc
-      cargo
-      rustc
+      #efm-langserver
+      #nodejs
+      #go
+      #gcc
+      #cargo
+      #rustc
 
       # Nix
-      nil
-      alejandra
-      statix
+      #nil
+      #alejandra
+      #statix
 
       # go
-      golangci-lint
+      #golangci-lint
 
       # shell
-      shellcheck
-      shfmt
-      beautysh
+      #shellcheck
+      #shfmt
+      #beautysh
 
       # Lua
-      stylua
-      luajitPackages.luarocks-nix
+      #stylua
+      #luajitPackages.luarocks-nix
 
       # Python
       # pyright
@@ -50,17 +50,17 @@
       # nodePackages.typescript-language-server
 
       # docker
-      hadolint
+      #hadolint
 
       # yaml json etc.
-      ansible-lint
-      prettierd
-      eslint_d
-      nodePackages_latest.fixjson
+      #ansible-lint
+      #prettierd
+      #eslint_d
+      #nodePackages_latest.fixjson
 
       # Telescope tools
-      ripgrep
-      fd
+      #ripgrep
+      #fd
     ];
   };
 
