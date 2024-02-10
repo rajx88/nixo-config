@@ -12,55 +12,43 @@
     ];
   };
 
+  # home.packages = with pkgs; [
+  #   stylua
+  # ];
+
   programs.neovim = {
     enable = true;
     viAlias = true;
     vimAlias = true;
     extraPackages = with pkgs; [
-      #efm-langserver
-      #nodejs
-      #go
-      #gcc
-      #cargo
-      #rustc
+      # essentials
+      nodejs
+      gcc
+      tree-sitter
+      git
+      wget
+      curl
+      lazygit
+      ripgrep
+      fd
+      unzip
+      gzip
 
-      # Nix
-      #nil
-      #alejandra
-      #statix
+      # LSP's and formatters
+      ## shell
+      # shellcheck
+      # shfmt
+      # beautysh
 
-      # go
-      #golangci-lint
+      ## Lua
+      stylua
+      lua-language-server
+      # luajitPackages.luarocks-nix
 
-      # shell
-      #shellcheck
-      #shfmt
-      #beautysh
-
-      # Lua
-      #stylua
-      #luajitPackages.luarocks-nix
-
-      # Python
-      # pyright
-      # python-debug
-      # black
-
-      # Typescript
-      # nodePackages.typescript-language-server
-
-      # docker
-      #hadolint
-
-      # yaml json etc.
-      #ansible-lint
-      #prettierd
-      #eslint_d
-      #nodePackages_latest.fixjson
-
-      # Telescope tools
-      #ripgrep
-      #fd
+      ## yaml json etc.
+      prettierd
+      # ansible-lint
+      # eslint_d
     ];
   };
 

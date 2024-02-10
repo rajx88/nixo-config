@@ -30,9 +30,6 @@
 
     ltex-ls # Spell checking LSP
 
-    gnumake # make Makefile
-    # gcc
-
     neofetch # nix btw
 
     neo-cowsay # mooooooooo
