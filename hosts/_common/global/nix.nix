@@ -10,12 +10,12 @@
       experimental-features = ["nix-command" "flakes" "repl-flake"];
       warn-dirty = false;
       # Disable global flake registry
-      #flake-registry = "";
+      flake-registry = "";
     };
     gc = {
       automatic = true;
       dates = "weekly";
-      # Keep the last 7 generations
+      # Keep the last 7 days generations
       options = "--delete-older-than +7";
     };
 
