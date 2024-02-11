@@ -7,8 +7,9 @@
     ./git.nix
     ./gpg.nix
     ./nvim
+    # ./pure.nix
     ./ssh.nix
-    ./starship
+    # ./starship
     ./tmux.nix
     ./zoxide.nix
     ./zsh.nix
