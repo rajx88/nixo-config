@@ -22,6 +22,7 @@
     vimAlias = true;
     extraPackages = with pkgs; [
       # essentials
+      cargo
       nodejs
       gcc
       tree-sitter
