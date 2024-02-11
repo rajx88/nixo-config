@@ -12,6 +12,7 @@ in {
   home.persistence = {
     "/persist/home/rajkoh".directories = [
       ".config/zsh"
+      ".local/completions"
     ];
   };
 
@@ -48,8 +49,6 @@ in {
     initExtra = ''
       typeset -U path PATH
       path=($HOME/.local/bin $path)
-
-      fortune | cowsay -f flaming-sheep
     '';
 
     initExtraBeforeCompInit = ''
@@ -62,7 +61,7 @@ in {
       expireDuplicatesFirst = true;
       size = 100000;
       save = 100000;
-      path = "${config.xdg.dataHome}/zsh/zsh_history";
+      # path = "${config.xdg.dataHome}/zsh/zsh_history";
     };
 
     shellAliases = {

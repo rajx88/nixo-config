@@ -32,9 +32,6 @@
 
     neofetch # nix btw
 
-    neo-cowsay # mooooooooo
-    fortune-kind # fortune
-
     lazygit
 
     killall
