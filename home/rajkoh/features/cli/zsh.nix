@@ -32,6 +32,9 @@ in {
     cdpath = [
       "."
       "$HOME"
+      "$HOME/code"
+      "$HOME/code/prvt"
+      "$HOME/code/work"
     ];
 
     # localVariables = {
@@ -52,7 +55,7 @@ in {
     '';
 
     initExtraBeforeCompInit = ''
-      fpath=(~/.local/completions $fpath ${config.xdg.cacheHome}/completions)
+      fpath=($HOME/.local/completions $fpath ${config.xdg.cacheHome}/completions)
     '';
 
     history = {
@@ -61,7 +64,7 @@ in {
       expireDuplicatesFirst = true;
       size = 100000;
       save = 100000;
-      # path = "${config.xdg.dataHome}/zsh/zsh_history";
+      path = "${config.xdg.dataHome}/zsh/zsh_history";
     };
 
     shellAliases = {
@@ -154,7 +157,9 @@ in {
         {name = "zsh-users/zsh-syntax-highlighting";}
         {name = "zsh-users/zsh-completions";}
         {name = "romkatv/zsh-defer";}
-        # { name = "command-not-found"; from = "oh-my-zsh";  as = "plugin"; }
+        {name = "mafredri/zsh-async, from:github";}
+        {name = "sindresorhus/pure, use:pure.zsh, from:github, as:theme";}
+        # {name = "plugins/command-not-found, from:oh-my-zsh, as:plugin";}
         # { name = "olets/zsh-abbr"; }
         # {name = "Tarrasch/zsh-bd"; }
       ];
