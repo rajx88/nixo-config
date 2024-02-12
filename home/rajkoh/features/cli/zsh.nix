@@ -1,12 +1,10 @@
 {
-  pkgs,
   lib,
   config,
   ...
 }: let
   inherit (lib) mkIf;
   hasPackage = pname: lib.any (p: p ? pname && p.pname == pname) config.home.packages;
-  hasRipgrep = hasPackage "ripgrep";
   hasEza = hasPackage "eza";
 in {
   home.persistence = {
@@ -35,6 +33,7 @@ in {
       "$HOME/code"
       "$HOME/code/prvt"
       "$HOME/code/work"
+      "/opt/hawaii/workspace"
     ];
 
     # localVariables = {
