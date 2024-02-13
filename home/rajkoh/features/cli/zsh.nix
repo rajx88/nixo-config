@@ -6,6 +6,7 @@
   inherit (lib) mkIf;
   hasPackage = pname: lib.any (p: p ? pname && p.pname == pname) config.home.packages;
   hasEza = hasPackage "eza";
+  hasLazyGit = hasPackage "lazygit";
 in {
   home.persistence = {
     "/persist/home/rajkoh".directories = [
@@ -110,8 +111,7 @@ in {
         hm = "home-manager --flake .";
         hms = "home-manager switch --flake .#";
 
-        # code
-        c = "code";
+        lg = mkIf hasLazyGit "lazygit";
 
         # git
         gs = "git status";
