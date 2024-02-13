@@ -10,7 +10,7 @@
 
   environment.persistence = {
     "/persist".directories = [
-      "/var/cache/tuigreet/lastuser"
+      "/var/cache/tuigreet"
     ];
   };
 
