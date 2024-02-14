@@ -140,9 +140,8 @@ in {
 
         # gradle
         gwcb = "gw clean build";
-        gwb = "gw build";
         gwcheck = "gw checkstyleMain pmdMain spotbugsMain --continue";
-        gwcc = "gw clean && gwcheck --continue";
+        gwcc = "gw clean checkstyleMain pmdMain spotbugsMain --continue";
         gwc = "gw clean compileJava";
         gwp = "gw clean publishToMavenLocal";
       };
