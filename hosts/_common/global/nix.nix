@@ -16,7 +16,7 @@
       automatic = true;
       dates = "weekly";
       # Keep the last 7 days generations
-      options = "--delete-older-than +7";
+      options = "--delete-older-than 7d";
     };
 
     # Add each flake input as a registry
