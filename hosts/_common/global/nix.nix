@@ -14,7 +14,7 @@
     };
     gc = {
       automatic = true;
-      frequency = "weekly";
+      dates = "weekly";
       # Keep the last 7 days generations
       options = "--delete-older-than 7d";
     };
