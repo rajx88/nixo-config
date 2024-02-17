@@ -1,4 +1,8 @@
-{config, ...}: let
+{
+  config,
+  pkgs,
+  ...
+}: let
   dockerEnabled = config.virtualisation.docker.enable;
 in {
   virtualisation.podman = {
@@ -6,6 +10,10 @@ in {
     dockerCompat = !dockerEnabled;
     dockerSocket.enable = !dockerEnabled;
     defaultNetwork.settings.dns_enabled = true;
+
+    extraPackages = [
+      pkgs.podman-compose
+    ];
   };
 
   environment.persistence = {
