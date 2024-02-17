@@ -14,7 +14,6 @@ in {
     isNormalUser = true;
     shell = pkgs.zsh;
 
-    initialHashedPassword = "";
     hashedPasswordFile = "/persist/passwords/user";
 
     extraGroups =
