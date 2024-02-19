@@ -39,6 +39,7 @@ in {
 
     localVariables = {
       ZSH_INCLUDES = "$ZDOTDIR/includes";
+      ZSH_PINCLUDES = "$ZDOTDIR/pincludes";
     };
 
     profileExtra = ''
@@ -47,6 +48,16 @@ in {
       setopt complete_aliases
       setopt complete_in_word
       setopt glob_complete
+
+      if [[ -d $ZSH_PINCLUDES ]]; then
+          for file in $ZSH_PINCLUDES/*.zsh(DN); do
+              if [[ -f $file && -r $file ]]; then
+                  # Source the file
+                  source $file
+              fi
+          done
+      fi
+
     '';
 
     initExtra = ''
