@@ -37,9 +37,9 @@ in {
       "/opt/hawaii/workspace"
     ];
 
-    # localVariables = {
-    #   ZSH_INCLUDES= "$ZDOTDIR/includes";
-    # };
+    localVariables = {
+      ZSH_INCLUDES = "$ZDOTDIR/includes";
+    };
 
     profileExtra = ''
       zstyle ':completion:*' menu select
@@ -52,6 +52,15 @@ in {
     initExtra = ''
       typeset -U path PATH
       path=($HOME/.local/bin $path)
+
+      if [[ -d $ZSH_INCLUDES ]]; then
+          for file in $ZSH_INCLUDES/*.zsh(DN); do
+              if [[ -f $file && -r $file ]]; then
+                  # Source the file
+                  source $file
+              fi
+          done
+      fi
     '';
 
     initExtraBeforeCompInit = ''
