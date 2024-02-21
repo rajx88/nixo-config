@@ -8,7 +8,7 @@
   home.persistence = {
     "/persist/home/rajkoh".directories = [
       ".config/nvim"
-      ".local/share/nvim"
+      #".local/share/nvim"
     ];
   };
 
