@@ -12,7 +12,6 @@
     ./features/desktop/optional/discord
     ./features/desktop/optional/spotify.nix
     ./features/desktop/optional/whatsapp.nix
-    ./features/desktop/optional/floorp.nix
     ./features/desktop/optional/thunderbird.nix
     ./features/desktop/optional/keyring.nix
 
