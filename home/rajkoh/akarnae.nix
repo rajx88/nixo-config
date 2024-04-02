@@ -23,6 +23,7 @@
 
     # ./features/pass
 
+    ./features/desktop/optional/keymapp.nix
     ./features/dev/jetbrains-toolbox.nix
     ./features/dev/vscode.nix
     ./features/dev/asdf.nix
