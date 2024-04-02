@@ -2,6 +2,7 @@
   imports = [
     ./bash.nix
     ./bat.nix
+    ./devbox.nix
     ./direnv.nix
     ./fish.nix
     ./git.nix
