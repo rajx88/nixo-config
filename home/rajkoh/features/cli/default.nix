@@ -13,6 +13,7 @@
     # ./starship
     ./tmux.nix
     ./zoxide.nix
+    ./zellij.nix
     ./zsh.nix
   ];
 
