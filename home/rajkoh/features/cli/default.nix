@@ -11,7 +11,7 @@
     # ./pure.nix
     ./ssh.nix
     # ./starship
-    ./tmux.nix
+    # ./tmux.nix
     ./zoxide.nix
     ./zellij.nix
     ./zsh.nix
