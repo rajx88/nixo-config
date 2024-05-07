@@ -33,7 +33,7 @@
 
     ltex-ls # Spell checking LSP
 
-    neofetch # nix btw
+    fastfetch # nix btw
 
     lazygit
 
