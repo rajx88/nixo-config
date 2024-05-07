@@ -6,8 +6,8 @@
 }: {
   imports = [
     # Include the results of the hardware scan
-    ../../_common
-    ../../wayland
+    ../_common
+    ../_common/wayland
 
     ./swaybg.nix
 

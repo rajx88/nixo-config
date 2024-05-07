@@ -6,8 +6,7 @@
   imports = [
     ./global
 
-    # ./features/desktop/gnome
-    ./features/desktop/wm/hyprland
+    ./features/desktop/hyprland
 
     ./features/desktop/optional/discord
     ./features/desktop/optional/spotify.nix
@@ -39,7 +38,7 @@
   };
 
   #  ------   -----   ------
-  # | DP-3 | | DP-1| | DP-2 |
+  # | HDMI | | DP-1| | DP-2 |
   #  ------   -----   ------
   monitors = [
     {
