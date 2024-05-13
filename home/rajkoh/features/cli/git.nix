@@ -10,6 +10,18 @@
       init.defaultBranch = "main";
     };
     lfs.enable = true;
+    aliases = {
+      c = "commit -v";
+      all = "add .";
+      rall = "reset";
+      co = "checkout";
+      cob = "checkout -b";
+      ra = "rebase --abort";
+      pr = "pull --rebase";
+      p = "pull";
+      pu = "push";
+      s = "status";
+    };
     includes = [
       {
         condition = "gitdir:~/code/work/";

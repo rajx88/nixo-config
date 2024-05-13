@@ -7,6 +7,7 @@
   hasPackage = pname: lib.any (p: p ? pname && p.pname == pname) config.home.packages;
   hasEza = hasPackage "eza";
   hasLazyGit = hasPackage "lazygit";
+  hasFastFetch = hasPackage "fastfetch";
 in {
   home.persistence = {
     "/persist/home/rajkoh".directories = [
@@ -114,32 +115,17 @@ in {
 
         jqless = "jq -C | less -r";
 
-        # nix swik
-        n = "nix";
-        nd = "nix develop -c $SHELL";
-        ns = "nix shell";
-        nsn = "nix shell nixpkgs#";
-        nb = "nix build";
-        nbn = "nix build nixpkgs#";
-        nf = "nix flake";
-        nfu = "nix flake update";
-
-        nr = "nixos-rebuild --flake .";
-        nrs = "nixos-rebuild switch --flake .#";
-        snr = "sudo nixos-rebuild --flake .";
-        snrs = "sudo nixos-rebuild switch --flake .#";
-        hm = "home-manager --flake .";
-        hms = "home-manager switch --flake .#";
-
         lg = mkIf hasLazyGit "lazygit";
 
+        ff = mkIf hasFastFetch "fastfetch";
+
         # git
-        gs = "git status";
-        gc = "git commit -v";
-        gall = "git add .";
-        gp = "git push";
-        gco = "git checkout";
-        gcb = "git checkout -b";
+        gs = "git s";
+        gc = "git c";
+        gall = "git all";
+        gpu = "git pu";
+        gco = "git co";
+        gcb = "git cob";
 
         # vagrant
         vup = "vagrant up";
