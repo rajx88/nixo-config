@@ -37,6 +37,8 @@
 
     lazygit
 
+    tokei
+
     killall
 
     zip
