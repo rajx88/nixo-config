@@ -21,15 +21,13 @@
   ];
 
   xdg.portal = {
-    extraPortals = [pkgs.inputs.hyprland.xdg-desktop-portal-hyprland];
-    configPackages = [pkgs.inputs.hyprland.hyprland];
+    extraPortals = [pkgs.xdg-desktop-portal-hyprland];
+    configPackages = [config.wayland.windowManager.hyprland.package];
   };
 
   wayland.windowManager.hyprland = {
-    # Whether to enable Hyprland wayland compositor
     enable = true;
-    # The hyprland package to use
-    package = pkgs.inputs.hyprland.hyprland;
+    package = pkgs.hyprland;
     # Whether to enable XWayland
     # xwayland.enable = true;
 
