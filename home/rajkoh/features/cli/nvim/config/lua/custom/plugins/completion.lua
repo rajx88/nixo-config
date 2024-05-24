@@ -13,11 +13,21 @@ return {
   config = function()
     vim.opt.completeopt = { "menu", "menuone", "noselect" }
 
-    local lspkind = require "lspkind"
-    lspkind.init {}
+    -- loading in custom snippets
+    for _, ft_path in ipairs(vim.api.nvim_get_runtime_file("lua/custom/snippets/*.lua", true)) do
+      loadfile(ft_path)()
+    end
+
+    -- setting keymaps for jumping around snippets
+    vim.keymap.set({ "i", "s" }, "<c-k>", function()
+      return vim.snippet.active { direction = 1 } and vim.snippet.jump(1)
+    end, { silent = true })
+
+    vim.keymap.set({ "i", "s" }, "<c-j>", function()
+      return vim.snippet.active { direction = -1 } and vim.snippet.jump(-1)
+    end, { silent = true })
 
     local cmp = require "cmp"
-
     local cmp_select = { behavior = cmp.SelectBehavior.Select }
     --local cmp_select = { behavior = cmp.SelectBehavior.Insert }
 
