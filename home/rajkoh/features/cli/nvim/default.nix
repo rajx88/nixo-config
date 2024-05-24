@@ -25,6 +25,7 @@
       cargo
       nodejs
       gcc
+      fzf
       tree-sitter
       git
       wget
@@ -37,7 +38,7 @@
 
       # LSP's and formatters
       ## shell
-      # shellcheck
+      shellcheck
       # shfmt
       # beautysh
 
