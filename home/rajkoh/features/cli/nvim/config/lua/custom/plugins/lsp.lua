@@ -5,7 +5,6 @@ return {
       "folke/neodev.nvim",
       "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
-      "WhoIsSethDaniel/mason-tool-installer.nvim",
 
       { "j-hui/fidget.nvim", opts = {} },
 
@@ -14,6 +13,7 @@ return {
 
       -- Schema information
       "b0o/SchemaStore.nvim",
+      "mfussenegger/nvim-jdtls",
     },
     config = function()
       require("neodev").setup {
@@ -32,6 +32,14 @@ return {
 
       local servers = {
         bashls = true,
+        lua_ls = true,
+        rust_analyzer = true,
+        -- nix lsp
+        nil_ls = true,
+        -- java lsp
+        jdtls = true,
+        --go templ
+        templ = true,
         gopls = {
           settings = {
             gopls = {
@@ -47,13 +55,6 @@ return {
             },
           },
         },
-        lua_ls = true,
-        rust_analyzer = true,
-        templ = true,
-        cssls = true,
-
-        -- Probably want to disable formatting for this lang server
-        tsserver = true,
 
         jsonls = {
           settings = {
@@ -97,7 +98,7 @@ return {
           fish = { "fish_indent" },
           sh = { "shfmt" },
           nix = { "alejandra" },
-          go = { "goimports", "gofmt" },
+          go = { "goimports", "gofumpt" },
           javascript = { "prettierd" },
           typescript = { "prettierd" },
           javascriptreact = { "prettierd" },
