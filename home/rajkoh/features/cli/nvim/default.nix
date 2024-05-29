@@ -20,27 +20,46 @@
     enable = true;
     viAlias = true;
     vimAlias = true;
+    plugins = [
+      {
+        plugin = pkgs.vimPlugins.sqlite-lua;
+        config = "let g:sqlite_clib_path = '${pkgs.sqlite.out}/lib/libsqlite3.so'";
+      }
+    ];
     extraPackages = with pkgs; [
       # essentials
-      cargo
-      nodejs
-      gcc
-      fzf
-      tree-sitter
       git
-      wget
-      curl
-      lazygit
+      fzf
       ripgrep
-      fd
-      unzip
-      gzip
+      tree-sitter
+      fswatch # File watcher utility, replacing libuv.fs_event for neovim 10.0
+      lazygit
+      sqlite
+
+      # build tools
+      #cargo
+      gcc
+      nodejs
 
       # LSP's and formatters
       ## shell
+      nodePackages.bash-language-server
       shellcheck
-      # shfmt
-      # beautysh
+      shfmt
+
+      # java
+      jdt-language-server
+
+      # go
+      gopls
+      gotools
+      gofumpt
+
+      templ
+
+      # nix
+      nil
+      alejandra
 
       ## Lua
       stylua
@@ -48,9 +67,9 @@
       # luajitPackages.luarocks-nix
 
       ## yaml json etc.
+      vscode-langservers-extracted
+      yaml-language-server
       prettierd
-      # ansible-lint
-      # eslint_d
     ];
   };
 
