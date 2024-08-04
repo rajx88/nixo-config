@@ -5,7 +5,6 @@
 }: {
   # hardware.enableAllFirmware = true;
   hardware.pulseaudio.enable = lib.mkForce false;
-  sound.enable = false;
 
   security.rtkit.enable = true;
   services.pipewire = {
