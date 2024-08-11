@@ -61,7 +61,6 @@
 
       master = {
         # See https://wiki.hyprland.org/Configuring/Master-Layout/ for more
-        new_status = "master";
       };
 
       input = {
