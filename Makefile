@@ -5,8 +5,11 @@ ENC_PASS=
 rb:
 	sudo nixos-rebuild switch --flake .#akarnae
 
-hm:
+hmra:
 	home-manager switch --flake .#rickoh@arch
+
+hmaw:
+	home-manager switch --flake .#appeltaartu@wsl
 
 u: update 
 
