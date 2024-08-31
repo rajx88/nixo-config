@@ -109,6 +109,13 @@
         modules = [
           ./home/rickoh/generic.nix
         ];
+      };      
+      "appeltaartu@wsl" = lib.homeManagerConfiguration {
+        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        extraSpecialArgs = {inherit inputs outputs;};
+        modules = [
+          ./home/appeltaartu/generic.nix
+        ];
       };
     };
   };
