@@ -42,13 +42,13 @@
             "monospace",
         }
 
-        config.colors = require('lua/tokyonight_night').colors()
+        config.colors = require('lua/rose-pine').colors()
 
         config.window_close_confirmation = "NeverPrompt"
         -- hide tab bar if only one tab is open
         config.hide_tab_bar_if_only_one_tab = true
 
-        config.enable_wayland = false
+        config.enable_wayland = true
 
         -- and finally, return the configuration to wezterm
         return config
