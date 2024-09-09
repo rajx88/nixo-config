@@ -12,6 +12,7 @@
     lfs.enable = true;
     aliases = {
       c = "commit -v";
+      cm = "commit -m";
       all = "add .";
       rall = "reset";
       co = "checkout";
