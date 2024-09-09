@@ -8,6 +8,7 @@
     package = pkgs.gitAndTools.gitFull;
     extraConfig = {
       init.defaultBranch = "main";
+      pull.ff = "only";
     };
     lfs.enable = true;
     aliases = {
