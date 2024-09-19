@@ -9,6 +9,10 @@
     extraConfig = {
       init.defaultBranch = "main";
       pull.ff = "only";
+      rerere.enable = true;
+      branch.sort = "-committerdate";
+      maintenance.auto = false;
+      maintenance.strategy = "incremental";
     };
     lfs.enable = true;
     aliases = {
@@ -23,6 +27,7 @@
       p = "pull";
       pu = "push";
       s = "status";
+      staash = "stash --all";
     };
     includes = [
       {
@@ -42,5 +47,12 @@
         };
       }
     ];
+    delta = {
+      enable = true;
+      options = {
+        line-numbers = true;
+        side-by-side = true;
+      };
+    };
   };
 }
