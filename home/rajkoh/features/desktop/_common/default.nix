@@ -8,7 +8,6 @@
     ./playerctl.nix
     ./qt.nix
     ./wallpapers
-    ./wezterm
   ];
   xdg.portal.enable = true;
 

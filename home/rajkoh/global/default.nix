@@ -56,7 +56,7 @@
     sessionVariables = {
       FLAKE = "$HOME/code/nixos-config";
       #TERM = "alacritty";
-      TERM = "wezterm";
+      TERM = "alacritty";
       BROWSER = "firefox";
     };
 
