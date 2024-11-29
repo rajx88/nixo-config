@@ -14,7 +14,7 @@ hmaw:
 u: update 
 
 update:
-	nix flake update .
+	nix flake update --flake .
 
 nix-install: 
 	sudo nixos-install --no-root-passwd --flake '.#${MACHINE}' --impure
