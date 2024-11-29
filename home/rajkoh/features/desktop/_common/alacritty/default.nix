@@ -7,7 +7,7 @@
   programs.alacritty = {
     enable = true;
     settings = {
-      import = [
+      general.import = [
         "${config.xdg.configHome}/alacritty/tokyonight-night.toml"
       ];
 
