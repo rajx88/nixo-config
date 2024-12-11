@@ -2,7 +2,8 @@
   imports = [
     ../rajkoh/generic.nix
 
-    ../rajkoh/features/dev/asdf.nix
+    # ../rajkoh/features/dev/asdf.nix
+    ../rajkoh/features/dev/mise.nix
   ];
 
   home.username = lib.mkForce "rickoh";
