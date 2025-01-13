@@ -1,47 +1,53 @@
 return {
   -- the colorscheme should be available when starting Neovim
   {
-    "folke/tokyonight.nvim",
-    lazy = false,
+    "rose-pine/neovim",
+    name = "rose-pine",
+    -- config = function()
+    --   vim.cmd [[colorscheme rose-pine]]
+    -- end,
+  },
+  {
+    "embark-theme/vim",
+    name = "embark",
     config = function()
-      require("tokyonight").setup {
-        -- use the night style
-        style = "night",
-        transparent = true,
-        on_highlights = function(hl, c)
-          local prompt = "#2d3149"
-          hl.TelescopeNormal = {
-            bg = c.bg_dark,
-            fg = c.fg_dark,
-          }
-          hl.TelescopeBorder = {
-            bg = c.bg_dark,
-            fg = c.bg_dark,
-          }
-          hl.TelescopePromptNormal = {
-            bg = prompt,
-          }
-          hl.TelescopePromptBorder = {
-            bg = prompt,
-            fg = prompt,
-          }
-          hl.TelescopePromptTitle = {
-            bg = prompt,
-            fg = prompt,
-          }
-          hl.TelescopePreviewTitle = {
-            bg = c.bg_dark,
-            fg = c.bg_dark,
-          }
-          hl.TelescopeResultsTitle = {
-            bg = c.bg_dark,
-            fg = c.bg_dark,
-          }
-        end,
-      }
-      -- load the colorscheme here
-      vim.cmd [[colorscheme tokyonight]]
+      -- vim.cmd.colorscheme "embark"
     end,
   },
-  { "rose-pine/neovim", name = "rose-pine" },
+  {
+    "0xstepit/flow.nvim",
+    lazy = false,
+    priority = 1000,
+    tag = "v2.0.1",
+    opts = {
+      -- Your configuration options here.
+    },
+    config = function(_, opts)
+      require("flow").setup(opts)
+      -- vim.cmd.colorscheme "flow"
+    end,
+  },
+  {
+    "maxmx03/fluoromachine.nvim",
+    lazy = false,
+    priority = 1000,
+    config = function()
+      local fm = require "fluoromachine"
+
+      fm.setup {
+        glow = false,
+        theme = "fluoromachine",
+        transparent = true,
+      }
+
+      vim.cmd.colorscheme "fluoromachine"
+    end,
+  },
+  {
+    "helbing/aura.nvim",
+    name = "aura",
+    config = function()
+      -- vim.cmd.colorscheme "aura"
+    end,
+  },
 }
