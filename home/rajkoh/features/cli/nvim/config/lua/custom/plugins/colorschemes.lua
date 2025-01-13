@@ -3,15 +3,15 @@ return {
   {
     "rose-pine/neovim",
     name = "rose-pine",
-    -- config = function()
-    --   vim.cmd [[colorscheme rose-pine]]
-    -- end,
+    config = function()
+      -- vim.cmd [[ colorscheme rose-pine ]]
+    end,
   },
   {
     "embark-theme/vim",
     name = "embark",
     config = function()
-      -- vim.cmd.colorscheme "embark"
+      -- vim.cmd [[ colorscheme embark ]]
     end,
   },
   {
@@ -24,7 +24,8 @@ return {
     },
     config = function(_, opts)
       require("flow").setup(opts)
-      -- vim.cmd.colorscheme "flow"
+
+      -- vim.cmd [[ colorscheme flow ]]
     end,
   },
   {
@@ -40,14 +41,16 @@ return {
         transparent = true,
       }
 
-      vim.cmd.colorscheme "fluoromachine"
+      vim.cmd [[ colorscheme fluoromachine ]]
     end,
   },
   {
-    "helbing/aura.nvim",
-    name = "aura",
-    config = function()
-      -- vim.cmd.colorscheme "aura"
+    "baliestri/aura-theme",
+    lazy = false,
+    priority = 1000,
+    config = function(plugin)
+      vim.opt.rtp:append(plugin.dir .. "/packages/neovim")
+      -- vim.cmd [[ colorscheme aura-dark ]]
     end,
   },
 }
