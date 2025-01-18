@@ -20,7 +20,7 @@
   chromium = "${config.programs.chromium.package}/bin/chromium";
 
   browser = "${config.programs.firefox.package}/bin/firefox";
-  terminal = "${config.programs.alacritty.package}/bin/alacritty";
+  terminal = "${config.programs.ghostty.package}/bin/ghostty";
 in {
   programs.waybar = {
     settings = {

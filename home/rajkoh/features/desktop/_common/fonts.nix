@@ -6,14 +6,14 @@
     # openmoji-black
     symbola
     proggyfonts
-    nerdfonts
+    # nerd-fonts
   ];
 
   fonts.fontconfig = {
     enable = true;
     defaultFonts = {
-      monospace = "proggyfonts";
-      emoji = "twemoji-color-font";
+      monospace = ["proggyfonts"];
+      emoji = ["twemoji-color-font"];
     };
   };
 
@@ -23,14 +23,14 @@
       # family = "OpenDyslexicM Nerd Font Mono";
       # family = "SauceCodePro Nerd Font Mono";
       # family = "CaskaydiaMono Nerd Font Mono";
-      family = "proggy";
-      # package = pkgs.nerdfonts.override {fonts = ["CascadiaCode" "Hack" "DejaVuSansMono"];};
-      # package = pkgs.nerdfonts;
+      family = "proggyfonts";
+      # package = pkgs.nerd-fonts.override {fonts = ["CascadiaCode" "Hack" "DejaVuSansMono"];};
+      # package = pkgs.nerd-fonts;
       package = pkgs.proggyfonts;
     };
-    # regular = {
-    #   family = "Fira Sans";
-    #   package = pkgs.fira;
-    # };
+    regular = {
+      family = "proggyfonts";
+      package = pkgs.proggyfonts;
+    };
   };
 }
