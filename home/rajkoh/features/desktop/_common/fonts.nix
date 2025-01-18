@@ -1,39 +1,35 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
-    # noto-fonts-color-emoji
+    noto-fonts-color-emoji
     twemoji-color-font
     # openmoji-color
     # openmoji-black
     symbola
-    proggyfonts
+    # proggyfonts
+    # tamsyn
     nerd-fonts.fira-code
     nerd-fonts.caskaydia-mono
   ];
 
-  # fonts.fontconfig = {
-  #   enable = true;
-  #   defaultFonts = {
-  #     monospace = ["proggyfonts"];
-  #     emoji = ["twemoji-color-font"];
-  #   };
-  # };
+  fonts.fontconfig = {
+    enable = true;
+    # defaultFonts = {
+    #   monospace = ["Tamsyn"];
+    #   emoji = ["NotoColorEmoji"];
+    # };
+  };
 
   fontProfiles = {
     enable = true;
     monospace = {
-      # family = "OpenDyslexicM Nerd Font Mono";
-      # family = "SauceCodePro Nerd Font Mono";
-      # family = "CaskaydiaMono Nerd Font Mono";
-      name = "ProggyVector";
+      name = "Tamsyn";
       size = 12;
-      # package = pkgs.nerd-fonts.override {fonts = ["CascadiaCode" "Hack" "DejaVuSansMono"];};
-      # package = pkgs.nerd-fonts;
-      package = pkgs.proggyfonts;
+      package = pkgs.tamsyn;
     };
     regular = {
-      name = "proggyfonts";
+      name = "FiraCode Nerd Font Ret";
       size = 12;
-      package = pkgs.proggyfonts;
+      package = pkgs.nerd-fonts.fira-code;
     };
   };
 }

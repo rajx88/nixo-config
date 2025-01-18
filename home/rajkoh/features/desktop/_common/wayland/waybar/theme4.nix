@@ -319,7 +319,7 @@ in {
 
 
         * {
-            font-family: "${config.fontProfiles.monospace.family}, Fira Sans Semibold", FontAwesome, Roboto, Helvetica, Arial, sans-serif;
+            font-family: "${config.fontProfiles.regular.family}, Fira Sans Semibold", FontAwesome, Roboto, Helvetica, Arial, sans-serif;
             border: none;
             border-radius: 0px;
         }
