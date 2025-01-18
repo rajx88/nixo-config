@@ -130,7 +130,7 @@ in {
         * {
         	border: none;
         	border-radius: 10;
-          font-family: ${config.fontProfiles.monospace.family};
+          font-family: ${config.fontProfiles.monospace.name};
         	font-size: 15px;
         	min-height: 10px;
         }

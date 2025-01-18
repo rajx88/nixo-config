@@ -15,7 +15,7 @@
       # needed for hyprland will crash imeediately without it
       "window.titleBarStyle" = "custom";
       "workbench.colorTheme" = "Rosé Pine Moon";
-      "editor.fontFamily" = "${config.fontProfiles.monospace.family}, Consolas, 'Courier New', monospace";
+      "editor.fontFamily" = "${config.fontProfiles.monospace.name}, Consolas, 'Courier New', monospace";
       "editor.fontSize" = 14;
     };
     package = pkgs.vscodium;
