@@ -43,7 +43,7 @@ in {
     */
     ''
       * {
-        font-family: ${config.fontProfiles.monospace.name};
+        font-family: ${config.fontProfiles.regular.name};
       	background-image: none;
       	transition: 20ms;
       }

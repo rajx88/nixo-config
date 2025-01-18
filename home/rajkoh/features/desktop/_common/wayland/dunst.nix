@@ -15,7 +15,7 @@
         alignment = "center";
         corner_radius = 16;
         follow = "mouse";
-        font = config.fontProfiles.monospace.name;
+        font = config.fontProfiles.regular.name;
         format = "<b>%s</b>\\n%b";
         frame_width = 1;
         offset = "5x5";
