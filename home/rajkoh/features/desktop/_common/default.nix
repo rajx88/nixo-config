@@ -2,6 +2,7 @@
   imports = [
     ./1password.nix
     ./alacritty
+    ./ghostty
     ./firefox.nix
     ./fonts.nix
     ./gtk.nix
