@@ -21,10 +21,15 @@
 
   fontProfiles = {
     enable = true;
+    # monospace = {
+    #   name = "Tamsyn";
+    #   size = 12;
+    #   package = pkgs.tamsyn;
+    # };
     monospace = {
-      name = "Tamsyn";
+      name = "Comic Mono";
       size = 12;
-      package = pkgs.tamsyn;
+      package = pkgs.comic-mono;
     };
     regular = {
       name = "FiraCode Nerd Font Ret";

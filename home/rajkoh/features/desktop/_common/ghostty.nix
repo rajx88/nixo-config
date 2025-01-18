@@ -4,9 +4,9 @@
     enableZshIntegration = true;
     settings = {
       term = "xterm-256color";
+      theme = "rose-pine";
       # theme = Fairyfloss
       # theme = heeler
-      theme = "rose-pine";
       # theme = catppuccin-macchiato
       # theme = Aura
       # theme = flow-pink
@@ -14,7 +14,7 @@
 
       mouse-hide-while-typing = true;
       window-decoration = false;
-      background-opacity = 0.8;
+      background-opacity = 0.75;
 
       font-family = "${config.fontProfiles.monospace.name}";
       font-size = config.fontProfiles.monospace.size;
