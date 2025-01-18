@@ -1,4 +1,4 @@
-{
+{config, ...}: {
   programs.ghostty = {
     enable = true;
     enableZshIntegration = true;
@@ -13,16 +13,16 @@
       # theme = Builtin Pastel Dark
 
       mouse-hide-while-typing = true;
-      # window-decoration = false
-      background-opacity = 0.9;
+      window-decoration = false;
+      background-opacity = 0.8;
 
-      font-family = "ProggyVector";
-      font-size = 12;
+      font-family = "${config.fontProfiles.monospace.name}";
+      font-size = config.fontProfiles.monospace.size;
 
       keybind = [
         # splits
-        "ctrl+shift+\=new_split:right"
-        "ctrl+shift+-=new_split:down"
+        "ctrl+shift+backslash=new_split:right"
+        "ctrl+shift+minus=new_split:down"
         # navigation
         "ctrl+shift+h=goto_split:left"
         "ctrl+shift+j=goto_split:bottom"

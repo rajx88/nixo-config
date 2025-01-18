@@ -6,16 +6,17 @@
     # openmoji-black
     symbola
     proggyfonts
-    # nerd-fonts
+    nerd-fonts.fira-code
+    nerd-fonts.caskaydia-mono
   ];
 
-  fonts.fontconfig = {
-    enable = true;
-    defaultFonts = {
-      monospace = ["proggyfonts"];
-      emoji = ["twemoji-color-font"];
-    };
-  };
+  # fonts.fontconfig = {
+  #   enable = true;
+  #   defaultFonts = {
+  #     monospace = ["proggyfonts"];
+  #     emoji = ["twemoji-color-font"];
+  #   };
+  # };
 
   fontProfiles = {
     enable = true;
@@ -23,7 +24,7 @@
       # family = "OpenDyslexicM Nerd Font Mono";
       # family = "SauceCodePro Nerd Font Mono";
       # family = "CaskaydiaMono Nerd Font Mono";
-      name = "proggyfonts";
+      name = "ProggyVector";
       size = 12;
       # package = pkgs.nerd-fonts.override {fonts = ["CascadiaCode" "Hack" "DejaVuSansMono"];};
       # package = pkgs.nerd-fonts;
