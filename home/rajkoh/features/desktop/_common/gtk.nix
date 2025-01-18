@@ -19,7 +19,7 @@
       package = pkgs.rose-pine-icon-theme;
     };
     font = {
-      name = config.fontProfiles.monospace.family;
+      name = config.fontProfiles.monospace.name;
       size = 12;
     };
   };

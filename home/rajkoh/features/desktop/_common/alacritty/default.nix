@@ -15,15 +15,15 @@
         # size = 10;
 
         normal = {
-          family = "${config.fontProfiles.monospace.family}";
+          family = "${config.fontProfiles.monospace.name}";
           style = "Regular";
         };
         bold = {
-          family = "${config.fontProfiles.monospace.family}";
+          family = "${config.fontProfiles.monospace.name}";
           style = "Bold";
         };
         italic = {
-          family = "${config.fontProfiles.monospace.family}";
+          family = "${config.fontProfiles.monospace.name}";
           style = "Italic";
         };
       };

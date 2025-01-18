@@ -23,13 +23,15 @@
       # family = "OpenDyslexicM Nerd Font Mono";
       # family = "SauceCodePro Nerd Font Mono";
       # family = "CaskaydiaMono Nerd Font Mono";
-      family = "proggyfonts";
+      name = "proggyfonts";
+      size = 12;
       # package = pkgs.nerd-fonts.override {fonts = ["CascadiaCode" "Hack" "DejaVuSansMono"];};
       # package = pkgs.nerd-fonts;
       package = pkgs.proggyfonts;
     };
     regular = {
-      family = "proggyfonts";
+      name = "proggyfonts";
+      size = 12;
       package = pkgs.proggyfonts;
     };
   };
