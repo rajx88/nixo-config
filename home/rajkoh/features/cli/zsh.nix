@@ -183,7 +183,7 @@ in {
         {name = "zsh-users/zsh-completions";}
         {name = "romkatv/zsh-defer";}
         {name = "mafredri/zsh-async, from:github";}
-        {name = "sindresorhus/pure, use:pure.zsh, from:github, as:theme";}
+        # {name = "sindresorhus/pure, use:pure.zsh, from:github, as:theme";}
         # {name = "plugins/command-not-found, from:oh-my-zsh, as:plugin";}
         # { name = "olets/zsh-abbr"; }
         # {name = "Tarrasch/zsh-bd"; }

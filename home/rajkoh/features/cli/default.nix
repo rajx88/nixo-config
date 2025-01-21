@@ -10,7 +10,7 @@
     ./nvim
     # ./pure.nix
     ./ssh.nix
-    # ./starship
+    ./starship
     # ./tmux.nix
     ./zoxide.nix
     ./zellij.nix
