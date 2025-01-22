@@ -36,17 +36,17 @@
     git.enable = true;
   };
 
-  # xdg = {
-  #   enable = true;
-  #   userDirs = {
-  #     enable = true;
-  #     createDirectories = true;
-  #     extraConfig = {
-  #       # XDG_GAMES_DIR = "${config.home.homeDirectory}/games";
-  #       XDG_CODE_DIR = "${config.home.homeDirectory}/code";
-  #     };
-  #   };
-  # };
+  xdg = {
+    enable = true;
+    # userDirs = {
+    #   enable = true;
+    #   createDirectories = true;
+    #   extraConfig = {
+    #     # XDG_GAMES_DIR = "${config.home.homeDirectory}/games";
+    #     XDG_CODE_DIR = "${config.home.homeDirectory}/code";
+    #   };
+    # };
+  };
 
   home = {
     username = lib.mkDefault "rajkoh";
