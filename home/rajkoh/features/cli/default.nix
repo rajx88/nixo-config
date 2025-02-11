@@ -7,6 +7,7 @@
     ./fish.nix
     ./git.nix
     ./gpg.nix
+    ./just.nix
     ./nvim
     # ./pure.nix
     ./ssh.nix
