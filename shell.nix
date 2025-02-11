@@ -22,6 +22,8 @@
       alejandra
 
       python3
+
+      just
     ];
   };
 }
