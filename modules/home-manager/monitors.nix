@@ -33,6 +33,10 @@ in {
             type = types.str;
             default = "auto";
           };
+          vertical = mkOption {
+            type = types.str;
+            default = "0";
+          };
           enabled = mkOption {
             type = types.bool;
             default = true;

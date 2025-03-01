@@ -30,7 +30,7 @@
       ++ (map (
         m: "${m.name},${
           if m.enabled
-          then "${toString m.width}x${toString m.height}@${toString m.refreshRate},${m.position},1"
+          then "${toString m.width}x${toString m.height}@${toString m.refreshRate}, ${m.position}, 1, transform, ${m.vertical}"
           else "disable"
         }"
       ) (config.monitors));
