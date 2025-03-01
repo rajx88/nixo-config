@@ -43,11 +43,12 @@
   monitors = [
     {
       name = "HDMI-A-1";
-      width = 2560;
-      height = 1440;
+      width = 1440;
+      height = 2560;
       refreshRate = 60;
       position = "auto-left";
       workspace = "1";
+      vertical = "1";
     }
     {
       name = "DP-1";
@@ -67,4 +68,31 @@
       workspace = "3";
     }
   ];
+  # monitors = [
+  #   {
+  #     name = "HDMI-A-1";
+  #     width = 2560;
+  #     height = 1440;
+  #     refreshRate = 60;
+  #     position = "auto-left";
+  #     workspace = "1";
+  #   }
+  #   {
+  #     name = "DP-1";
+  #     width = 2560;
+  #     height = 1440;
+  #     refreshRate = 240;
+  #     workspace = "2";
+  #     position = "auto";
+  #     primary = true;
+  #   }
+  #   {
+  #     name = "DP-2";
+  #     width = 2560;
+  #     height = 1440;
+  #     refreshRate = 240;
+  #     position = "auto-right";
+  #     workspace = "3";
+  #   }
+  # ];
 }
