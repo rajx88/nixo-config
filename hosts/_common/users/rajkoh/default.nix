@@ -37,5 +37,9 @@ in {
   # homemanager module
   home-manager.users.rajkoh = import ../../../../home/rajkoh/${config.networking.hostName}.nix;
 
-  security.pam.services = {swaylock = {};};
+  security.pam.services = {
+    swaylock = {
+      enableGnomeKeyring = true;
+    };
+  };
 }
