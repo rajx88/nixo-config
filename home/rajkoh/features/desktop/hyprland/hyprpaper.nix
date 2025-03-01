@@ -6,28 +6,18 @@
   wallpaperDir = "${config.xdg.dataHome}/wallpapers";
 in {
   xdg.configFile."hypr/hyprpaper.conf".text = ''
-    preload = ${wallpaperDir}/bg-1.jpg
-    preload = ${wallpaperDir}/bg-2.jpg
-    preload = ${wallpaperDir}/bg-3.jpg
-    preload = ${wallpaperDir}/bg-4.jpg
-    preload = ${wallpaperDir}/bg-5.jpg
-    preload = ${wallpaperDir}/bg-6.jpg
-    preload = ${wallpaperDir}/bg-7.jpg
-    preload = ${wallpaperDir}/bg-8.jpg
-    preload = ${wallpaperDir}/bg-9.jpg
-    preload = ${wallpaperDir}/bg-10.jpg
-    preload = ${wallpaperDir}/bg-11.jpg
-    preload = ${wallpaperDir}/bg-12.jpg
-    preload = ${wallpaperDir}/bg-13.jpg
-    preload = ${wallpaperDir}/bg-14.jpg
-    preload = ${wallpaperDir}/bg-15.jpg
-    preload = ${wallpaperDir}/bg-16.png
-    # preload = ${wallpaperDir}/bg-17.png
+    preload = ${wallpaperDir}/wall-01.jpg
 
     # set the default wallpaper(s) seen on inital workspace(s) --depending on the number of monitors used
-    wallpaper = ,${wallpaperDir}/bg-1.jpg
+    wallpaper = ,${wallpaperDir}/wall-01.jpg
 
   '';
+
+  xdg.configFile."hypr" = {
+    recursive = true;
+    source = ./scripts;
+    target = "hypr/scripts";
+  };
 
   home = {
     sessionVariables = {
@@ -39,7 +29,12 @@ in {
   };
 
   wayland.windowManager.hyprland.settings = {
-    exec = [
+    bind = let
+      script = "${config.xdg.configHome}/hypr/scripts/hypr-paper-changer.sh";
+    in [
+      "$mod SHIFT,r,exec, ${script}"
+    ];
+    exec-once = [
       "${pkgs.hyprpaper}/bin/hyprpaper"
     ];
   };

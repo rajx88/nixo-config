@@ -27,7 +27,7 @@ in {
       "$mod SHIFT,r,exec, ${script} -d ${wallpaperDir}"
     ];
 
-    exec = [
+    exec-once = [
       "${pkgs.swaybg}/bin/swaybg -i ${wallpaperDir}/wall-01.jpg -m fill"
     ];
   };

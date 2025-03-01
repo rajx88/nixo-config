@@ -9,7 +9,8 @@
     ../_common
     ../_common/wayland
 
-    ./swaybg.nix
+    # ./swaybg.nix
+    ./hyprpaper.nix
 
     ./config/basic-binds.nix
     ./config/binds.nix
@@ -49,7 +50,7 @@
         gaps_in = 8;
         gaps_out = 8;
         border_size = 2;
-        layout = "master";
+        layout = "dwindle";
       };
 
       dwindle = {

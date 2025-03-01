@@ -1,8 +1,30 @@
-{pkgs, ...}: {
-  services.greetd = {
-    enable = true;
-    settings.default_session.command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd Hyprland";
-  };
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
+  homeCfgs = config.home-manager.users;
+  homeSharePaths = lib.mapAttrsToList (_: v: "${v.home.path}/share") homeCfgs;
+  vars = ''XDG_DATA_DIRS="$XDG_DATA_DIRS:${lib.concatStringsSep ":" homeSharePaths}" GTK_USE_PORTAL=0'';
+
+  conf = homeCfgs.rajkoh;
+
+  sway-kiosk = command: "${lib.getExe pkgs.sway} --unsupported-gpu --config ${pkgs.writeText "kiosk.config" ''
+    output * bg ${wallpaperDir}/wall-01.jpg fill
+    xwayland disable
+    input "type:touchpad" {
+      tap enabled
+    }
+    exec '${vars} ${command}; ${pkgs.sway}/bin/swaymsg exit'
+  ''}";
+
+  wallpaperDir = "${conf.xdg.dataHome}/wallpapers";
+in {
+  # services.greetd = {
+  #   enable = true;
+  #   settings.default_session.command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --cmd Hyprland";
+  # };
 
   security.pam.services.greetd.enableGnomeKeyring = true;
 
@@ -16,45 +38,23 @@
   #   Hyprland
   # '';
 
-  # programs.regreet = {
-  #   enable = true;
-  #   settings = builtins.fromTOML ''
-  #     [background]
-  #     # Path to the background image
-  #     path = "/usr/share/backgrounds/greeter.jpg"
-  #
-  #     # How the background image covers the screen if the aspect ratio doesn't match
-  #     # Available values: "Fill", "Contain", "Cover", "ScaleDown"
-  #     # Refer to: https://docs.gtk.org/gtk4/enum.ContentFit.html
-  #     # NOTE: This is ignored if ReGreet isn't compiled with GTK v4.8 support.
-  #     fit = "Contain"
-  #
-  #     # The entries defined in this section will be passed to the session as environment variables when it is started
-  #     [env]
-  #     # ENV_VARIABLE = "value"
-  #
-  #     [GTK]
-  #     # Whether to use the dark theme
-  #     application_prefer_dark_theme = true
-  #
-  #     # Cursor theme name
-  #     cursor_theme_name = "Adwaita"
-  #
-  #     # Font name and size
-  #     font_name = "Cantarell 16"
-  #
-  #     # Icon theme name
-  #     icon_theme_name = "Adwaita"
-  #
-  #     # GTK theme name
-  #     theme_name = "Adwaita"
-  #
-  #     [commands]
-  #     # The command used to reboot the system
-  #     reboot = [ "systemctl", "reboot" ]
-  #
-  #     # The command used to shut down the system
-  #     poweroff = [ "systemctl", "poweroff" ]
-  #   '';
-  # };
+  services.greetd = {
+    enable = true;
+    settings.default_session.command = sway-kiosk (lib.getExe config.programs.regreet.package);
+  };
+
+  programs.regreet = {
+    enable = true;
+    iconTheme = conf.gtk.iconTheme;
+    theme = conf.gtk.theme;
+    font = conf.fontProfiles.regular;
+    # cursorTheme = {
+    #   inherit (conf.gtk.cursorTheme) name package;
+    # };
+
+    settings.background = {
+      path = "${wallpaperDir}/wall-01.jpg";
+      fit = "Fill";
+    };
+  };
 }
