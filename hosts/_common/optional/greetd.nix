@@ -19,6 +19,19 @@
     exec '${vars} ${command}; ${pkgs.sway}/bin/swaymsg exit'
   ''}";
 
+  hyprctl = "${conf.wayland.windowManager.hyprland.package}/bin/hyprctl";
+
+  hyprland-kiosk = command: ''
+    ${lib.getExe pkgs.hyprland} --config ${pkgs.writeText "hyprland.conf" ''
+      exec-once = ${command}; ${hyprctl} dispatch exit
+      misc {
+          disable_hyprland_logo = true
+          disable_splash_rendering = true
+          disable_hyprland_qtutils_check = true
+      }
+    ''}
+  '';
+
   wallpaperDir = "${conf.xdg.dataHome}/wallpapers";
 in {
   # services.greetd = {
