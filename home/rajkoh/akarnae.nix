@@ -38,15 +38,24 @@
   };
 
   #  ------   -----   ------
-  # | HDMI | | DP-2| | DP-1 |
+  # | HDMI | | DP-1| | DP-2 |
   #  ------   -----   ------
   monitors = [
+    {
+      name = "DP-1";
+      width = 2560;
+      height = 1440;
+      refreshRate = 240;
+      workspace = "2";
+      position = "0x0";
+      primary = true;
+    }
     # vertical setup
     # {
     #   name = "HDMI-A-1";
     #   width = 1440;
     #   height = 2560;
-    #   refreshRate = 60;
+    #   refreshRate = 144;
     #   position = "auto-left";
     #   workspace = "1";
     #   vertical = "1";
@@ -59,15 +68,7 @@
       position = "auto-left";
       workspace = "1";
     }
-    {
-      name = "DP-1";
-      width = 2560;
-      height = 1440;
-      refreshRate = 240;
-      workspace = "2";
-      position = "auto";
-      primary = true;
-    }
+
     {
       name = "DP-2";
       width = 2560;
