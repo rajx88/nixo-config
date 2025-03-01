@@ -9,6 +9,7 @@
     ./playerctl.nix
     ./qt.nix
     ./wallpapers
+    ./keyring.nix
   ];
   xdg.portal.enable = true;
 
