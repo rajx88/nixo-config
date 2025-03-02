@@ -10,7 +10,7 @@
 
     ./features/desktop/optional/discord
     ./features/desktop/optional/spotify.nix
-    ./features/desktop/optional/whatsapp.nix
+    # ./features/desktop/optional/whatsapp.nix
     ./features/desktop/optional/thunderbird.nix
 
     # not working for some reason

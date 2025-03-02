@@ -117,7 +117,7 @@ in
             ];
 
           persistence."/persist" = {
-            hideMounts = true;
+            # hideMounts = true;
             directories =
               [
                 "/var/lib/systemd"
@@ -126,7 +126,11 @@ in
                 "/srv"
               ]
               ++ cfg_impermanence.directories;
-            files = cfg_impermanence.files;
+            files =
+              [
+                "/etc/machine-id"
+              ]
+              ++ cfg_impermanence.files;
           };
         };
 
