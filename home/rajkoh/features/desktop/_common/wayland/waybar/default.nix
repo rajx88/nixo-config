@@ -21,10 +21,6 @@ in {
     ./theme.nix
   ];
 
-  home.packages = with pkgs; [
-    chromium
-  ];
-
   programs.waybar = {
     enable = true;
     package = pkgs.waybar.overrideAttrs (oa: {

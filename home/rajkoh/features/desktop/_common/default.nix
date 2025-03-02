@@ -4,6 +4,7 @@
     ./alacritty
     ./ghostty.nix
     ./firefox.nix
+    ./chromium.nix
     ./fonts.nix
     ./gtk.nix
     ./playerctl.nix

@@ -48,7 +48,7 @@
     sessionVariables = {
       FLAKE = "$HOME/code/nixos-config";
       TERM = "ghostty";
-      BROWSER = "firefox";
+      BROWSER = "brave";
     };
 
     persistence = {

@@ -17,9 +17,7 @@
   xdg-mime = "${pkgs.xdg-utils}/bin/xdg-mime";
   defaultApp = type: "${gtk-launch} $(${xdg-mime} query default ${type})";
 
-  chromium = "${config.programs.chromium.package}/bin/chromium";
-
-  browser = "${config.programs.firefox.package}/bin/firefox";
+  browser = defaultApp "x-scheme-handler/https";
   terminal = "${config.programs.ghostty.package}/bin/ghostty";
 in {
   programs.waybar = {
