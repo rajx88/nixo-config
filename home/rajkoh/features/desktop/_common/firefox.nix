@@ -10,13 +10,13 @@
     };
   };
 
-  xdg.mimeApps.defaultApplications = {
-    "image/*" = ["firefox.desktop"];
-    "text/html" = ["firefox.desktop"];
-    "text/xml" = ["firefox.desktop"];
-    "x-scheme-handler/http" = ["firefox.desktop"];
-    "x-scheme-handler/https" = ["firefox.desktop"];
-  };
+  # xdg.mimeApps.defaultApplications = {
+  #   "image/*" = ["firefox.desktop"];
+  #   "text/html" = ["firefox.desktop"];
+  #   "text/xml" = ["firefox.desktop"];
+  #   "x-scheme-handler/http" = ["firefox.desktop"];
+  #   "x-scheme-handler/https" = ["firefox.desktop"];
+  # };
 
   home.persistence = {
     "/persist/home/rajkoh".directories = [".mozilla/firefox"];
