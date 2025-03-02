@@ -2,11 +2,13 @@
   description = "nixos configuration";
 
   inputs = {
-    # Nixpkgs
+    # Nix ecosystem
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.11";
+    systems.url = "github:nix-systems/default-linux";
 
-    impermanence.url = "github:nix-community/impermanence";
     hardware.url = "github:nixos/nixos-hardware";
+    impermanence.url = "github:nix-community/impermanence";
 
     # Home manager
     home-manager = {
@@ -23,16 +25,6 @@
     #  url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
     #  inputs.nixpkgs.follows = "nixpkgs";
     #};
-
-    nh = {
-      url = "github:viperml/nh";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    alejandra = {
-      url = "github:kamadorueda/alejandra/3.0.0";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs = {
@@ -40,45 +32,32 @@
     nixpkgs,
     home-manager,
     disko,
-    alejandra,
+    systems,
     ...
   } @ inputs: let
     inherit (self) outputs;
 
     lib = nixpkgs.lib // home-manager.lib;
-    systems = [
-      "aarch64-linux"
-      "i686-linux"
-      "x86_64-linux"
-      "aarch64-darwin"
-      "x86_64-darwin"
-    ];
-
-    eachSystem = f: lib.genAttrs systems (system: f pkgsFor.${system});
-    pkgsFor = lib.genAttrs systems (system:
-      import nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
-      });
+    forEachSystem = f: lib.genAttrs (import systems) (system: f pkgsFor.${system});
+    pkgsFor = lib.genAttrs (import systems) (
+      system:
+        import nixpkgs {
+          inherit system;
+          config.allowUnfree = true;
+        }
+    );
   in {
     inherit lib;
-    # Your custom packages
-    # Accessible through 'nix build', 'nix shell', etc
-    packages = eachSystem (system: import ./pkgs nixpkgs.legacyPackages.${system});
-    # Formatter for your nix files, available through 'nix fmt'
-    # Other options beside 'alejandra' include 'nixpkgs-fmt'
-    formatter = eachSystem (system: nixpkgs.legacyPackages.${system}.alejandra);
 
-    # Your custom packages and modifications, exported as overlays
-    overlays = import ./overlays {inherit inputs;};
-    # Reusable nixos modules you might want to export
-    # These are usually stuff you would upstream into nixpkgs
     nixosModules = import ./modules/nixos;
-    # Reusable home-manager modules you might want to export
-    # These are usually stuff you would upstream into home-manager
     homeManagerModules = import ./modules/home-manager;
 
-    devShells = eachSystem (pkgs: import ./shell.nix {inherit pkgs;});
+    overlays = import ./overlays {inherit inputs outputs;};
+    hydraJobs = import ./hydra.nix {inherit inputs outputs;};
+
+    packages = forEachSystem (pkgs: import ./pkgs {inherit pkgs;});
+    devShells = forEachSystem (pkgs: import ./shell.nix {inherit pkgs;});
+    formatter = forEachSystem (pkgs: pkgs.alejandra);
 
     # NixOS configuration entrypoint
     # Available through 'nixos-rebuild --flake .#your-hostname'
@@ -97,21 +76,21 @@
     # Available through 'home-manager --flake .#your-username@your-hostname'
     homeConfigurations = {
       "rajkoh@akarnae" = lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        pkgs = pkgsFor.x86_64-linux;
         extraSpecialArgs = {inherit inputs outputs;};
         modules = [
           ./home/rajkoh/akarnae.nix
         ];
       };
       "rickoh@arch" = lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        pkgs = pkgsFor.x86_64-linux;
         extraSpecialArgs = {inherit inputs outputs;};
         modules = [
           ./home/rickoh/generic.nix
         ];
-      };      
+      };
       "appeltaartu@wsl" = lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        pkgs = pkgsFor.x86_64-linux;
         extraSpecialArgs = {inherit inputs outputs;};
         modules = [
           ./home/appeltaartu/generic.nix
