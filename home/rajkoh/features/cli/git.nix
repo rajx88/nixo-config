@@ -39,8 +39,8 @@
         contentSuffix = "prvt-gitconfig";
         contents = {
           user = {
-            email = "rajkohlen@gmail.com";
-            name = "rajkohlen";
+            email = "rajkoh@rajkoh.dev";
+            name = "rajkoh";
           };
 
           core.sshCommand = "ssh -i ${config.home.homeDirectory}/.ssh/id_ed25519";
