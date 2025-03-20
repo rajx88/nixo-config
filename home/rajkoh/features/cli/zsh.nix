@@ -125,7 +125,7 @@ in {
       grep = "grep --color";
 
       # gradle related
-      gw = "./gradlew --parallel";
+      gw = "./gradlew";
     };
 
     zsh-abbr = {
@@ -170,7 +170,7 @@ in {
         gwcheck = "gw checkstyleMain pmdMain spotbugsMain --continue";
         gwcc = "gw clean checkstyleMain pmdMain spotbugsMain --continue";
         gwc = "gw clean compileJava";
-        gwp = "gw clean publishToMavenLocal";
+        gwp = "gw --no-configuration-cache clean publishToMavenLocal";
       };
     };
 
