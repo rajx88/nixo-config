@@ -56,9 +56,6 @@
 
       # re-number windows when one is closed
       set -g renumber-windows on
-      # Allow automatic renaming of windows
-      set -g allow-rename on
-      set -g automatic-rename on
 
       ############################
       ####        binds       ####
@@ -71,6 +68,13 @@
 
       # bind control Y to sync panes
       bind C-Y set-window-option synchronize-panes
+
+      # Easier and faster switching between next/prev window
+      bind C-p previous-window
+      bind C-n next-window
+
+      # Source .tmux.conf as suggested in `man tmux`
+      bind R source-file '~/.config/tmux/tmux.conf'
 
       ###################################
       ####        vim keybinds       ####
