@@ -1,7 +1,26 @@
 {pkgs, ...}: {
-  # programs.sesh = {
-  #   enable = true;
-  # };
+  programs.fzf = {
+    enable = true;
+    tmux.enableShellIntegration = true;
+  };
+
+  programs.sesh = {
+    enable = true;
+    enableAlias = false;
+    tmuxKey = "C-f";
+    enableTmuxIntegration = false;
+  };
+
+  programs.zsh = {
+    zsh-abbr.abbreviations = {
+      s = "sesh";
+    };
+  };
+
+  home.packages = with pkgs; [
+    gum
+  ];
+
   programs.tmux = {
     enable = true;
     clock24 = false;
@@ -12,7 +31,7 @@
     newSession = false;
     # Stop tmux+escape craziness.
     escapeTime = 0;
-    keyMode = "vi";
+    # keyMode = "vi";
     mouse = true;
 
     extraConfig = ''
@@ -52,6 +71,27 @@
       # Easier and faster switching between next/prev window
       bind C-p previous-window
       bind C-n next-window
+
+      # adding sesh options
+
+      bind-key x kill-pane # skip "kill-pane 1? (y/n)" prompt
+      set -g detach-on-destroy off  # don't exit from tmux when closing a session
+
+      bind-key "C-k" display-popup -E -w 40% "sesh connect "$( sesh list -i | gum filter --limit 1 --no-sort --fuzzy --placeholder 'Pick a sesh' --height 50 --prompt='⚡ ')\""
+
+      bind-key "T" run-shell "sesh connect \"$(sesh list --icons | fzf-tmux -p 80%,70% \
+        --no-sort --ansi --border-label ' sesh ' --prompt '⚡  ' \
+        --header '  ^a all ^t tmux ^g configs ^x zoxide ^d tmux kill ^f find' \
+        --bind 'tab:down,btab:up' \
+        --bind 'ctrl-a:change-prompt(⚡  )+reload(sesh list --icons)' \
+        --bind 'ctrl-t:change-prompt(🪟  )+reload(sesh list -t --icons)' \
+        --bind 'ctrl-g:change-prompt(⚙️  )+reload(sesh list -c --icons)' \
+        --bind 'ctrl-x:change-prompt(📁  )+reload(sesh list -z --icons)' \
+        --bind 'ctrl-f:change-prompt(🔎  )+reload(fd -H -d 2 -t d -E .Trash . ~)' \
+        --bind 'ctrl-d:execute(tmux kill-session -t {2..})+change-prompt(⚡  )+reload(sesh list --icons)' \
+        --preview-window 'right:55%' \
+        --preview 'sesh preview {}'
+      )\""
 
     '';
   };
