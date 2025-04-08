@@ -1,43 +1,45 @@
 {pkgs, ...}: {
+  # programs.sesh = {
+  #   enable = true;
+  # };
   programs.tmux = {
     enable = true;
     clock24 = false;
 
-    prefix = "M-f";
+    prefix = "C-a";
 
     baseIndex = 1;
-    newSession = true;
+    newSession = false;
     # Stop tmux+escape craziness.
     escapeTime = 0;
     keyMode = "vi";
     mouse = true;
 
-    plugins = with pkgs; [
-      # set some default keybindings, e.g. prefix + r for reload
-      # for more information go to https://github.com/tmux-plugins/tmux-sensible
-      tmuxPlugins.sensible
-      # resurrect and continuum
-      tmuxPlugins.resurrect
-      {
-        plugin = tmuxPlugins.continuum;
-        extraConfig = ''
-          set -g @continuum-restore 'on'
-          set -g @continuum-save-interval '60' # minutes
-        '';
-      }
-      tmuxPlugins.vim-tmux-navigator
-      tmuxPlugins.yank
-      tmuxPlugins.open
+    # plugins = with pkgs; [
+    # set some default keybindings, e.g. prefix + r for reload
+    # for more information go to https://github.com/tmux-plugins/tmux-sensible
+    # tmuxPlugins.sensible
+    # resurrect and continuum
+    # tmuxPlugins.resurrect
+    # {
+    #   plugin = tmuxPlugins.continuum;
+    #   extraConfig = ''
+    #     set -g @continuum-restore 'on'
+    #     set -g @continuum-save-interval '60' # minutes
+    #   '';
+    # }
+    # tmuxPlugins.vim-tmux-navigator
+    # tmuxPlugins.open
 
-      # styling
-      {
-        plugin = tmuxPlugins.catppuccin;
-        extraConfig = ''
-          set -g @catppuccin_flavour 'mocha'
-          set -g @catppuccin_pill_theme_enabled on
-        '';
-      }
-    ];
+    # styling
+    # {
+    #   plugin = tmuxPlugins.catppuccin;
+    #   extraConfig = ''
+    #     set -g @catppuccin_flavour 'mocha'
+    #     set -g @catppuccin_pill_theme_enabled on
+    #   '';
+    # }
+    # ];
 
     extraConfig = ''
 
@@ -73,11 +75,13 @@
       ###################################
       ####        vim keybinds       ####
       ###################################
-      # act like vim
-      bind h select-pane -L
-      bind j select-pane -D
-      bind k select-pane -U
-      bind l select-pane -R
+
+      set-window-option -g mode-keys vi
+      bind -r ^ last-window
+      bind -r k select-pane -U
+      bind -r j select-pane -D
+      bind -r h select-pane -L
+      bind -r l select-pane -R
 
       bind -T copy-mode-vi v send-keys -X begin-selection
       bind -T copy-mode-vi C-v send-keys -X rectangle-toggle
