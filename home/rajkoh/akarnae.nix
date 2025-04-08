@@ -61,10 +61,13 @@
     # }
     {
       name = "HDMI-A-1";
-      width = 2560;
-      height = 1440;
+      # width = 2560;
+      # height = 1440;
+      width = 1440;
+      height = 2560;
       refreshRate = 60;
       position = "auto-left";
+      vertical = "1";
       workspace = "1";
     }
 
