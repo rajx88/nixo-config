@@ -1,6 +1,7 @@
 {
   lib,
   config,
+  pkgs,
   ...
 }: let
   inherit (lib) mkIf;
@@ -15,6 +16,48 @@ in {
       ".local/completions"
     ];
   };
+
+  home.packages = with pkgs; [
+    sheldon
+  ];
+
+  home.file.".config/sheldon/plugins.toml".text = ''
+
+    shell = "zsh"
+
+    [plugins]
+    [plugins.zsh-defer]
+    github = "romkatv/zsh-defer"
+    apply = ["source"]
+
+    [plugins.zsh-async]
+    github = "mafredri/zsh-async"
+
+    [plugins.zsh-completions]
+    github = "zsh-users/zsh-completions"
+    apply = ["defer"]
+
+    [plugins.zsh-autosuggestions]
+    github = "zsh-users/zsh-autosuggestions"
+    use = ["{{ name }}.zsh"]
+    apply = ["defer"]
+
+    [plugins.fast-syntax-highlighting]
+    github = "zdharma-continuum/fast-syntax-highlighting"
+    use = ["fast-syntax-highlighting.plugin.zsh"]
+    apply = ["defer"]
+
+    [plugins.zsh-history-substring-search]
+    github = "zsh-users/zsh-history-substring-search"
+    apply = ["defer"]
+
+    #
+    # [plugins.spaceship]
+    # github = "spaceship-prompt/spaceship-prompt"
+
+    [templates]
+    defer = "{{ hooks?.pre | nl }}{% for file in files %}zsh-defer source \"{{ file }}\"\n{% endfor %}{{ hooks?.post | nl }}"
+  '';
 
   programs.zsh = {
     enable = true;
@@ -62,6 +105,9 @@ in {
     '';
 
     initExtra = ''
+      if which sheldon &>/dev/null; then
+        eval "$(sheldon source)"
+      fi
 
       bindkey -M emacs "^[[3~" delete-char
       bindkey -M viins "^[[3~" delete-char
@@ -88,10 +134,10 @@ in {
 
       if [[ -d $ZSH_INCLUDES ]]; then
       for file in $ZSH_INCLUDES/*.zsh(DN); do
-      	if [[ -f $file && -r $file ]]; then
-      		# Source the file
-      		source $file
-      	fi
+      if [[ -f $file && -r $file ]]; then
+      # Source the file
+      source $file
+      fi
       done
       fi
     '';
@@ -129,7 +175,7 @@ in {
     };
 
     zsh-abbr = {
-      enable = true;
+      enable = false;
       # initExtra =
       abbreviations = {
         asdfup = "asdf plugin update --all";
@@ -174,20 +220,20 @@ in {
       };
     };
 
-    zplug = {
-      enable = true;
-      zplugHome = "${config.xdg.configHome}/zsh/zplug";
-      plugins = [
-        {name = "zsh-users/zsh-autosuggestions";}
-        {name = "zsh-users/zsh-syntax-highlighting";}
-        {name = "zsh-users/zsh-completions";}
-        {name = "romkatv/zsh-defer";}
-        {name = "mafredri/zsh-async, from:github";}
-        # {name = "sindresorhus/pure, use:pure.zsh, from:github, as:theme";}
-        # {name = "plugins/command-not-found, from:oh-my-zsh, as:plugin";}
-        # { name = "olets/zsh-abbr"; }
-        # {name = "Tarrasch/zsh-bd"; }
-      ];
-    };
+    # zplug = {
+    #   enable = false;
+    #   zplugHome = "${config.xdg.configHome}/zsh/zplug";
+    #   plugins = [
+    #     {name = "zsh-users/zsh-autosuggestions";}
+    #     {name = "zsh-users/zsh-syntax-highlighting";}
+    #     {name = "zsh-users/zsh-completions";}
+    #     {name = "romkatv/zsh-defer";}
+    #     {name = "mafredri/zsh-async, from:github";}
+    #     # {name = "sindresorhus/pure, use:pure.zsh, from:github, as:theme";}
+    #     # {name = "plugins/command-not-found, from:oh-my-zsh, as:plugin";}
+    #     # { name = "olets/zsh-abbr"; }
+    #     # {name = "Tarrasch/zsh-bd"; }
+    #   ];
+    # };
   };
 }
