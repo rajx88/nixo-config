@@ -33,6 +33,7 @@ return {
 
     cmp.setup {
       sources = {
+        { name = "supermaven" },
         { name = "nvim_lsp" },
         { name = "luasnip" }, -- For luasnip users.
         { name = "buffer" },
