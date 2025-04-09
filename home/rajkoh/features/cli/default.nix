@@ -15,6 +15,8 @@
     ./tmux.nix
     ./zoxide.nix
     # ./zellij.nix
+    # ./sheldon.nix
+    ./antidote.nix
     ./zsh.nix
   ];
 
