@@ -29,11 +29,6 @@
     impermanence.enable = true;
   };
 
-  environment = {
-    # needed for completion for system packages
-    pathsToLink = ["/share/zsh"];
-  };
-
   networking = {
     networkmanager.enable = true;
     hostName = "akarnae";
