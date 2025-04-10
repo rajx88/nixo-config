@@ -2,6 +2,7 @@ return {
   -- the colorscheme should be available when starting Neovim
   {
     "rose-pine/neovim",
+    enabled = false,
     name = "rose-pine",
     config = function()
       -- vim.cmd [[ colorscheme rose-pine ]]
@@ -9,6 +10,7 @@ return {
   },
   {
     "embark-theme/vim",
+    enabled = false,
     name = "embark",
     config = function()
       -- vim.cmd [[ colorscheme embark ]]
@@ -16,6 +18,7 @@ return {
   },
   {
     "0xstepit/flow.nvim",
+    enabled = false,
     lazy = false,
     priority = 1000,
     tag = "v2.0.1",
@@ -30,6 +33,7 @@ return {
   },
   {
     "maxmx03/fluoromachine.nvim",
+    enabled = false,
     lazy = false,
     priority = 1000,
     config = function()
@@ -46,6 +50,7 @@ return {
   },
   {
     "lunarvim/synthwave84.nvim",
+    enabled = false,
     lazy = false,
     priority = 1000,
     config = function()
@@ -67,6 +72,7 @@ return {
   },
   {
     "baliestri/aura-theme",
+    enabled = true,
     lazy = false,
     priority = 1000,
     config = function(plugin)
@@ -79,6 +85,7 @@ return {
   },
   {
     "rebelot/kanagawa.nvim",
+    enabled = false,
     lazy = false,
     priority = 1000,
     config = function()
