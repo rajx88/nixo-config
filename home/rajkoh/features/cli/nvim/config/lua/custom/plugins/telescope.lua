@@ -1,15 +1,12 @@
 return {
   "nvim-telescope/telescope.nvim",
+  enabled = false,
   branch = "0.1.x",
   dependencies = {
     "nvim-lua/plenary.nvim",
     { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
     "nvim-telescope/telescope-smart-history.nvim",
     "nvim-telescope/telescope-ui-select.nvim",
-    -- this is installed in the default.nix file in the main neovim directory.
-    -- because sqllite dependency is needed for the plugin
-    -- it retrieves the 'so' file from the nix store
-    --"kkharji/sqlite.lua",
   },
   config = function()
     local data = assert(vim.fn.stdpath "data") --[[@as string]]
@@ -18,10 +15,6 @@ return {
         wrap_results = true,
 
         fzf = {},
-        history = {
-          path = vim.fs.joinpath(data, "telescope_history.sqlite3"),
-          limit = 100,
-        },
         ["ui-select"] = {
           require("telescope.themes").get_dropdown {},
         },

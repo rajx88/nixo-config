@@ -77,7 +77,9 @@ return {
     priority = 1000,
     config = function(plugin)
       vim.opt.rtp:append(plugin.dir .. "/packages/neovim")
+      vim.cmd [[ set background=dark ]]
       vim.cmd [[ colorscheme aura-dark ]]
+      -- vim.cmd [[ colorscheme aura-dark ]]
       -- vim.cmd [[ colorscheme aura-dark-soft-text ]]
       -- vim.cmd [[ colorscheme aura-soft-dark ]]
       -- vim.cmd [[ colorscheme aura-soft-dark-soft-text ]]

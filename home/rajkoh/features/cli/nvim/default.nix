@@ -14,61 +14,64 @@
   #   stylua
   # ];
 
-  programs.neovim = {
-    enable = true;
-    viAlias = true;
-    vimAlias = true;
-    plugins = [
-      {
-        plugin = pkgs.vimPlugins.sqlite-lua;
-        config = "let g:sqlite_clib_path = '${pkgs.sqlite.out}/lib/libsqlite3.so'";
-      }
-    ];
-    extraPackages = with pkgs; [
-      # essentials
-      git
-      fzf
-      ripgrep
-      tree-sitter
-      fswatch # File watcher utility, replacing libuv.fs_event for neovim 10.0
-      lazygit
-      sqlite
+  programs = {
+    zsh = {
+      shellAliases = {
+        nvi = "nvim -u '$NVIM_CONF_NIX/init.lua'";
+      };
+      sessionVariables = {
+        NVIM_CONF_NIX = "$HOME/code/prvt/nixos-config/home/rajkoh/features/cli/nvim/config";
+      };
+    };
+    neovim = {
+      enable = true;
+      viAlias = true;
+      vimAlias = true;
+      extraPackages = with pkgs; [
+        # essentials
+        git
+        fzf
+        ripgrep
+        tree-sitter
+        fswatch # File watcher utility, replacing libuv.fs_event for neovim 10.0
+        lazygit
 
-      # build tools
-      #cargo
-      gcc
-      nodejs
+        # build tools
+        #cargo
+        gcc
+        nodejs
 
-      # LSP's and formatters
-      ## shell
-      nodePackages.bash-language-server
-      shellcheck
-      shfmt
+        # LSP's and formatters
+        ## shell
+        nodePackages.bash-language-server
+        shellcheck
+        shfmt
 
-      # java
-      jdt-language-server
+        # java
+        jdt-language-server
 
-      # go
-      gopls
-      gotools
-      gofumpt
+        # go
+        gopls
+        gotools
+        gofumpt
 
-      templ
+        templ
 
-      # nix
-      nil
-      alejandra
+        # nix
+        nil
+        alejandra
 
-      ## Lua
-      stylua
-      lua-language-server
-      # luajitPackages.luarocks-nix
+        ## Lua
+        stylua
+        lua-language-server
+        # luajitPackages.luarocks-nix
 
-      ## yaml json etc.
-      vscode-langservers-extracted
-      yaml-language-server
-      prettierd
-    ];
+        ## yaml json etc.
+        vscode-langservers-extracted
+        yaml-language-server
+        prettierd
+      ];
+    };
   };
 
   xdg = {
