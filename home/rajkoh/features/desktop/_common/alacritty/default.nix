@@ -11,6 +11,8 @@
         "${config.xdg.configHome}/alacritty/tokyonight-night.toml"
       ];
 
+      window.opacity = 0.85;
+
       font = {
         # size = 10;
 

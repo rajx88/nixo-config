@@ -5,16 +5,16 @@
     settings = {
       term = "xterm-256color";
       theme = "rose-pine";
-      # theme = Fairyfloss
-      # theme = heeler
-      # theme = catppuccin-macchiato
-      # theme = Aura
-      # theme = flow-pink
-      # theme = Builtin Pastel Dark
+      # theme = "Fairyfloss";
+      # theme = "heeler";
+      # theme = "catppuccin-macchiato";
+      # theme = "Aura";
+      # theme = "flow-pink";
+      # theme = "Builtin Pastel Dark";
 
       mouse-hide-while-typing = true;
       window-decoration = false;
-      background-opacity = 0.75;
+      background-opacity = 0.85;
 
       font-family = "${config.fontProfiles.monospace.name}";
       font-size = config.fontProfiles.monospace.size;
