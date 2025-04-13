@@ -5,6 +5,7 @@
     "/persist/home/rajkoh".directories = [
       ".config/nvim"
       ".local/share/nvim"
+      ".supermaven"
     ];
   };
 
