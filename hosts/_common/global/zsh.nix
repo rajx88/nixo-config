@@ -1,6 +1,7 @@
 {
   programs.zsh = {
     enable = true;
+    enableCompletion = false;
     shellAliases = {
       ll = "ls -al";
     };
