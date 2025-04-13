@@ -10,8 +10,6 @@
 
     ./features/desktop/optional/discord
     ./features/desktop/optional/spotify.nix
-    # ./features/desktop/optional/whatsapp.nix
-    ./features/desktop/optional/thunderbird.nix
 
     # not working for some reason
     # ./features/desktop/optional/obsidian.nix
@@ -19,12 +17,10 @@
 
     ./features/games
 
-    # ./features/pass
-
     ./features/desktop/optional/keymapp.nix
     ./features/dev/jetbrains-toolbox.nix
     ./features/dev/vscode.nix
-    ./features/dev/asdf.nix
+    ./features/dev/mise.nix
   ];
 
   home.sessionVariables = {
