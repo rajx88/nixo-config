@@ -196,7 +196,7 @@ elif [ "$remove" = true ]; then
 		for dir in "${to_remove[@]}"; do
 			echo "[REMOVE] Removing directory: $dir"
 			# Uncomment the next line to actually remove the directory
-			# rm -rf "$dir"
+			rm -rf "$dir"
 		done
 	fi
 fi
