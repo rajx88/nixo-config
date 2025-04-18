@@ -30,6 +30,7 @@
     MOZ_ENABLE_WAYLAND = 1;
     LIBSEAT_BACKEND = "logind";
     NIXOS_OZONE_WL = "1";
+    QT_QPA_PLATFORM = "wayland";
   };
 
   xdg.portal.extraPortals = [pkgs.xdg-desktop-portal-wlr];
