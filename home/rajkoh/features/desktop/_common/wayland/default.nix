@@ -28,7 +28,6 @@
 
   home.sessionVariables = {
     MOZ_ENABLE_WAYLAND = 1;
-    QT_QPA_PLATFORM = "wayland";
     LIBSEAT_BACKEND = "logind";
     NIXOS_OZONE_WL = "1";
   };
