@@ -85,7 +85,7 @@ return {
     },
     notifier = {
       enabled = true,
-      top_down = true, -- place notifications from top to bottom
+      top_down = false,
     },
     indent = {
       enable = true,
