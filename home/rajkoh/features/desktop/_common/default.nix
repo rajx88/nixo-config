@@ -8,7 +8,7 @@
     ./fonts.nix
     ./gtk.nix
     ./playerctl.nix
-    # ./qt.nix
+    ./qt.nix
     ./wallpapers
     ./keyring.nix
   ];
