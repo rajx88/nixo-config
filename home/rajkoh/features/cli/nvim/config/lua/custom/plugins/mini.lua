@@ -10,11 +10,5 @@ return {
     -- commenting magic
     require("mini.comment").setup()
     require("mini.icons").setup()
-    -- https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-operators.md
-    -- require("mini.operators").setup()
-    -- shows what lines has changed
-    -- require("mini.diff").setup()
-    -- indicates the indenting scope
-    -- require("mini.indentscope").setup()
   end,
 }

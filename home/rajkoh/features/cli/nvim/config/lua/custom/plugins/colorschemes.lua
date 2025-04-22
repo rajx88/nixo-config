@@ -5,7 +5,7 @@ return {
     enabled = false,
     name = "rose-pine",
     config = function()
-      -- vim.cmd [[ colorscheme rose-pine ]]
+      vim.cmd [[ colorscheme rose-pine ]]
     end,
   },
   {
@@ -77,7 +77,7 @@ return {
     priority = 1000,
     config = function(plugin)
       vim.opt.rtp:append(plugin.dir .. "/packages/neovim")
-      vim.cmd [[ set background=dark ]]
+      -- vim.cmd [[ set background=dark ]]
       vim.cmd [[ colorscheme aura-dark ]]
       -- vim.cmd [[ colorscheme aura-dark ]]
       -- vim.cmd [[ colorscheme aura-dark-soft-text ]]
@@ -92,6 +92,9 @@ return {
     priority = 1000,
     config = function()
       -- vim.cmd [[ colorscheme kanagawa]]
+      -- vim.cmd [[ colorscheme kanagawa-wave]]
+      -- vim.cmd [[ colorscheme kanagawa-dragon]]
+      -- vim.cmd [[ colorscheme kanagawa-lotus]]
     end,
   },
 }

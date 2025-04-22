@@ -19,8 +19,7 @@ opt.hlsearch = false
 opt.number = true
 opt.relativenumber = true
 
--- Enable mouse mode
---vim.o.mouse = 'a'
+vim.opt.cursorline = true
 
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
@@ -28,7 +27,7 @@ opt.relativenumber = true
 vim.o.clipboard = "unnamedplus"
 
 -- Enable break indent
---opt.breakindent = true
+opt.breakindent = true
 
 opt.swapfile = false
 opt.backup = false
@@ -39,8 +38,10 @@ opt.undofile = true
 opt.ignorecase = true
 opt.smartcase = true
 
-opt.scrolloff = 8
+opt.scrolloff = 10
 opt.signcolumn = "yes"
 
 -- Decrease update time
 opt.updatetime = 50
+
+vim.opt.confirm = true
