@@ -40,6 +40,7 @@
         cargo
         gcc
         nodejs
+        go
 
         # LSP's and formatters
         ## shell

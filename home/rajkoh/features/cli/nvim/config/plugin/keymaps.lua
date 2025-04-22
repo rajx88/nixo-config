@@ -1,7 +1,7 @@
 local set = vim.keymap.set
 
 -- file explorer
-set("n", "<leader>pv", vim.cmd.Ex)
+-- set("n", "<leader>pv", vim.cmd.Ex)
 
 -- Visual mode Move selected text up and down
 set("v", "J", ":m '>+1<CR>gv=gv")
