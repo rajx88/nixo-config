@@ -37,39 +37,39 @@
         lazygit
 
         # build tools
-        #cargo
+        cargo
         gcc
         nodejs
 
         # LSP's and formatters
         ## shell
-        nodePackages.bash-language-server
-        shellcheck
-        shfmt
+        # nodePackages.bash-language-server
+        # shellcheck
+        # shfmt
 
         # java
-        jdt-language-server
+        # jdt-language-server
 
         # go
-        gopls
-        gotools
-        gofumpt
+        # gopls
+        # gotools
+        # gofumpt
 
-        templ
+        # templ
 
         # nix
-        nil
-        alejandra
+        # nil
+        # alejandra
 
         ## Lua
-        stylua
-        lua-language-server
+        # stylua
+        # lua-language-server
         # luajitPackages.luarocks-nix
 
         ## yaml json etc.
-        vscode-langservers-extracted
-        yaml-language-server
-        prettierd
+        # vscode-langservers-extracted
+        # yaml-language-server
+        # prettierd
       ];
     };
   };

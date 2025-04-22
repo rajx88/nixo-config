@@ -1,48 +1,38 @@
 return {
   {
+    -- Main LSP Configuration
     "neovim/nvim-lspconfig",
     dependencies = {
-      "folke/neodev.nvim",
-      "williamboman/mason.nvim",
+      -- Automatically install LSPs and related tools to stdpath for Neovim
+      -- Mason must be loaded before its dependents so we need to set it up here.
+      -- NOTE: `opts = {}` is the same as calling `require('mason').setup({})`
+      { "williamboman/mason.nvim", opts = {} },
       "williamboman/mason-lspconfig.nvim",
+      "WhoIsSethDaniel/mason-tool-installer.nvim",
 
+      -- Useful status updates for LSP.
       { "j-hui/fidget.nvim", opts = {} },
 
-      -- Autoformatting
-      "stevearc/conform.nvim",
-
-      -- Schema information
+      -- helps with schemas for json and yaml
       "b0o/SchemaStore.nvim",
-      "mfussenegger/nvim-jdtls",
+
+      -- Allows extra capabilities provided by blink.cmp
+      "saghen/blink.cmp",
     },
     config = function()
-      require("neodev").setup {
-        -- library = {
-        --   plugins = { "nvim-dap-ui" },
-        --   types = true,
-        -- },
-      }
-
-      local capabilities = nil
-      if pcall(require, "cmp_nvim_lsp") then
-        capabilities = require("cmp_nvim_lsp").default_capabilities()
-      end
-
-      local lspconfig = require "lspconfig"
-
+      local capabilities = require("blink.cmp").get_lsp_capabilities()
       local servers = {
-        bashls = true,
-        lua_ls = true,
-        rust_analyzer = true,
-        -- nix lsp
-        nil_ls = true,
-        -- java lsp
-        jdtls = true,
-        --go templ
-        templ = true,
+        bashls = {},
+        nil_ls = {},
+        jdtls = {},
+        templ = {},
         gopls = {
           settings = {
             gopls = {
+              gofumpt = true,
+              analyses = {
+                unusedparams = true,
+              },
               hints = {
                 assignVariableTypes = true,
                 compositeLiteralFields = true,
@@ -55,7 +45,17 @@ return {
             },
           },
         },
-
+        lua_ls = {
+          settings = {
+            Lua = {
+              completion = {
+                callSnippet = "Replace",
+              },
+              -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
+              diagnostics = { disable = { "missing-fields" } },
+            },
+          },
+        },
         jsonls = {
           settings = {
             json = {
@@ -64,12 +64,11 @@ return {
             },
           },
         },
-
         yamlls = {
           settings = {
             yaml = {
               schemaStore = {
-                enable = false,
+                enable = true,
                 url = "",
               },
               schemas = require("schemastore").yaml.schemas(),
@@ -78,50 +77,40 @@ return {
         },
       }
 
-      require("mason").setup()
+      local ensure_installed = vim.tbl_keys(servers or {})
+      vim.list_extend(ensure_installed, {
+        "stylua",
+        "alejandra",
+        "gofumpt",
+      })
+      require("mason-tool-installer").setup { ensure_installed = ensure_installed }
 
-      for name, config in pairs(servers) do
-        if config == true then
-          config = {}
-        end
-        config = vim.tbl_deep_extend("force", {}, {
-          capabilities = capabilities,
-        }, config)
-
-        lspconfig[name].setup(config)
-      end
-
-      -- Autoformatting Setup
-      require("conform").setup {
-        formatters_by_ft = {
-          lua = { "stylua" },
-          fish = { "fish_indent" },
-          sh = { "shfmt" },
-          nix = { "alejandra" },
-          go = { "goimports", "gofumpt" },
-          javascript = { "prettierd" },
-          typescript = { "prettierd" },
-          javascriptreact = { "prettierd" },
-          typescriptreact = { "prettierd" },
-          css = { "prettierd" },
-          html = { "prettierd" },
-          json = { "prettierd" },
-          yaml = { "prettierd" },
-          markdown = { "prettierd" },
-          graphql = { "prettierd" },
+      require("mason-lspconfig").setup {
+        ensure_installed = {},
+        automatic_installation = false,
+        handlers = {
+          function(server_name)
+            local server = servers[server_name] or {}
+            -- This handles overriding only values explicitly passed
+            -- by the server configuration above. Useful when disabling
+            -- certain features of an LSP (for example, turning off formatting for ts_ls)
+            server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
+            require("lspconfig")[server_name].setup(server)
+          end,
         },
       }
-
-      -- enables auto format on save, copied from the github.
-      vim.api.nvim_create_autocmd("BufWritePre", {
-        callback = function(args)
-          require("conform").format {
-            bufnr = args.buf,
-            lsp_fallback = true,
-            quiet = true,
-          }
-        end,
-      })
     end,
+  },
+  {
+    -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
+    -- used for completion, annotations and signatures of Neovim apis
+    "folke/lazydev.nvim",
+    ft = "lua",
+    opts = {
+      library = {
+        -- Load luvit types when the `vim.uv` word is found
+        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+      },
+    },
   },
 }
