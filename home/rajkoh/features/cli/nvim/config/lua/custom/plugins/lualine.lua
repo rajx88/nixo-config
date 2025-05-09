@@ -5,7 +5,8 @@ return {
   },
   opts = {
     icons_enabled = true,
-    theme = "auto",
+    -- theme = "auto",
+    theme = "tokyonight-night",
     -- component_separators = "|",
     -- section_separators = "",
   },
