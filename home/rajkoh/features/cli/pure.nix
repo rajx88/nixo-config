@@ -4,7 +4,7 @@
   ];
 
   programs.zsh = {
-    initExtra = ''
+    initContent = ''
       autoload -U promptinit; promptinit
       prompt pure
     '';

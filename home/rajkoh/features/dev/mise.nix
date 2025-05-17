@@ -5,7 +5,7 @@
       enableZshIntegration = true;
       enableBashIntegration = true;
     };
-    zsh.initExtra = ''
+    zsh.initContent = ''
       eval "$(${pkgs.mise}/bin/mise activate zsh --shims)"
     '';
   };

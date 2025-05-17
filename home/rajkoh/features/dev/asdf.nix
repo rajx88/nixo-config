@@ -8,7 +8,7 @@
   ];
 
   programs.zsh = {
-    initExtra = ''
+    initContent = ''
       export ASDF_DATA_DIR="${config.xdg.configHome}/asdf"
 
       . "$HOME/.nix-profile/share/asdf-vm/asdf.sh"
