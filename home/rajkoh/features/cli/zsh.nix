@@ -61,7 +61,8 @@ in {
 
     '';
 
-    initExtra = ''
+    initContent = ''
+      fpath=($HOME/.local/completions $fpath ${config.xdg.cacheHome}/completions)
 
       bindkey -M emacs "^[[3~" delete-char
       bindkey -M viins "^[[3~" delete-char
@@ -96,10 +97,6 @@ in {
       fi
     '';
 
-    initExtraBeforeCompInit = ''
-      fpath=($HOME/.local/completions $fpath ${config.xdg.cacheHome}/completions)
-    '';
-
     history = {
       extended = true;
       ignoreDups = true;
@@ -130,7 +127,6 @@ in {
 
     zsh-abbr = {
       enable = true;
-      # initExtra =
       abbreviations = {
         asdfup = "asdf plugin update --all";
 

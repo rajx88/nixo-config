@@ -41,7 +41,7 @@
     defer = "{{ hooks?.pre | nl }}{% for file in files %}zsh-defer source \"{{ file }}\"\n{% endfor %}{{ hooks?.post | nl }}"
   '';
 
-  programs.zsh.initExtra = ''
+  programs.zsh.initContent = ''
     if which sheldon &>/dev/null; then
             eval "$(sheldon source)"
     fi
