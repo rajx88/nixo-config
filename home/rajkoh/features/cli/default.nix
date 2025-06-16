@@ -16,6 +16,7 @@
     ./zoxide.nix
     # ./zellij.nix
     # ./sheldon.nix
+    ./atuin.nix
     ./antidote.nix
     ./zsh.nix
   ];
