@@ -5,6 +5,9 @@
   };
 
   home.persistence = {
-    "/persist/home/rajkoh".directories = [".local/share/atuin"];
+    "/persist/home/rajkoh".directories = [
+      ".local/share/atuin"
+      ".config/atuin"
+    ];
   };
 }
