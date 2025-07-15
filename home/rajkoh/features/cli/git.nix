@@ -39,7 +39,7 @@
         contentSuffix = "prvt-gitconfig";
         contents = {
           user = {
-            email = "rajx88@dotkohlen.dev";
+            email = "44810778+rajx88@users.noreply.github.com";
             name = "rajx88";
           };
 
