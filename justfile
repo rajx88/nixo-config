@@ -13,10 +13,10 @@ hm $MACHINE:
 	home-manager switch --flake .#{{user}}@{{MACHINE}}
 
 rb:
-  nixos-rebuild switch --flake .#{{MACHINE}} --use-remote-sudo
+  nixos-rebuild switch --flake .#{{MACHINE}} --sudo
 
 debug:
-  nixos-rebuild switch --flake .#{{MACHINE}} --use-remote-sudo --show-trace --verbose
+  nixos-rebuild switch --flake .#{{MACHINE}} --sudo --show-trace --verbose
 
 up:
   nix flake update

@@ -9,7 +9,7 @@
     recursive = true;
   };
 
-  home.sessionVariables.STARSHIP_CONFIG = "${config.xdg.configHome}/starship/starship.toml";
+  # home.sessionVariables.STARSHIP_CONFIG = "${config.xdg.configHome}/starship/starship.toml";
 
   programs.starship = {
     enable = true;
