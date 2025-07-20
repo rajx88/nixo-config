@@ -4,10 +4,10 @@
   lib,
   ...
 }: {
-  xdg.configFile."starship" = {
-    source = ./config;
-    recursive = true;
-  };
+  # xdg.configFile."starship" = {
+  #   source = ./config;
+  #   recursive = true;
+  # };
 
   # home.sessionVariables.STARSHIP_CONFIG = "${config.xdg.configHome}/starship/starship.toml";
 
