@@ -1,6 +1,7 @@
 {
   inputs,
   pkgs,
+  config,
   ...
 }: {
   # home.nix
@@ -10,8 +11,28 @@
     # or inputs.zen-browser.homeModules.twilight-official
   ];
 
+  home.persistence = {
+    "/persist/home/rajkoh".directories = [".config/zen"];
+  };
+
   programs.zen-browser = {
     enable = true;
     nativeMessagingHosts = [pkgs.firefoxpwa];
+  };
+
+  xdg.desktopEntries.zen = {
+    name = "Zen Browser";
+    genericName = "Web Browser";
+    # exec = "zen %u";
+    exec = "zen --user-data-dir=${config.xdg.configHome}/zen %u";
+    icon = "web-browser";
+    type = "Application";
+    terminal = false;
+    categories = ["Network" "WebBrowser"];
+    mimeType = [
+      "text/html"
+      "x-scheme-handler/http"
+      "x-scheme-handler/https"
+    ];
   };
 }
