@@ -32,11 +32,11 @@
     enable = true;
     mimeApps.defaultApplications = {
       "text/plain" = ["codium.desktop"];
-      "image/*" = ["brave.desktop"];
-      "text/html" = ["brave.desktop"];
-      "text/xml" = ["brave.desktop"];
-      "x-scheme-handler/http" = ["brave.desktop"];
-      "x-scheme-handler/https" = ["brave.desktop"];
+      "image/*" = ["zen.desktop"];
+      "text/html" = ["zen.desktop"];
+      "text/xml" = ["zen.desktop"];
+      "x-scheme-handler/http" = ["zen.desktop"];
+      "x-scheme-handler/https" = ["zen.desktop"];
     };
     # userDirs = {
     #   enable = true;
@@ -56,7 +56,7 @@
     sessionVariables = {
       FLAKE = "$HOME/code/nixos-config";
       TERM = "ghostty";
-      BROWSER = "brave";
+      BROWSER = "zen";
     };
 
     persistence = {

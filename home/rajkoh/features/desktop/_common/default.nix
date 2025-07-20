@@ -11,6 +11,7 @@
     ./qt.nix
     ./wallpapers
     ./keyring.nix
+    ./zen.nix
   ];
   xdg.portal.enable = true;
 
