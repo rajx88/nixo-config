@@ -10,7 +10,7 @@ return {
   },
   {
     "folke/tokyonight.nvim",
-    -- enabled = false,
+    enabled = false,
     lazy = true,
     name = "tokyonight",
     opts = { style = "night", transparent = true },
@@ -36,6 +36,23 @@ return {
       -- vim.cmd [[ colorscheme kanagawa-wave]]
       -- vim.cmd [[ colorscheme kanagawa-dragon]]
       -- vim.cmd [[ colorscheme kanagawa-lotus]]
+    end,
+  },
+  {
+    "nyoom-engineering/oxocarbon.nvim",
+    -- enabled = false,
+    priority = 1000,
+    config = function()
+      vim.opt.background = "dark"
+      vim.cmd [[ colorscheme oxocarbon ]]
+    end,
+  },
+  {
+    "talha-akram/noctis.nvim",
+    enabled = false,
+    priority = 1000,
+    config = function()
+      -- vim.cmd "colorscheme noctis_bordo"
     end,
   },
 }
