@@ -12,7 +12,7 @@
   ];
 
   home.persistence = {
-    "/persist/home/rajkoh".directories = [".config/zen"];
+    "/persist/home/rajkoh".directories = [".zen"];
   };
 
   programs.zen-browser = {
@@ -23,8 +23,7 @@
   xdg.desktopEntries.zen = {
     name = "Zen Browser";
     genericName = "Web Browser";
-    # exec = "zen %u";
-    exec = "zen --user-data-dir=${config.xdg.configHome}/zen %u";
+    exec = "zen %u";
     icon = "web-browser";
     type = "Application";
     terminal = false;
