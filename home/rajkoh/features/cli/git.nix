@@ -3,8 +3,21 @@
   config,
   ...
 }: {
+  home.file.".config/jj/conf.d/prvt.toml".text = ''
+    --when.repositories = ["~/code/prvt/"]
+      [user]
+      name = "rajx88"
+      email = "44810778+rajx88@users.noreply.github.com"
+  '';
+
   programs.jujutsu = {
     enable = true;
+    # settings = {
+    #   user = {
+    #     name = "rajx88";
+    #     email = "44810778+rajx88@users.noreply.github.com";
+    #   };
+    # };
   };
   programs.git = {
     enable = true;
