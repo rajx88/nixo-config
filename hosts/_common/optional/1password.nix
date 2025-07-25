@@ -13,7 +13,7 @@
   environment.etc = {
     "1password/custom_allowed_browsers" = {
       text = ''
-        .zen
+        zen
       ''; # or just "zen" if you use unwrapped package
       mode = "0755";
     };
