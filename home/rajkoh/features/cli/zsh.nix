@@ -19,7 +19,7 @@ in {
   programs.zsh = {
     enable = true;
     # set the ZDOTDIR
-    dotDir = ".config/zsh";
+    dotDir = config.xdg.configHome + "/zsh";
     enableCompletion = true;
 
     defaultKeymap = "emacs";
