@@ -145,27 +145,24 @@ in {
         gcb = "git cob";
 
         # vagrant
-        vup = "vagrant up";
-        vh = "vagrant halt";
-        vr = "vagrant reload";
-        vssh = "vagrant ssh";
+        # vup = "vagrant up";
+        # vh = "vagrant halt";
+        # vr = "vagrant reload";
+        # vssh = "vagrant ssh";
 
         # tmux
-        ta = "tmux attach";
+        # ta = "tmux attach";
 
         # kubectl commands
         k = "kubectl";
-        kga = "kubectl get all";
-        kgp = "kubectl get pods";
-        kw = "kubectl get pods --watch";
-        wk = "watch -n 2 kubectl get pods";
-        wkn = "watch -n 2 kubectl get pods --namespace";
+        # kga = "kubectl get all";
+        # kgp = "kubectl get pods";
+        # kw = "kubectl get pods --watch";
+        # wk = "watch -n 2 kubectl get pods";
+        # wkn = "watch -n 2 kubectl get pods --namespace";
 
         # gradle
-        gwcb = "gw clean build";
-        gwcheck = "gw checkstyleMain pmdMain spotbugsMain --continue";
-        gwcc = "gw clean checkstyleMain pmdMain spotbugsMain --continue";
-        gwc = "gw clean compileJava";
+        # gwcb = "gw clean build";
         gwp = "gw --no-configuration-cache clean publishToMavenLocal";
       };
     };
