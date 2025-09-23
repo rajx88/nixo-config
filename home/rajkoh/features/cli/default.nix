@@ -44,6 +44,8 @@
     tokei
 
     killall
+    dig
+    dnslookup
 
     zip
     unzip
