@@ -4,7 +4,7 @@
     enableZshIntegration = true;
     settings = {
       term = "xterm-256color";
-      theme = "tokyonight_night";
+      theme = "TokyoNight";
       # theme = "rose-pine";
       # theme = "Fairyfloss";
       # theme = "heeler";
