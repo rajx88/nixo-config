@@ -23,8 +23,7 @@ in {
     gc = {
       automatic = true;
       dates = "weekly";
-      # Keep the last 3 generations
-      options = "--delete-older-than +5";
+      options = "--delete-older-than 7d";
     };
 
     # Add each flake input as a registry and nix_path
