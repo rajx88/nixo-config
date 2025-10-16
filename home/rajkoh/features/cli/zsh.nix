@@ -154,7 +154,7 @@ in {
         # ta = "tmux attach";
 
         # kubectl commands
-        k = "kubectl";
+        # k = "kubectl";
         # kga = "kubectl get all";
         # kgp = "kubectl get pods";
         # kw = "kubectl get pods --watch";
