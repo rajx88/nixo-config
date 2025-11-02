@@ -41,7 +41,7 @@
       name = "DP-1";
       width = 3840;
       height = 2160;
-      refreshRate = 120;
+      refreshRate = 60;
       workspace = "2";
       position = "auto-right";
     }
@@ -51,7 +51,7 @@
       height = 2160;
       # width = 1440;
       # height = 2560;
-      refreshRate = 120;
+      refreshRate = 60;
       position = "auto";
       # vertical = "3";
       workspace = "1";
