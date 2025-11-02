@@ -19,7 +19,8 @@
     ./features/games
 
     ./features/desktop/optional/keymapp.nix
-    ./features/dev/jetbrains-toolbox.nix
+    # ./features/dev/jetbrains-toolbox.nix
+    ./features/dev/intellij-ultimate.nix
     ./features/dev/vscode.nix
     ./features/dev/mise.nix
   ];
