@@ -16,39 +16,49 @@
       ui = {
         default-command = ["log"];
         paginate = "auto";
-        pager = ":builtin";
+        # pager = ":builtin";
       };
       #   name = "rajx88";
       #   email = "44810778+rajx88@users.noreply.github.com";
       # };
     };
   };
+  programs.delta = {
+    enable = true;
+    enableGitIntegration = true;
+    enableJujutsuIntegration = true;
+    options = {
+      line-numbers = true;
+      side-by-side = true;
+    };
+  };
   programs.git = {
     enable = true;
-    package = pkgs.gitAndTools.gitFull;
-    extraConfig = {
-      init.defaultBranch = "main";
-      pull.ff = "only";
-      rerere.enable = true;
-      branch.sort = "-committerdate";
-      maintenance.auto = false;
-      maintenance.strategy = "incremental";
+    settings = {
+      aliases = {
+        c = "commit -v";
+        cm = "commit -m";
+        all = "add .";
+        rall = "reset";
+        co = "checkout";
+        cob = "checkout -b";
+        ra = "rebase --abort";
+        pr = "pull --rebase";
+        p = "pull";
+        pu = "push";
+        s = "status";
+        staash = "stash --all";
+      };
+      extraConfig = {
+        init.defaultBranch = "main";
+        pull.ff = "only";
+        rerere.enable = true;
+        branch.sort = "-committerdate";
+        maintenance.auto = false;
+        maintenance.strategy = "incremental";
+      };
     };
     lfs.enable = true;
-    aliases = {
-      c = "commit -v";
-      cm = "commit -m";
-      all = "add .";
-      rall = "reset";
-      co = "checkout";
-      cob = "checkout -b";
-      ra = "rebase --abort";
-      pr = "pull --rebase";
-      p = "pull";
-      pu = "push";
-      s = "status";
-      staash = "stash --all";
-    };
     includes = [
       {
         condition = "gitdir:~/code/work/";
@@ -67,12 +77,5 @@
         };
       }
     ];
-    delta = {
-      enable = true;
-      options = {
-        line-numbers = true;
-        side-by-side = true;
-      };
-    };
   };
 }

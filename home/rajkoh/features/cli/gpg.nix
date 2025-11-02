@@ -1,6 +1,6 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
-    pinentry
+    pinentry-curses
   ];
   programs.gpg = {
     enable = true;
