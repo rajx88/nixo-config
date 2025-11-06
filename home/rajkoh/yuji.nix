@@ -34,27 +34,21 @@
     WLR_DRM_NO_ATOMIC = 1;
   };
 
-  #  ------   -----   ------
-  # | HDMI | | DP-1| | DP-2 |
-  #  ------   -----   ------
   monitors = [
     {
-      name = "DP-1";
+      name = "DP-3";
       width = 3840;
       height = 2160;
-      refreshRate = 120;
+      refreshRate = 60;
       workspace = "2";
       position = "auto-right";
     }
     {
-      name = "DP-2";
+      name = "DP-5";
       width = 3840;
       height = 2160;
-      # width = 1440;
-      # height = 2560;
-      refreshRate = 120;
+      refreshRate = 60;
       position = "auto-left";
-      # vertical = "3";
       workspace = "1";
       primary = true;
     }
