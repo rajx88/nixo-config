@@ -32,6 +32,15 @@ For new systems execute:
 make cp-config MACHINE=YOURMACHINEHERE
 ```
 
+create password but you have to create the directory first:
+```bash
+sudo mkdir -p /mnt/persist/password
+```
+```bash
+make set-password
+```
+
+
 Make sure to create the default.nix file containing the configuration for this host. Add this new host to the flake.nix file.
 
 Now install the system, while installing the install will prompt for a root password:
