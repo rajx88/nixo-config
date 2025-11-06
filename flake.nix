@@ -77,6 +77,14 @@
           ./hosts/akarnae
         ];
       };
+      yuji = lib.nixosSystem {
+        specialArgs = {inherit inputs outputs;};
+        modules = [
+          disko.nixosModules.disko
+          {disko.devices.disk.main.device = "/dev/nvme0n1";}
+          ./hosts/yuji
+        ];
+      };
     };
 
     # Standalone home-manager configuration entrypoint
@@ -87,6 +95,13 @@
         extraSpecialArgs = {inherit inputs outputs;};
         modules = [
           ./home/rajkoh/akarnae.nix
+        ];
+      };
+      "rajkoh@yuji" = lib.homeManagerConfiguration {
+        pkgs = pkgsFor.x86_64-linux;
+        extraSpecialArgs = {inherit inputs outputs;};
+        modules = [
+          ./home/rajkoh/yuji.nix
         ];
       };
       "rickoh@arch" = lib.homeManagerConfiguration {
