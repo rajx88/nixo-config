@@ -31,7 +31,7 @@
 
   networking = {
     networkmanager.enable = true;
-    hostName = "akarnae";
+    hostName = "yuji";
     useDHCP = lib.mkForce true;
   };
 
