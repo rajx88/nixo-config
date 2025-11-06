@@ -12,11 +12,11 @@ wsl:
 hm $MACHINE:
 	home-manager switch --flake .#{{user}}@{{MACHINE}}
 
-rb $MACHINE:
-  nixos-rebuild switch --flake .#{{MACHINE}} --sudo
+rb:
+  nixos-rebuild switch --flake .#$HOSTNAME --sudo
 
-debug $MACHINE:
-  nixos-rebuild switch --flake .#{{MACHINE}} --sudo --show-trace --verbose
+debug:
+  nixos-rebuild switch --flake .#$HOSTNAME --sudo --show-trace --verbose
 
 up:
   nix flake update
