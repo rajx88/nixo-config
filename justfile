@@ -12,10 +12,10 @@ wsl:
 hm $MACHINE:
 	home-manager switch --flake .#{{user}}@{{MACHINE}}
 
-rb:
+rb $MACHINE:
   nixos-rebuild switch --flake .#{{MACHINE}} --sudo
 
-debug:
+debug $MACHINE:
   nixos-rebuild switch --flake .#{{MACHINE}} --sudo --show-trace --verbose
 
 up:
