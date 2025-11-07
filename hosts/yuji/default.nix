@@ -42,6 +42,14 @@
     blacklistedKernelModules = ["nouveau"];
   };
 
+  zramSwap = {
+    enable = true;
+    memoryPercent = 15;
+    memoryMax = 8192;
+    algorithm = "zstd";
+    priority = 100;
+  };
+
   # boot.loader.systemd-boot = {
   #   extraEntries = {
   #     "nvidia-drm.modeset=1"
