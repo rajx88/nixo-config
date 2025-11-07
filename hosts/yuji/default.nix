@@ -37,6 +37,9 @@
   boot = {
     kernelPackages = pkgs.linuxKernel.packages.linux_zen;
     # kernelParams = ["nvidia.NVreg_PreserveVideoMemoryAllocations=1"];
+    kernelParams = ["nvidia-drm.modeset=1"];
+    # Belt-and-suspenders: make sure nouveau never grabs the GPU
+    blacklistedKernelModules = ["nouveau"];
   };
 
   # boot.loader.systemd-boot = {
@@ -68,7 +71,6 @@
       # Fine-grained power management. Turns off GPU when not in use.
       # Experimental and only works on modern Nvidia GPUs (Turing or newer).
       powerManagement.finegrained = false;
-
       # Use the NVidia open source kernel module (not to be confused with the
       # independent third-party "nouveau" open source driver).
       # Support is limited to the Turing and later architectures. Full list of
@@ -76,7 +78,7 @@
       # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus
       # Only available from driver 515.43.04+
       # Currently alpha-quality/buggy, so false is currently the recommended setting.
-      open = false;
+      open = true;
 
       # Enable the Nvidia settings menu,
       # accessible via `nvidia-settings`.
@@ -90,7 +92,7 @@
       };
 
       # Optionally, you may need to select the appropriate driver version for your specific GPU.
-      package = config.boot.kernelPackages.nvidiaPackages.beta;
+      package = config.boot.kernelPackages.nvidiaPackages.latest;
     };
   };
 
