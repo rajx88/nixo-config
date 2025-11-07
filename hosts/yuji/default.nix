@@ -11,7 +11,7 @@
     inputs.hardware.nixosModules.common-pc-ssd
 
     ./hardware-configuration.nix
-    ../../tmpl/efi-luks-btrfs-impermanence-swap.nix
+    ../../tmpl/efi-luks-btrfs-impermanence.nix
 
     ../_common/global
     ../_common/users/rajkoh
@@ -24,7 +24,6 @@
   ];
 
   host.filesystem = {
-    btrfs.enable = true;
     encryption.enable = true;
     impermanence.enable = true;
   };
@@ -61,7 +60,6 @@
     };
 
     nvidia = {
-      prime.offload.enable = false;
       # Modesetting is required.
       modesetting.enable = true;
 
@@ -84,8 +82,14 @@
       # accessible via `nvidia-settings`.
       nvidiaSettings = true;
 
+      prime = {
+        sync.enable = true;
+        intelBusId = "PCI:0:2:0";
+        nvidiaBusId = "PCI:1:0:0";
+      };
+
       # Optionally, you may need to select the appropriate driver version for your specific GPU.
-      package = config.boot.kernelPackages.nvidiaPackages.stable;
+      package = config.boot.kernelPackages.nvidiaPackages.beta;
     };
   };
 
