@@ -11,7 +11,7 @@
     inputs.hardware.nixosModules.common-pc-ssd
 
     ./hardware-configuration.nix
-    ../../tmpl/efi-luks-btrfs-impermanence-swap.nix
+    ../../tmpl/efi-luks-btrfs-impermanence.nix
 
     ../_common/global
     ../_common/users/rajkoh
