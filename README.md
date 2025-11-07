@@ -36,6 +36,7 @@ create password but you have to create the directory first:
 ```bash
 sudo mkdir -p /mnt/persist/password
 ```
+then execute the following command to set the password:
 ```bash
 make set-password
 ```

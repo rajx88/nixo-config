@@ -22,14 +22,6 @@ in {
                 ];
               };
             };
-            encryptedSwap = {
-              label = "swap";
-              size = "48G";
-              content = {
-                type = "swap";
-                randomEncryption = true;
-              };
-            };
             luks = {
               label = "crypted";
               size = "100%";
@@ -53,33 +45,13 @@ in {
                       mountpoint = "/";
                       mountOptions = ["compress=zstd" "noatime"];
                     };
-                    "/root-blank" = {
-                      mountOptions = ["compress=zstd" "noatime"];
-                    };
-                    "/home" = {};
-                    "/home/active" = {
-                      mountpoint = "/home";
-                      mountOptions = ["compress=zstd" "noatime"];
-                    };
-                    "/home/snapshots" = {
-                      mountpoint = "/home/.snapshots";
-                      mountOptions = ["compress=zstd" "noatime"];
-                    };
+                    "/root-blank" = {};
                     "/nix" = {
                       mountpoint = "/nix";
                       mountOptions = ["compress=zstd" "noatime"];
                     };
-                    "/persist" = {};
-                    "/persist/active" = {
+                    "/persist" = {
                       mountpoint = "/persist";
-                      mountOptions = ["compress=zstd" "noatime"];
-                    };
-                    "/persist/snapshots" = {
-                      mountpoint = "/persist/.snapshots";
-                      mountOptions = ["compress=zstd" "noatime"];
-                    };
-                    "/log" = {
-                      mountpoint = "/var/log";
                       mountOptions = ["compress=zstd" "noatime"];
                     };
                   };

@@ -24,7 +24,6 @@
   ];
 
   host.filesystem = {
-    btrfs.enable = true;
     encryption.enable = true;
     impermanence.enable = true;
   };
