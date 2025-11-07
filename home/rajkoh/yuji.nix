@@ -32,6 +32,9 @@
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
     __GL_VRR_ALLOWED = 1;
     WLR_DRM_NO_ATOMIC = 1;
+    # __NV_PRIME_RENDER_OFFLOAD = "1";
+    # __NV_PRIME_RENDER_OFFLOAD_PROVIDER = "NVIDIA-G0";
+    __VK_LAYER_NV_optimus = "NVIDIA_only";
   };
 
   monitors = [
