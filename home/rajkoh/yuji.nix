@@ -59,5 +59,14 @@
       workspace = "1";
       primary = true;
     }
+    {
+      name = "eDP-1";
+      width = 1920;
+      height = 1200;
+      preferredMode = true;
+      isLaptop = true;
+      refreshRate = 60;
+      position = "auto";
+    }
   ];
 }

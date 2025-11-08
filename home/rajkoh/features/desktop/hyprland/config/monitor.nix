@@ -1,4 +1,8 @@
-{config, ...}: {
+{
+  config,
+  lib,
+  ...
+}: {
   wayland.windowManager.hyprland.settings = {
     monitor = let
       waybarSpace = let
@@ -7,19 +11,19 @@
         gap = gaps_out - gaps_in;
       in {
         top =
-          if (position == "top")
+          if position == "top"
           then height + gap
           else 0;
         bottom =
-          if (position == "bottom")
+          if position == "bottom"
           then height + gap
           else 0;
         left =
-          if (position == "left")
+          if position == "left"
           then width + gap
           else 0;
         right =
-          if (position == "right")
+          if position == "right"
           then width + gap
           else 0;
       };
@@ -27,15 +31,25 @@
       [
         ",addreserved,${toString waybarSpace.top},${toString waybarSpace.bottom},${toString waybarSpace.left},${toString waybarSpace.right}"
       ]
-      ++ (map (
-        m: "${m.name},${
-          if m.enabled
-          then
-            if m.preferredMode
-            then "preferred,${toString m.position},1,transform,${toString m.vertical}"
-            else "${toString m.width}x${toString m.height}@${toString m.refreshRate},${toString m.position},1,transform,${toString m.vertical}"
-          else "disable"
-        }"
-      ) (config.monitors));
+      ++ (
+        map
+        (
+          m: "${m.name},${
+            if m.enabled
+            then
+              if m.preferredMode
+              then "preferred,${toString m.position},1,transform,${toString m.vertical}"
+              else "${toString m.width}x${toString m.height}@${toString m.refreshRate},${toString m.position},1,transform,${toString m.vertical}"
+            else "disable"
+          }"
+        )
+        config.monitors
+      );
+
+    # Lid close: disable internal panel; Lid open: re-enable with preferred mode
+    bindl = [
+      ",switch:on:lid_switch,exec,hyprctl keyword monitor 'eDP-1, disable'"
+      ",switch:off:lid_switch,exec,hyprctl keyword monitor 'eDP-1, preferred, auto, 1'"
+    ];
   };
 }

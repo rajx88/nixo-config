@@ -33,6 +33,10 @@ in {
             type = types.bool;
             default = false;
           };
+          isLaptop = mkOption {
+            type = types.bool;
+            default = false;
+          };
           position = mkOption {
             type = types.str;
             default = "auto";
