@@ -32,9 +32,10 @@
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
     __GL_VRR_ALLOWED = 1;
     WLR_DRM_NO_ATOMIC = 1;
-    # __NV_PRIME_RENDER_OFFLOAD = "1";
-    # __NV_PRIME_RENDER_OFFLOAD_PROVIDER = "NVIDIA-G0";
-    __VK_LAYER_NV_optimus = "NVIDIA_only";
+    WLR_DRM_DEVICES = "/dev/dri/card1:/dev/dri/card0"; # dGPU first (usually)
+    WLR_DRM_DISABLE_MODIFIERS = "1";
+    # if it still blacks out on cold boot:
+    # WLR_DRM_NO_ATOMIC = "1";
   };
 
   monitors = [
@@ -42,14 +43,17 @@
       name = "DP-3";
       width = 3840;
       height = 2160;
+      preferredMode = true;
       refreshRate = 60;
       workspace = "2";
       position = "auto-right";
+      # primary = true;
     }
     {
       name = "DP-5";
       width = 3840;
       height = 2160;
+      preferredMode = true;
       refreshRate = 60;
       position = "auto-left";
       workspace = "1";

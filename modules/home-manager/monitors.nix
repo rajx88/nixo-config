@@ -29,6 +29,10 @@ in {
             type = types.int;
             default = 60;
           };
+          preferredMode = mkOption {
+            type = types.bool;
+            default = false;
+          };
           position = mkOption {
             type = types.str;
             default = "auto";
