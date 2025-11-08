@@ -37,7 +37,7 @@
   boot = {
     kernelPackages = pkgs.linuxKernel.packages.linux_zen;
     # kernelParams = ["nvidia.NVreg_PreserveVideoMemoryAllocations=1"];
-    kernelParams = ["nvidia-drm.modeset=1"];
+    # kernelParams = ["nvidia-drm.modeset=1"];
     # Belt-and-suspenders: make sure nouveau never grabs the GPU
     blacklistedKernelModules = ["nouveau"];
   };
@@ -94,6 +94,7 @@
 
       prime = {
         offload.enable = false;
+        # offload.enableOffloadCmd = true;
         sync.enable = true;
         intelBusId = "PCI:0:2:0";
         nvidiaBusId = "PCI:1:0:0";
