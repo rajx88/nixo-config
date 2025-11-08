@@ -44,9 +44,9 @@
 
   zramSwap = {
     enable = true;
-    memoryPercent = 15;
-    memoryMax = 8192;
     algorithm = "zstd";
+    memoryPercent = 50; # allow up to RAM/2
+    memoryMax = 8 * 1024 * 1024 * 1024; # hard cap at 8 GiB (BYTES!)
     priority = 100;
   };
 
