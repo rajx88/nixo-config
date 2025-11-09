@@ -14,9 +14,9 @@
   #     # ];
   #   };
   # wayland.windowManager.hyprland.settings = {
-  #   # Make 1Password popups usable on Hyprland
-  #   windowrulev2 = [
-  #     "size 900 650,class:^(1password)$,title:^(1Password)$"
-  #   ];
+  # Make 1Password popups usable on Hyprland
+  # windowrulev2 = [
+  #   "size 1100 760,class:^(1[Pp]assword)$,title:^(1[Pp]assword)$"
+  # ];
   # };
 }
