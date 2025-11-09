@@ -13,4 +13,10 @@
   #     #   "center,^ (leagueclientux.exe)$"
   #     # ];
   #   };
+  # wayland.windowManager.hyprland.settings = {
+  #   # Make 1Password popups usable on Hyprland
+  #   windowrulev2 = [
+  #     "size 900 650,class:^(1password)$,title:^(1Password)$"
+  #   ];
+  # };
 }
