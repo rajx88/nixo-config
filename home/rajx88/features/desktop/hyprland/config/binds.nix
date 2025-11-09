@@ -28,8 +28,10 @@
       editor = defaultApp "text/plain";
 
       files = "${pkgs.xfce.thunar}/bin/thunar";
-
-      passman = "${pkgs._1password-gui}/bin/1password";
+      # Launch 1Password via its desktop entry so we don't pin a store path.
+      # Prefer the beta GUI if configured; rely on PATH fallback if desktop entry missing.
+      # Desktop entry name is typically "1password".
+      passman = "${gtk-launch} 1password || 1password";
     in
       [
         # Program bindings
