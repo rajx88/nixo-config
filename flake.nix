@@ -90,18 +90,18 @@
     # Standalone home-manager configuration entrypoint
     # Available through 'home-manager --flake .#your-username@your-hostname'
     homeConfigurations = {
-      "rajkoh@akarnae" = lib.homeManagerConfiguration {
+      "rajx88@akarnae" = lib.homeManagerConfiguration {
         pkgs = pkgsFor.x86_64-linux;
         extraSpecialArgs = {inherit inputs outputs;};
         modules = [
-          ./home/rajkoh/akarnae.nix
+          ./home/rajx88/akarnae.nix
         ];
       };
-      "rajkoh@yuji" = lib.homeManagerConfiguration {
+      "rajx88@yuji" = lib.homeManagerConfiguration {
         pkgs = pkgsFor.x86_64-linux;
         extraSpecialArgs = {inherit inputs outputs;};
         modules = [
-          ./home/rajkoh/yuji.nix
+          ./home/rajx88/yuji.nix
         ];
       };
       "rickoh@arch" = lib.homeManagerConfiguration {
