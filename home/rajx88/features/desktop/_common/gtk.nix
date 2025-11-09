@@ -11,17 +11,24 @@
     #   package = pkgs.sweet;
     # };
     theme = {
-      name = "rose-pine";
-      package = pkgs.rose-pine-gtk-theme;
+      name = "Flat-Remix-GTK-Magenta-Dark";
+      package = pkgs.flat-remix-gtk;
     };
     iconTheme = {
-      name = "rose-pine";
-      package = pkgs.rose-pine-icon-theme;
+      name = "Flat-Remix-Magenta-Dark";
+      package = pkgs.flat-remix-icon-theme;
     };
     font = {
       name = config.fontProfiles.regular.name;
       size = 12;
     };
+  };
+
+  home.pointerCursor = {
+    gtk.enable = true;
+    package = pkgs.apple-cursor;
+    name = "macOS";
+    size = 24;
   };
 
   services.xsettingsd = {
