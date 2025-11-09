@@ -2,7 +2,22 @@
   config,
   lib,
   ...
-}: {
+}: let
+  monitors = config.monitors;
+
+  # true if any monitor entry has isLaptop = true
+  isLaptopFlag = lib.any (m: (m.isLaptop or false)) monitors;
+
+  # pick the first eDP-like panel from your list; fallback to "eDP-1"
+  internalPanel = let
+    m = lib.findFirst (m: lib.hasPrefix "eDP" m.name) null monitors;
+  in
+    if m != null
+    then m.name
+    else "eDP-1";
+
+  lidSwitchName = "Lid Switch"; # adjust if Hyprland shows a different name
+in {
   wayland.windowManager.hyprland.settings = {
     monitor = let
       waybarSpace = let
@@ -43,13 +58,13 @@
             else "disable"
           }"
         )
-        config.monitors
+        monitors
       );
 
-    # Lid close: disable internal panel; Lid open: re-enable with preferred mode
-    bindl = [
-      ",switch:on:lid_switch,exec,hyprctl keyword monitor 'eDP-1, disable'"
-      ",switch:off:lid_switch,exec,hyprctl keyword monitor 'eDP-1, preferred, auto, 1'"
+    # Lid rules only if any monitor entry marks the machine as a laptop
+    bindl = lib.optionals isLaptopFlag [
+      ",switch:on:${lidSwitchName},exec,hyprctl keyword monitor \"${internalPanel}, disable\""
+      ",switch:off:${lidSwitchName},exec,hyprctl keyword monitor \"${internalPanel}, preferred, auto, 1\""
     ];
   };
 }
