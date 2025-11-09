@@ -1,7 +1,7 @@
 {lib, ...}: {
   imports = [
-    ../rajkoh/generic.nix
-    ../rajkoh/features/dev/mise.nix
+    ../rajx88/generic.nix
+    ../rajx88/features/dev/mise.nix
   ];
 
   programs.ssh.enable = lib.mkForce false;

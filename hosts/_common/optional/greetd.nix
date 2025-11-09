@@ -8,7 +8,7 @@
   homeSharePaths = lib.mapAttrsToList (_: v: "${v.home.path}/share") homeCfgs;
   vars = ''XDG_DATA_DIRS="$XDG_DATA_DIRS:${lib.concatStringsSep ":" homeSharePaths}" GTK_USE_PORTAL=0'';
 
-  conf = homeCfgs.rajkoh;
+  conf = homeCfgs.rajx88;
 
   sway-kiosk = command: "${lib.getExe pkgs.sway} --unsupported-gpu --config ${pkgs.writeText "kiosk.config" ''
     output * bg #000000 solid_color
@@ -25,7 +25,7 @@ in {
   services.greetd = {
     enable = true;
     settings.default_session = {
-      user = "rajkoh";
+      user = "rajx88";
       command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd Hyprland";
     };
   };

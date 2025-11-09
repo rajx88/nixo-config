@@ -14,7 +14,7 @@
     ../../tmpl/efi-luks-btrfs-impermanence.nix
 
     ../_common/global
-    ../_common/users/rajkoh
+    ../_common/users/rajx88
 
     ../_common/optional/zsa.nix
     ../_common/optional/systemd-boot.nix

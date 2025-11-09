@@ -1,9 +1,9 @@
 {lib, ...}: {
   imports = [
-    ../rajkoh/generic.nix
+    ../rajx88/generic.nix
 
-    # ../rajkoh/features/dev/asdf.nix
-    ../rajkoh/features/dev/mise.nix
+    # ../rajx88/features/dev/asdf.nix
+    ../rajx88/features/dev/mise.nix
   ];
 
   home.username = lib.mkForce "rickoh";
