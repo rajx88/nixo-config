@@ -35,20 +35,6 @@
   programs.git = {
     enable = true;
     settings = {
-      aliases = {
-        c = "commit -v";
-        cm = "commit -m";
-        all = "add .";
-        rall = "reset";
-        co = "checkout";
-        cob = "checkout -b";
-        ra = "rebase --abort";
-        pr = "pull --rebase";
-        p = "pull";
-        pu = "push";
-        s = "status";
-        staash = "stash --all";
-      };
       extraConfig = {
         init.defaultBranch = "main";
         pull.ff = "only";
@@ -72,8 +58,6 @@
             email = "44810778+rajx88@users.noreply.github.com";
             name = "rajx88";
           };
-
-          core.sshCommand = "ssh -i ${config.home.homeDirectory}/.ssh/id_ed25519";
         };
       }
     ];
