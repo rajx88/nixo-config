@@ -11,6 +11,7 @@
     ./features/desktop/optional/discord
     ./features/desktop/optional/spotify.nix
     ./features/desktop/optional/signal.nix
+    ./features/desktop/optional/ferdium.nix
 
     # not working for some reason
     # ./features/desktop/optional/obsidian.nix
