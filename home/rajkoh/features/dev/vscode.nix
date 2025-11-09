@@ -5,13 +5,15 @@
 }: {
   home.persistence = {
     "/persist/home/rajkoh".directories = [
-      ".config/VSCodium"
-      ".vscode-oss/extensions"
+      # ".config/VSCodium"
+      # ".vscode-oss/extensions"
+      ".vscode"
+      ".config/Code"
     ];
   };
   programs.vscode = {
     enable = true;
-    package = pkgs.vscodium;
+    # package = pkgs.vscodium;
     profiles.default = {
       userSettings = {
         # needed for hyprland will crash imeediately without it
