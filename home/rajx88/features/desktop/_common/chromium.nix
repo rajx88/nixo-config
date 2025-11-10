@@ -1,9 +1,18 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}: {
   programs.chromium = {
     enable = true;
     package = pkgs.brave;
     extensions = [
       {id = "aeblfdkhhhdcdjpifhhbdiojplfjncoa";} # 1Password
+    ];
+    # Set PAC URL via command line if enabled
+    commandLineArgs = lib.optionals (config.services.proxy.pac.enable or false) [
+      "--proxy-pac-url=${config.services.proxy.pac.url}"
     ];
   };
 
