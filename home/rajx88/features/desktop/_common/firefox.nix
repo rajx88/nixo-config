@@ -3,10 +3,12 @@
   inputs,
   config,
   lib,
+  osConfig,
   ...
 }: let
-  pacEnabled = config.services.proxy.pac.enable or false;
-  pacUrl = config.services.proxy.pac.url or "";
+  # Access NixOS config via osConfig when running as NixOS module
+  pacEnabled = osConfig.services.proxy.pac.enable or false;
+  pacUrl = osConfig.services.proxy.pac.url or "";
 in {
   programs.firefox = {
     enable = true;

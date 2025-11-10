@@ -7,11 +7,10 @@
   # Declarative Microsoft Teams PWA setup using Brave (or Chromium/Edge).
   # Reasoning:
   #  - Official Linux client deprecated; Electron wrapper adds overhead.
-  #  - PWA auto-updates with Microsoft’s web deployment and shares Chromium engine.
+  #  - PWA auto-updates with Microsoft's web deployment and shares Chromium engine.
   #  - We isolate into a dedicated profile directory for persistence + crash recovery.
 
-  # Install brave (no wrapper; we inject the home directory at build using config.home.homeDirectory).
-  home.packages = [pkgs.brave];
+  # Brave is already installed via programs.chromium in chromium.nix
 
   # Persist the profile if you use impermanence (uncomment & adjust path/root as needed):
   home.persistence."/persist/home/rajx88".directories = [
