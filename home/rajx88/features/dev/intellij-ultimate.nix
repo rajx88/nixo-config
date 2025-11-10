@@ -4,6 +4,8 @@
     "/persist/home/rajx88".directories = [
       ".local/share/JetBrains"
       ".config/JetBrains"
+      ".config/github-copilot" # Copilot plugin settings
+      ".java/.userPrefs" # Java intellij settings
     ];
   };
 
