@@ -15,13 +15,13 @@
     enable = true;
     # package = pkgs.vscodium;
     profiles.default = {
-      userSettings = {
-        # needed for hyprland will crash imeediately without it
-        "window.titleBarStyle" = "custom";
-        "workbench.colorTheme" = "Rosé Pine Moon";
-        "editor.fontFamily" = "${config.fontProfiles.monospace.name}, Consolas, 'Courier New', monospace";
-        "editor.fontSize" = 14;
-      };
+      # userSettings = {
+      #   # needed for hyprland will crash imeediately without it
+      #   "window.titleBarStyle" = "custom";
+      #   "workbench.colorTheme" = "Rosé Pine Moon";
+      #   "editor.fontFamily" = "${config.fontProfiles.monospace.name}, Consolas, 'Courier New', monospace";
+      #   "editor.fontSize" = 14;
+      # };
 
       # Can search for a package:
       # https://search.nixos.org/packages?channel=23.11&from=0&size=50&sort=relevance&type=packages&query=vscode-extensions
