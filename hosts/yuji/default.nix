@@ -26,10 +26,10 @@
     ../_common/optional/pipewire.nix
   ];
 
-  programs.barracudavpn.package = inputs.nix-barracudavpn.packages.${pkgs.system}.barracudavpn;
+  programs.barracudavpn.package = inputs.nix-barracudavpn.packages.${pkgs.stdenv.hostPlatform.system}.barracudavpn;
 
   services.proxy.pac = {
-    enable = false;
+    enable = true;
     url = inputs.nix-barracudavpn.proxyConfig.pacUrl;
   };
 

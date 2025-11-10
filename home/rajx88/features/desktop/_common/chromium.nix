@@ -2,6 +2,7 @@
   pkgs,
   config,
   lib,
+  osConfig,
   ...
 }: {
   programs.chromium = {
@@ -11,8 +12,8 @@
       {id = "aeblfdkhhhdcdjpifhhbdiojplfjncoa";} # 1Password
     ];
     # Set PAC URL via command line if enabled
-    commandLineArgs = lib.optionals (config.services.proxy.pac.enable or false) [
-      "--proxy-pac-url=${config.services.proxy.pac.url}"
+    commandLineArgs = lib.optionals (osConfig.services.proxy.pac.enable or false) [
+      "--proxy-pac-url=${osConfig.services.proxy.pac.url}"
     ];
   };
 
