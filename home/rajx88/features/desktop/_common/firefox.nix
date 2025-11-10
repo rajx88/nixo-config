@@ -1,10 +1,23 @@
 {
   pkgs,
   inputs,
+  config,
+  lib,
   ...
-}: {
+}: let
+  pacEnabled = config.services.proxy.pac.enable or false;
+  pacUrl = config.services.proxy.pac.url or "";
+in {
   programs.firefox = {
     enable = true;
+    policies = lib.mkIf pacEnabled {
+      NetworkManagement = {
+        ProxySettings = {
+          Mode = "autoConfig";
+          AutoConfigURL = pacUrl;
+        };
+      };
+    };
     profiles.rajx88 = {
       bookmarks = {};
     };
