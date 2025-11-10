@@ -1,4 +1,7 @@
 {pkgs, ...}: {
+  home.persistence = {
+    "/persist/home/rajx88".directories = [".local/share/mise"];
+  };
   programs = {
     mise = {
       enable = true;
