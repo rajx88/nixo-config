@@ -4,6 +4,8 @@
   ...
 }: {
   imports = [
+    inputs.nix-barracudavpn.homeManagerModules.proxy
+
     ./global
 
     ./features/desktop/hyprland
@@ -27,6 +29,9 @@
     ./features/dev/mise.nix
     ./features/dev/java.nix
   ];
+
+  # Enable PAC configuration
+  programs.proxy.pac.enable = true;
 
   home.sessionVariables = {
     WLR_NO_HARDWARE_CURSORS = 1;

@@ -11,7 +11,6 @@
     inputs.hardware.nixosModules.common-pc-ssd
 
     inputs.nix-barracudavpn.nixosModules.barracudavpn
-    inputs.nix-barracudavpn.nixosModules.proxy
 
     ./hardware-configuration.nix
     ../../tmpl/efi-luks-btrfs-impermanence.nix
@@ -27,11 +26,6 @@
   ];
 
   programs.barracudavpn.package = inputs.nix-barracudavpn.packages.${pkgs.stdenv.hostPlatform.system}.barracudavpn;
-
-  services.proxy.pac = {
-    enable = true;
-    url = inputs.nix-barracudavpn.proxyConfig.pacUrl;
-  };
 
   host.filesystem = {
     encryption.enable = true;

@@ -99,11 +99,11 @@
         "systems": "systems"
       },
       "locked": {
-        "lastModified": 1762810791,
-        "narHash": "sha256-4DdZgJef1IuG8APRGaAhaKpd+F285W4k2fTqpcrXnxk=",
+        "lastModified": 1762816001,
+        "narHash": "sha256-Fjeptah2lU32vb4d/eeFWP5sVy/CuhVWniGWw4WsWK0=",
         "ref": "refs/heads/main",
-        "rev": "906b26a33bef757515e3168fa96d437d1a6da7e4",
-        "revCount": 7,
+        "rev": "d09b6255d79c48466f45fcb3406cc9f2f681556a",
+        "revCount": 11,
         "type": "git",
         "url": "ssh://git@github.com/rajx88/nix-barracudavpn"
       },
