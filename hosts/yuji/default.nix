@@ -25,8 +25,6 @@
     ../_common/optional/pipewire.nix
   ];
 
-  programs.barracudavpn.package = inputs.nix-barracudavpn.packages.${pkgs.stdenv.hostPlatform.system}.barracudavpn;
-
   host.filesystem = {
     encryption.enable = true;
     impermanence.enable = true;
