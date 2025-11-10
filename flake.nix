@@ -32,6 +32,11 @@
       # to have it up-to-date or simply don't specify the nixpkgs input
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nix-barracudavpn = {
+      url = "git+ssh://git@github.com/rajx88/nix-barracudavpn";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
