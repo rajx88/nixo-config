@@ -2,6 +2,9 @@
   programs.chromium = {
     enable = true;
     package = pkgs.brave;
+    extensions = [
+      {id = "aeblfdkhhhdcdjpifhhbdiojplfjncoa";} # 1Password
+    ];
   };
 
   # xdg.mimeApps.defaultApplications = {
