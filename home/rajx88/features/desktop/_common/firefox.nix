@@ -3,12 +3,11 @@
   inputs,
   config,
   lib,
-  osConfig,
   ...
 }: let
-  # Access NixOS config via osConfig when running as NixOS module
-  pacEnabled = osConfig.services.proxy.pac.enable or false;
-  pacUrl = osConfig.services.proxy.pac.url or "";
+  # Access home-manager proxy config
+  pacEnabled = config.programs.proxy.pac.enable or false;
+  pacUrl = config.programs.proxy.pac.url or "";
 in {
   programs.firefox = {
     enable = true;
@@ -22,6 +21,13 @@ in {
     };
     profiles.rajx88 = {
       bookmarks = {};
+
+      # Set PAC file via user.js settings
+      settings = lib.mkIf pacEnabled {
+        "network.proxy.type" = 2; # 2 = PAC (auto proxy config)
+        "network.proxy.autoconfig_url" = pacUrl;
+        "network.proxy.share_proxy_settings" = true;
+      };
     };
   };
 

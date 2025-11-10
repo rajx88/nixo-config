@@ -2,8 +2,13 @@
   inputs,
   pkgs,
   config,
+  lib,
   ...
-}: {
+}: let
+  # Access home-manager proxy config
+  pacEnabled = config.programs.proxy.pac.enable or false;
+  pacUrl = config.programs.proxy.pac.url or "";
+in {
   # home.nix
   imports = [
     inputs.zen-browser.homeModules.beta
@@ -34,6 +39,15 @@
         Locked = true;
         Cryptomining = true;
         Fingerprinting = true;
+      };
+    };
+
+    profiles.default = {
+      # Set PAC file via user.js settings
+      settings = lib.mkIf pacEnabled {
+        "network.proxy.type" = 2; # 2 = PAC (auto proxy config)
+        "network.proxy.autoconfig_url" = pacUrl;
+        "network.proxy.share_proxy_settings" = true;
       };
     };
   };
