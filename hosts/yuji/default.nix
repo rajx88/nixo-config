@@ -10,6 +10,8 @@
     inputs.hardware.nixosModules.common-gpu-nvidia
     inputs.hardware.nixosModules.common-pc-ssd
 
+    inputs.nix-barracudavpn.nixosModules.barracudavpn
+
     ./hardware-configuration.nix
     ../../tmpl/efi-luks-btrfs-impermanence.nix
 
@@ -22,6 +24,8 @@
 
     ../_common/optional/pipewire.nix
   ];
+
+  programs.barracudavpn.package = inputs.nix-barracudavpn.packages.${pkgs.system}.barracudavpn;
 
   host.filesystem = {
     encryption.enable = true;
@@ -60,6 +64,7 @@
     # adb.enable = true;
     dconf.enable = true;
     # kdeconnect.enable = true;
+    barracudavpn.enable = true;
   };
 
   services.hardware.openrgb.enable = true;
