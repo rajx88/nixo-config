@@ -31,13 +31,16 @@
 
   xdg = {
     enable = true;
-    mimeApps.defaultApplications = {
-      "text/plain" = ["code.desktop"];
-      "image/*" = ["brave.desktop"];
-      "text/html" = ["brave.desktop"];
-      "text/xml" = ["brave.desktop"];
-      "x-scheme-handler/http" = ["brave.desktop"];
-      "x-scheme-handler/https" = ["brave.desktop"];
+    mimeApps = {
+      enable = true;
+      defaultApplications = {
+        "text/plain" = ["code.desktop"];
+        "image/*" = ["brave.desktop"];
+        "text/html" = ["brave.desktop"];
+        "text/xml" = ["brave.desktop"];
+        "x-scheme-handler/http" = ["brave.desktop"];
+        "x-scheme-handler/https" = ["brave.desktop"];
+      };
     };
     # userDirs = {
     #   enable = true;
@@ -46,6 +49,7 @@
     #     # XDG_GAMES_DIR = "${config.home.homeDirectory}/games";
     #     XDG_CODE_DIR = "${config.home.homeDirectory}/code";
     #   };
+    # };
     # };
   };
 
