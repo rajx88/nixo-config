@@ -3,9 +3,7 @@
     ferdium
   ];
 
-  home.persistence = {
-    "/persist/home/rajx88".directories = [
-      ".config/Ferdium"
-    ];
-  };
+  home.persistence."/persist".directories = [
+    ".config/Ferdium"
+  ];
 }

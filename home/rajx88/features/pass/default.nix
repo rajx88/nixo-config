@@ -16,7 +16,5 @@
     storePath = "${config.home.homeDirectory}/.password-store";
   };
 
-  home.persistence = {
-    "/persist/home/rajx88".directories = [".password-store"];
-  };
+  home.persistence."/persist".directories = [".password-store"];
 }

@@ -8,7 +8,7 @@
 }: {
   imports =
     [
-      inputs.impermanence.nixosModules.home-manager.impermanence
+      inputs.impermanence.homeManagerModules.impermanence
       ../features/cli
     ]
     ++ (builtins.attrValues outputs.homeManagerModules);
@@ -64,19 +64,14 @@
       BROWSER = "brave";
     };
 
-    persistence = {
-      "/persist/home/rajx88" = {
-        directories = [
-          "Documents"
-          "Downloads"
-          "Pictures"
-          "Videos"
-          ".local/bin"
-          "code"
-          ".docker" # Podman/Docker config and credentials (podman is always enabled)
-        ];
-        allowOther = true;
-      };
-    };
+    persistence."/persist".directories = [
+      "Documents"
+      "Downloads"
+      "Pictures"
+      "Videos"
+      ".local/bin"
+      "code"
+      ".docker" # Podman/Docker config and credentials (podman is always enabled)
+    ];
   };
 }

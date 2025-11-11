@@ -3,14 +3,12 @@
   config,
   ...
 }: {
-  home.persistence = {
-    "/persist/home/rajx88".directories = [
-      # ".config/VSCodium"
-      # ".vscode-oss/extensions"
-      ".vscode"
-      ".config/Code"
-    ];
-  };
+  home.persistence."/persist".directories = [
+    # ".config/VSCodium"
+    # ".vscode-oss/extensions"
+    ".vscode"
+    ".config/Code"
+  ];
   programs.vscode = {
     enable = true;
     # package = pkgs.vscodium;

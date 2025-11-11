@@ -3,10 +3,8 @@
     keymapp
   ];
 
-  home.persistence = {
-    "/persist/home/rajx88".directories = [
-      ".config/.keymapp"
-      ".local/share/keymapp"
-    ];
-  };
+  home.persistence."/persist".directories = [
+    ".config/.keymapp"
+    ".local/share/keymapp"
+  ];
 }

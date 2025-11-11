@@ -1,9 +1,7 @@
 {
-  home.persistence = {
-    "/persist/home/rajx88".directories = [
-      ".local/share/direnv"
-    ];
-  };
+  home.persistence."/persist".directories = [
+    ".local/share/direnv"
+  ];
 
   programs.direnv = {
     enable = true;

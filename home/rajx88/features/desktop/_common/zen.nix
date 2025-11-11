@@ -16,39 +16,37 @@ in {
     # or inputs.zen-browser.homeModules.twilight-official
   ];
 
-  home.persistence = {
-    "/persist/home/rajx88".directories = [".zen"];
-  };
+  home.persistence."/persist".directories = [".zen"];
 
   programs.zen-browser = {
     enable = true;
     nativeMessagingHosts = [pkgs.firefoxpwa];
     policies = {
-      AutofillAddressEnabled = false;
-      AutofillCreditCardEnabled = false;
-      DisableAppUpdate = true;
-      DisableFeedbackCommands = true;
-      DisableFirefoxStudies = true;
-      DisablePocket = true;
-      DisableTelemetry = true;
-      DontCheckDefaultBrowser = true;
-      NoDefaultBookmarks = true;
-      OfferToSaveLogins = false;
-      EnableTrackingProtection = {
-        Value = true;
-        Locked = true;
-        Cryptomining = true;
-        Fingerprinting = true;
-      };
+    AutofillAddressEnabled = false;
+    AutofillCreditCardEnabled = false;
+    DisableAppUpdate = true;
+    DisableFeedbackCommands = true;
+    DisableFirefoxStudies = true;
+    DisablePocket = true;
+    DisableTelemetry = true;
+    DontCheckDefaultBrowser = true;
+    NoDefaultBookmarks = true;
+    OfferToSaveLogins = false;
+    EnableTrackingProtection = {
+      Value = true;
+      Locked = true;
+      Cryptomining = true;
+      Fingerprinting = true;
+    };
     };
 
     profiles.default = {
-      # Set PAC file via user.js settings
-      settings = lib.mkIf pacEnabled {
-        "network.proxy.type" = 2; # 2 = PAC (auto proxy config)
-        "network.proxy.autoconfig_url" = pacUrl;
-        "network.proxy.share_proxy_settings" = true;
-      };
+    # Set PAC file via user.js settings
+    settings = lib.mkIf pacEnabled {
+      "network.proxy.type" = 2; # 2 = PAC (auto proxy config)
+      "network.proxy.autoconfig_url" = pacUrl;
+      "network.proxy.share_proxy_settings" = true;
+    };
     };
   };
 
@@ -61,9 +59,9 @@ in {
     terminal = false;
     categories = ["Network" "WebBrowser"];
     mimeType = [
-      "text/html"
-      "x-scheme-handler/http"
-      "x-scheme-handler/https"
+    "text/html"
+    "x-scheme-handler/http"
+    "x-scheme-handler/https"
     ];
   };
 }

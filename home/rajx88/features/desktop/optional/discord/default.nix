@@ -16,7 +16,5 @@
     # discocss
   ];
 
-  home.persistence = {
-    "/persist/home/rajx88".directories = [".config/discord"];
-  };
+  home.persistence."/persist".directories = [".config/discord"];
 }

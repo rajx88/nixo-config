@@ -9,12 +9,10 @@
   hasLazyGit = hasPackage "lazygit";
   hasFastFetch = hasPackage "fastfetch";
 in {
-  home.persistence = {
-    "/persist/home/rajx88".directories = [
-      ".config/zsh"
-      ".local/completions"
-    ];
-  };
+  home.persistence."/persist".directories = [
+    ".config/zsh"
+    ".local/completions"
+  ];
 
   programs.zsh = {
     enable = true;

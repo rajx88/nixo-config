@@ -39,7 +39,5 @@ in {
   #   "x-scheme-handler/https" = ["firefox.desktop"];
   # };
 
-  home.persistence = {
-    "/persist/home/rajx88".directories = [".mozilla/firefox"];
-  };
+  home.persistence."/persist".directories = [".mozilla/firefox"];
 }

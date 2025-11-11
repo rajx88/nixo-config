@@ -43,15 +43,7 @@ in {
     protontricks
   ];
 
-  home.persistence = {
-    "/persist/home/rajx88" = {
-      allowOther = true;
-      directories = [
-        {
-          directory = ".local/share/Steam";
-          method = "symlink";
-        }
-      ];
-    };
-  };
+  home.persistence."/persist".directories = [
+    ".local/share/Steam"
+  ];
 }

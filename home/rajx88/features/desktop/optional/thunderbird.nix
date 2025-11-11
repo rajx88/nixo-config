@@ -6,7 +6,5 @@
     };
   };
 
-  home.persistence = {
-    "/persist/home/rajx88".directories = [".thunderbird"];
-  };
+  home.persistence."/persist".directories = [".thunderbird"];
 }
