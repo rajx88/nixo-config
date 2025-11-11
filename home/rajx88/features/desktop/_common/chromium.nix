@@ -24,7 +24,5 @@
   #   "x-scheme-handler/https" = ["brave.desktop"];
   # };
 
-  home.persistence = {
-    "/persist/home/rajx88".directories = [".config/BraveSoftware/Brave-Browser"];
-  };
+  home.persistence."/persist".directories = [".config/BraveSoftware/Brave-Browser"];
 }

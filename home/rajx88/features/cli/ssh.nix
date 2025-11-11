@@ -3,7 +3,5 @@
   #   enable = true;
   # };
 
-  home.persistence = {
-    "/persist/home/rajx88".directories = [".ssh"];
-  };
+  home.persistence."/persist".directories = [".ssh"];
 }

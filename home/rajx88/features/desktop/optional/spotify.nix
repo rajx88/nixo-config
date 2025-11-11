@@ -33,9 +33,7 @@
     });
   };
 
-  home.persistence = {
-    "/persist/home/rajx88".directories = [
-      ".config/spotify"
-    ];
-  };
+  home.persistence."/persist".directories = [
+    ".config/spotify"
+  ];
 }

@@ -166,7 +166,7 @@ in
           '';
         };
 
-        programs.fuse.userAllowOther = mkIf (config.host.filesystem.impermanence.enable) true;
+        # programs.fuse.userAllowOther = mkIf (config.host.filesystem.impermanence.enable) true;
 
         system.activationScripts = mkIf (config.host.filesystem.impermanence.enable) {
           persistent-dirs.text = let

@@ -1,9 +1,7 @@
 {config, ...}: {
-  home.persistence = {
-    "/persist/home/rajx88".directories = [
-      ".local/share/antidote"
-    ];
-  };
+  home.persistence."/persist".directories = [
+    ".local/share/antidote"
+  ];
 
   programs.zsh = {
     sessionVariables = {

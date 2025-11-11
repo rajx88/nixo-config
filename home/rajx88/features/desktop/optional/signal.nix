@@ -3,9 +3,7 @@
     signal-desktop
   ];
 
-  home.persistence = {
-    "/persist/home/rajx88".directories = [
-      ".config/Signal"
-    ];
-  };
+  home.persistence."/persist".directories = [
+    ".config/Signal"
+  ];
 }

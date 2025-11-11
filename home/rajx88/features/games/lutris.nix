@@ -15,13 +15,8 @@
     })
   ];
 
-  home.persistence = {
-    "/persist/home/rajx88" = {
-      allowOther = true;
-      directories = [
-        ".config/lutris"
-        ".local/share/lutris"
-      ];
-    };
-  };
+  home.persistence."/persist".directories = [
+    ".config/lutris"
+    ".local/share/lutris"
+  ];
 }

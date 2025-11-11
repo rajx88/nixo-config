@@ -1,5 +1,3 @@
 {
-  home.persistence = {
-    "/persist/home/rajx88".directories = [".config/1Password"];
-  };
+  home.persistence."/persist".directories = [".config/1Password"];
 }

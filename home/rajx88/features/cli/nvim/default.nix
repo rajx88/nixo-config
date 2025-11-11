@@ -1,14 +1,12 @@
 {pkgs, ...}: {
   home.sessionVariables.EDITOR = "nvim";
 
-  home.persistence = {
-    "/persist/home/rajx88".directories = [
-      ".config/nvim"
-      ".local/share/nvim"
-      ".local/share/supermaven"
-      ".supermaven"
-    ];
-  };
+  home.persistence."/persist".directories = [
+    ".config/nvim"
+    ".local/share/nvim"
+    ".local/share/supermaven"
+    ".supermaven"
+  ];
 
   # home.packages = with pkgs; [
   #   stylua
