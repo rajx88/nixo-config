@@ -27,7 +27,7 @@
     _1password-gui = {
       enable = true;
       polkitPolicyOwners = ["rajx88"];
-      package = pkgs._1password-gui-beta;
+      # package = pkgs._1password-gui-beta;
     };
   };
 }

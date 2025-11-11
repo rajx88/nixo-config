@@ -36,5 +36,9 @@
     QT_PLUGIN_PATH = ["/lib/qt-6/plugins"];
   };
 
+  # Enable polkit for system authentication
+  security.polkit.enable = true;
+  security.soteria.enable = true;
+
   hardware.enableRedistributableFirmware = true;
 }
