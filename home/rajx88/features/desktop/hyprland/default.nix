@@ -83,6 +83,8 @@
       };
 
       misc = {
+        disable_hyprland_logo = true;
+        disable_splash_rendering = true;
         close_special_on_empty = true;
       };
     };
