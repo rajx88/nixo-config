@@ -2,15 +2,16 @@
 
 # Function to print usage
 usage() {
-	echo "Usage: $0 [-l] [-r] [-v]"
+	echo "Usage: $0 [-l] [-r] [-v] [-d]"
 	echo "  -l  List directories that should be considered for removal"
 	echo "  -r  Remove directories that are no longer under a mounted device"
 	echo "  -v  Verbose mode - show detailed debugging information"
+	echo "  -d  Deep scan - recursively scan all directories (slower but more thorough)"
 	exit 1
 }
 
 # Parse command-line arguments
-while getopts "lrv" opt; do
+while getopts "lrvd" opt; do
 	case ${opt} in
 	l)
 		list_only=true
@@ -20,6 +21,9 @@ while getopts "lrv" opt; do
 		;;
 	v)
 		verbose=true
+		;;
+	d)
+		deep=true
 		;;
 	*)
 		usage
@@ -34,169 +38,176 @@ fi
 
 echo "Checking directories in /persist..."
 
-# Get a list of all currently mounted devices that contain /persist in their mount point,
-# excluding the /persist mount itself and including subvol=/persist
-mounted_devices=$(mount | grep '/persist' | grep -v ' on /persist ' | awk '{print "/persist" $3}')
-[ "$verbose" = true ] && echo "Mounted devices: $mounted_devices"
+# For impermanence v2: Get all mounts from /persist subvolume
+# Extract the mount points and map them back to /persist paths
+mounted_paths=$(mount | grep "subvol=/persist" | grep -v " on /persist " | awk '{print $3}')
 
-# Array to hold symlinked directories
-symlinked_dirs=()
+# Convert mount points to their /persist equivalents
+mounted_devices=""
+while IFS= read -r mount_point; do
+	# All mounts are from /persist, so just prepend /persist to the mount point
+	persist_path="/persist$mount_point"
+	mounted_devices="$mounted_devices $persist_path"
+done <<< "$mounted_paths"
 
-# Array to track directories marked for removal
+[ "$verbose" = true ] && echo "Mounted devices (from /persist): $mounted_devices"
+
+# Array to track items marked for removal
 to_remove=()
-
-# Array to track safe directories
-safe_dirs=()
 
 # Additional array to hold user-specified safe directories
 user_safe_dirs=("/persist/passwords")
 
-# Function to check if a directory is symlinked elsewhere
-check_symlink_target() {
-	local dir="$1"
-	# Remove /persist from the path to get the relative path
-	local relative_path="${dir#/persist}"
+# Get all top-level items in /persist
+all_items=$(find /persist -maxdepth 1 -mindepth 1)
 
-	# Check if the relative path is symlinked somewhere else
-	if [ -L "$relative_path" ]; then
-		return 0 # Indicate it's a symlinked directory
-	fi
-	return 1 # Not a symlink
-}
-
-# Function to handle directories and check if they should be kept or removed
-handle_directory() {
-	local dir="$1"
-	local keep=false
-
-	# Check if the directory is in the user-safe directories list
+# Check each top-level item
+for item in $all_items; do
+	is_safe=false
+	
+	# Check if it's in user-safe list
 	for safe_dir in "${user_safe_dirs[@]}"; do
-		if [[ "$dir" == "$safe_dir" ]]; then
-			safe_dirs+=("$dir")
-			keep=true
-			[ "$verbose" = true ] && echo "[KEEP] Directory $dir is in the user-safe list and marked as safe."
-			break # No need to check further
+		if [[ "$item" == "$safe_dir" ]]; then
+			is_safe=true
+			[ "$verbose" = true ] && echo "[KEEP] $item is in user-safe list"
+			break
 		fi
 	done
-
-	# First, check if the directory is symlinked elsewhere
-	if check_symlink_target "$dir"; then
-		symlinked_dirs+=("$dir") # Add the symlinked directory to the list of symlinked directories
-		safe_dirs+=("$dir")      # Mark it as safe
-		keep=true
-		[ "$verbose" = true ] && echo "[KEEP] Directory $dir is symlinked and marked as safe."
+	
+	# Check if it's currently mounted (or a parent of mounted items)
+	if [ "$is_safe" = false ]; then
+		for mounted in $mounted_devices; do
+			if [[ "$mounted" == "$item"* ]]; then
+				is_safe=true
+				[ "$verbose" = true ] && echo "[KEEP] $item contains mounted path $mounted"
+				break
+			fi
+		done
 	fi
-
-	# Check if the directory is under any of the mounted devices (i.e., is part of a "parent")
-	for device in $mounted_devices; do
-		if [[ "$dir" == "$device"* ]]; then
-			safe_dirs+=("$dir") # Mark it as safe
-			keep=true
-			[ "$verbose" = true ] && echo "[KEEP] Directory $dir is under a mounted device and marked as safe."
-			break
-		fi
-	done
-
-	# Now, check if the directory is part of any symlinked directories (children of symlinked directories are safe)
-	for symlink_dir in "${symlinked_dirs[@]}"; do
-		if [[ "$dir" == "$symlink_dir"* ]]; then
-			safe_dirs+=("$dir") # Mark it as safe
-			keep=true
-			[ "$verbose" = true ] && echo "[KEEP] Directory $dir is under a symlinked directory and marked as safe."
-			break
-		fi
-	done
-
-	# If the directory is not marked as safe, add it to the to_remove list
-	if [ "$keep" = false ]; then
-		to_remove+=("$dir")
-		# Debugging: check if we're adding to the to_remove array
-		[ "$verbose" = true ] && echo "Added to 'to_remove' array: $dir"
-	fi
-}
-
-# Function to traverse the directories - FIXED to avoid subshell issues
-traverse_tree() {
-	local dir="$1"
-
-	# Use a while loop that reads directly from find output without pipes
-	while IFS= read -r subdir; do
-		handle_directory "$subdir"
-	done < <(find "$dir" -type d)
-}
-
-# Start the traversal from the root of the /persist directory
-traverse_tree "/persist"
-
-# Debugging: print the original contents of the arrays
-if [ "$verbose" = true ]; then
-	echo "Safe directories:"
-	for dir in "${safe_dirs[@]}"; do
-		echo "  $dir"
-	done
-
-	echo "Directories marked for removal (before filtering):"
-	for dir in "${to_remove[@]}"; do
-		echo "  $dir"
-	done
-fi
-
-# Filter out directories in to_remove that are parents of any directory in safe_dirs
-filtered_to_remove=()
-for remove_dir in "${to_remove[@]}"; do
-	is_parent=false
-
-	# Check if this remove_dir is a parent of any safe_dir
-	for safe_dir in "${safe_dirs[@]}"; do
-		# Skip exact matches
-		if [ "$remove_dir" = "$safe_dir" ]; then
-			continue
-		fi
-
-		# Check if remove_dir is a parent of safe_dir (using prefix matching)
-		if [[ "$safe_dir" == "$remove_dir"/* ]]; then
-			is_parent=true
-			[ "$verbose" = true ] && echo "[FILTER] Removing $remove_dir from to_remove because it's a parent of safe directory $safe_dir"
-			break
-		fi
-	done
-
-	# If this directory is not a parent of any safe directory, keep it in to_remove
-	if [ "$is_parent" = false ]; then
-		filtered_to_remove+=("$remove_dir")
+	
+	# If not safe, mark for removal
+	if [ "$is_safe" = false ]; then
+		to_remove+=("$item")
+		[ "$verbose" = true ] && echo "[REMOVE] Marking $item for removal"
 	fi
 done
 
-# Replace the original to_remove with the filtered version
-to_remove=("${filtered_to_remove[@]}")
+# For directories that contain mounts, check for stray files/directories
+# that aren't part of the mounts
+for item in $all_items; do
+	# Skip if already marked for removal
+	if [[ " ${to_remove[@]} " =~ " ${item} " ]]; then
+		continue
+	fi
+	
+	# Only check directories
+	if [ ! -d "$item" ]; then
+		continue
+	fi
+	
+	echo "[SCAN] Scanning $item for stray files..."
+	
+	# Determine scan depth
+	if [ "$deep" = true ]; then
+		# Deep scan: find all items recursively
+		depth_arg=""
+		echo "[DEEP] Deep scanning $item recursively (this may take a while)..."
+	else
+		# Shallow scan: only 1 level deep
+		depth_arg="-maxdepth 1"
+	fi
+	
+	# Count items for progress
+	item_count=0
+	total_items=$(find "$item" $depth_arg -mindepth 1 2>/dev/null | wc -l)
+	echo "[PROGRESS] Found $total_items items to check in $item"
+	
+	# Find all items in this directory
+	while IFS= read -r subitem; do
+		item_count=$((item_count + 1))
+		
+		# Show progress every 100 items
+		if [ $((item_count % 100)) -eq 0 ]; then
+			echo "[PROGRESS] Checked $item_count/$total_items items in $item..."
+		fi
+		
+		# Skip if parent directory is already marked for removal
+		parent_marked=false
+		for marked in "${to_remove[@]}"; do
+			if [[ "$subitem" == "$marked"/* ]]; then
+				parent_marked=true
+				[ "$verbose" = true ] && echo "[SKIP] $subitem - parent $marked already marked"
+				break
+			fi
+		done
+		
+		if [ "$parent_marked" = true ]; then
+			continue
+		fi
+		
+		is_mounted=false
+		
+		# Check if this subitem is a mount, is inside a mounted directory, OR has mounted children
+		for mounted in $mounted_devices; do
+			# Exact match: this IS a mount
+			if [[ "$subitem" == "$mounted" ]]; then
+				is_mounted=true
+				[ "$verbose" = true ] && echo "[KEEP] $subitem is a mount point"
+				break
+			# This item is inside a mount
+			elif [[ "$subitem" == "$mounted"/* ]]; then
+				is_mounted=true
+				[ "$verbose" = true ] && echo "[KEEP] $subitem is inside mount $mounted"
+				break
+			# A mount is inside this item (this item is a parent of a mount)
+			elif [[ "$mounted" == "$subitem"/* ]]; then
+				is_mounted=true
+				[ "$verbose" = true ] && echo "[KEEP] $subitem contains mount $mounted"
+				break
+			fi
+		done
+		
+		# If not mounted, it's a stray
+		if [ "$is_mounted" = false ]; then
+			to_remove+=("$subitem")
+			[ "$verbose" = true ] && echo "[REMOVE] Marking stray $subitem for removal"
+		fi
+	done < <(find "$item" $depth_arg -mindepth 1 2>/dev/null)
+	
+	echo "[DONE] Finished scanning $item ($item_count items checked)"
+done
 
 # Debugging: print the filtered to_remove array
 if [ "$verbose" = true ]; then
-	echo "Directories marked for removal (after filtering):"
-	for dir in "${to_remove[@]}"; do
-		echo "  $dir"
-	done
-fi
-
-# Final output, listing directories that will be removed
-if [ "$list_only" = true ]; then
 	if [ ${#to_remove[@]} -eq 0 ]; then
-		echo "[INFO] No directories are marked for removal."
+		echo "[INFO] No items are marked for removal."
 	else
-		echo "[INFO] Directories marked for removal:"
+		echo "[INFO] Items marked for removal:"
 		for dir in "${to_remove[@]}"; do
 			echo "[REMOVE] $dir"
 		done
 	fi
+fi
+
+# Final output, listing items that will be removed
+if [ "$list_only" = true ]; then
+	if [ ${#to_remove[@]} -eq 0 ]; then
+		echo "[INFO] No items are marked for removal."
+	else
+		echo "[INFO] Items marked for removal:"
+		for item in "${to_remove[@]}"; do
+			echo "[REMOVE] $item"
+		done
+	fi
 elif [ "$remove" = true ]; then
 	if [ ${#to_remove[@]} -eq 0 ]; then
-		echo "[INFO] No directories are marked for removal."
+		echo "[INFO] No items are marked for removal."
 	else
-		echo "[INFO] Removing directories..."
-		for dir in "${to_remove[@]}"; do
-			echo "[REMOVE] Removing directory: $dir"
-			# Uncomment the next line to actually remove the directory
-			rm -rf "$dir"
+		echo "[INFO] Removing items..."
+		for item in "${to_remove[@]}"; do
+			echo "[REMOVE] Removing: $item"
+			# Uncomment the next line to actually remove the item
+			rm -rf "$item"
 		done
 	fi
 fi
