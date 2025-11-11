@@ -49,5 +49,7 @@
 
     zip
     unzip
+
+    tldr
   ];
 }
