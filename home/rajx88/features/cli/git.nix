@@ -3,6 +3,12 @@
   config,
   ...
 }: {
+  home.persistence = {
+    "/persist/home/rajx88".directories = [
+      ".config/git"
+    ];
+  };
+
   home.file.".config/jj/conf.d/prvt.toml".text = ''
     --when.repositories = ["~/code/prvt/"]
       [user]
