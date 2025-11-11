@@ -137,12 +137,12 @@ in {
         ff = mkIf hasFastFetch "fastfetch";
 
         # git
-        gs = "git s";
-        gc = "git c";
-        gall = "git all";
-        gpu = "git pu";
-        gco = "git co";
-        gcb = "git cob";
+        # gs = "git s";
+        # gc = "git c";
+        # gall = "git all";
+        # gpu = "git pu";
+        # gco = "git co";
+        # gcb = "git cob";
 
         # vagrant
         # vup = "vagrant up";
