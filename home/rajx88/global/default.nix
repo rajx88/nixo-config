@@ -73,6 +73,7 @@
           "Videos"
           ".local/bin"
           "code"
+          ".docker" # Podman/Docker config and credentials (podman is always enabled)
         ];
         allowOther = true;
       };
