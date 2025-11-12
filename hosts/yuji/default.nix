@@ -23,6 +23,7 @@
     ../_common/optional/greetd.nix
 
     ../_common/optional/pipewire.nix
+    ../_common/optional/laptop.nix
   ];
 
   host.filesystem = {
