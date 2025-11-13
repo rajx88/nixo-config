@@ -2,21 +2,15 @@
   systemd = {
     targets = {
       sleep = {
-        enable = false;
-        unitConfig.DefaultDependencies = "no";
+        enable = true;
       };
       suspend = {
-        enable = false;
-        unitConfig.DefaultDependencies = "no";
+        enable = true;
       };
       hibernate = {
         enable = false;
-        unitConfig.DefaultDependencies = "no";
       };
-      "hybrid-sleep" = {
-        enable = false;
-        unitConfig.DefaultDependencies = "no";
-      };
+      # hybrid-sleep is not set, so it remains disabled by default
     };
   };
 }
