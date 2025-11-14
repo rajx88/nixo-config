@@ -16,6 +16,9 @@
     ./features/desktop/optional/ferdium.nix
     ./features/desktop/optional/teams.nix
 
+    ./features/desktop/optional/plexdesktop.nix
+    ./features/desktop/optional/obsidian.nix
+
     ./features/desktop/optional/keymapp.nix
     ./features/dev/intellij-ultimate.nix
     ./features/dev/vscode.nix

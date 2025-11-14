@@ -13,8 +13,8 @@
     ./features/desktop/optional/signal.nix
 
     # not working for some reason
-    # ./features/desktop/optional/obsidian.nix
-    # ./features/desktop/optional/plexplayer.nix
+    ./features/desktop/optional/obsidian.nix
+    ./features/desktop/optional/plexdesktop.nix
 
     ./features/games
 
