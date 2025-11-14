@@ -6,7 +6,7 @@
 }: {
   programs.chromium = {
     enable = true;
-    package = pkgs.brave;
+    # package = pkgs.brave;
     extensions = [
       {id = "aeblfdkhhhdcdjpifhhbdiojplfjncoa";} # 1Password
     ];
@@ -17,12 +17,12 @@
   };
 
   # xdg.mimeApps.defaultApplications = {
-  #   "image/*" = ["brave.desktop"];
-  #   "text/html" = ["brave.desktop"];
-  #   "text/xml" = ["brave.desktop"];
-  #   "x-scheme-handler/http" = ["brave.desktop"];
-  #   "x-scheme-handler/https" = ["brave.desktop"];
+  #   "image/*" = ["chromium.desktop"];
+  #   "text/html" = ["chromium.desktop"];
+  #   "text/xml" = ["chromium.desktop"];
+  #   "x-scheme-handler/http" = ["chromium.desktop"];
+  #   "x-scheme-handler/https" = ["chromium.desktop"];
   # };
 
-  home.persistence."/persist".directories = [".config/BraveSoftware/Brave-Browser"];
+  home.persistence."/persist".directories = [".config/chromium"];
 }
