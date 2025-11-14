@@ -36,6 +36,9 @@
     # Whether to enable hyprland-session.target on hyprland startup
     systemd = {
       enable = true;
+      variables = [
+        "--all"
+      ];
       # Same as default, but stop graphical-session too
       extraCommands = lib.mkBefore [
         "systemctl --user stop graphical-session.target"
@@ -45,10 +48,6 @@
     };
 
     settings = {
-      exec-once = [
-        "soteria"
-      ];
-
       general = {
         # See https://wiki.hyprland.org/Configuring/Variables/ for more
         gaps_in = 8;
