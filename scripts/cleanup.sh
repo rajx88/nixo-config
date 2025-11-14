@@ -64,16 +64,16 @@ all_items=$(find /persist -maxdepth 1 -mindepth 1)
 # Check each top-level item
 for item in $all_items; do
 	is_safe=false
-	
-	# Check if it's in user-safe list
+
+	# Check if it's in user-safe list or inside a user-safe directory
 	for safe_dir in "${user_safe_dirs[@]}"; do
-		if [[ "$item" == "$safe_dir" ]]; then
+		if [[ "$item" == "$safe_dir" ]] || [[ "$item" == "$safe_dir"/* ]]; then
 			is_safe=true
-			[ "$verbose" = true ] && echo "[KEEP] $item is in user-safe list"
+			[ "$verbose" = true ] && echo "[KEEP] $item is in or under user-safe directory $safe_dir"
 			break
 		fi
 	done
-	
+
 	# Check if it's currently mounted (or a parent of mounted items)
 	if [ "$is_safe" = false ]; then
 		for mounted in $mounted_devices; do
@@ -84,7 +84,7 @@ for item in $all_items; do
 			fi
 		done
 	fi
-	
+
 	# If not safe, mark for removal
 	if [ "$is_safe" = false ]; then
 		to_remove+=("$item")
@@ -140,13 +140,26 @@ for item in $all_items; do
 				break
 			fi
 		done
-		
+
 		if [ "$parent_marked" = true ]; then
 			continue
 		fi
-		
+
+		# Skip if subitem is in or under a user-safe directory
+		is_safe=false
+		for safe_dir in "${user_safe_dirs[@]}"; do
+			if [[ "$subitem" == "$safe_dir" ]] || [[ "$subitem" == "$safe_dir"/* ]]; then
+				is_safe=true
+				[ "$verbose" = true ] && echo "[KEEP] $subitem is in or under user-safe directory $safe_dir"
+				break
+			fi
+		done
+		if [ "$is_safe" = true ]; then
+			continue
+		fi
+
 		is_mounted=false
-		
+
 		# Check if this subitem is a mount, is inside a mounted directory, OR has mounted children
 		for mounted in $mounted_devices; do
 			# Exact match: this IS a mount
@@ -166,7 +179,7 @@ for item in $all_items; do
 				break
 			fi
 		done
-		
+
 		# If not mounted, it's a stray
 		if [ "$is_mounted" = false ]; then
 			to_remove+=("$subitem")
@@ -190,7 +203,27 @@ if [ "$verbose" = true ]; then
 fi
 
 # Final output, listing items that will be removed
-if [ "$list_only" = true ]; then
+if [ "$list_only" = true ] && [ "$remove" = true ]; then
+	if [ ${#to_remove[@]} -eq 0 ]; then
+		echo "[INFO] No items are marked for removal."
+	else
+		echo "[INFO] Items marked for removal:"
+		for item in "${to_remove[@]}"; do
+			echo "[REMOVE] $item"
+		done
+		echo -n "Do you want to delete these items? [y/N]: "
+		read confirm
+		if [[ "$confirm" =~ ^[Yy]$ ]]; then
+			echo "[INFO] Removing items..."
+			for item in "${to_remove[@]}"; do
+				echo "[REMOVE] Removing: $item"
+				rm -rf "$item"
+			done
+		else
+			echo "[INFO] Aborted removal."
+		fi
+	fi
+elif [ "$list_only" = true ]; then
 	if [ ${#to_remove[@]} -eq 0 ]; then
 		echo "[INFO] No items are marked for removal."
 	else
@@ -206,7 +239,6 @@ elif [ "$remove" = true ]; then
 		echo "[INFO] Removing items..."
 		for item in "${to_remove[@]}"; do
 			echo "[REMOVE] Removing: $item"
-			# Uncomment the next line to actually remove the item
 			rm -rf "$item"
 		done
 	fi
