@@ -16,14 +16,7 @@
     ./features/desktop/optional/ferdium.nix
     ./features/desktop/optional/teams.nix
 
-    # not working for some reason
-    # ./features/desktop/optional/obsidian.nix
-    # ./features/desktop/optional/plexplayer.nix
-
-    ./features/games
-
     ./features/desktop/optional/keymapp.nix
-    # ./features/dev/jetbrains-toolbox.nix
     ./features/dev/intellij-ultimate.nix
     ./features/dev/vscode.nix
     ./features/dev/mise.nix
