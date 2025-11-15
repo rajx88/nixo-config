@@ -86,31 +86,8 @@ in
         environment = mkIf cfg_impermanence.enable {
           systemPackages = let
             # Running this will show what changed during boot to potentially use for persisting
-            impermanence-fsdiff = pkgs.writeShellScriptBin "impermanence-fsdiff" ''
-              _mount_drive=''${1:-"$(mount | grep '.* on / type btrfs' | awk '{ print $1}')"}
-              _tmp_root=$(mktemp -d)
-              mkdir -p "$_tmp_root"
-              sudo mount -o subvol=/ "$_mount_drive" "$_tmp_root" > /dev/null 2>&1
-
-              set -euo pipefail
-
-              OLD_TRANSID=$(sudo btrfs subvolume find-new $_tmp_root/root-blank 9999999)
-              OLD_TRANSID=''${OLD_TRANSID#transid marker was }
-
-              sudo btrfs subvolume find-new "$_tmp_root/${cfg_impermanence.root-subvol}" "$OLD_TRANSID" | sed '$d' | cut -f17- -d' ' | sort | uniq |
-              while read path; do
-                path="/$path"
-                 if [ -L "$path" ]; then
-                    : # The path is a symbolic link, so is probably handled by NixOS already
-                  elif [ -d "$path" ]; then
-                    : # The path is a directory, ignore
-                  else
-                    echo "$path"
-                  fi
-                done
-                sudo umount "$_tmp_root"
-                rm -rf "$_tmp_root"
-            '';
+            # read the canonical script from the repository root
+            impermanence-fsdiff = pkgs.writeShellScriptBin "impermanence-fsdiff" (builtins.readFile ../../scripts/impermanence-fsdiff.sh);
           in
             with pkgs; [
               impermanence-fsdiff
