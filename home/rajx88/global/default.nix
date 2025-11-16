@@ -42,15 +42,15 @@
         "x-scheme-handler/https" = ["brave.desktop"];
       };
     };
-    # userDirs = {
-    #   enable = true;
-    #   createDirectories = true;
-    #   extraConfig = {
-    #     # XDG_GAMES_DIR = "${config.home.homeDirectory}/games";
-    #     XDG_CODE_DIR = "${config.home.homeDirectory}/code";
-    #   };
-    # };
-    # };
+    userDirs = {
+      enable = true;
+      createDirectories = true;
+      extraConfig = {
+        XDG_GAMES_DIR = "${config.home.homeDirectory}/games";
+        XDG_CODE_DIR = "${config.home.homeDirectory}/code";
+        XDG_SCRNSHTS_DIR = "${config.home.homeDirectory}/Pictures/scrnshts";
+      };
+    };
   };
 
   home = {
@@ -71,7 +71,7 @@
       "Videos"
       ".local/bin"
       "code"
-      ".docker" # Podman/Docker config and credentials (podman is always enabled)
+      ".docker"
     ];
   };
 }
