@@ -9,6 +9,7 @@
 
     bind = let
       swaylock = "${config.programs.swaylock.package}/bin/swaylock";
+      hyprlock = "${config.programs.hyprlock.package}/bin/hyprlock";
 
       fuzzel = "${config.programs.fuzzel.package}/bin/fuzzel";
 
@@ -56,11 +57,6 @@
         ",XF86AudioPrev,exec,${playerctl} previous"
         ",XF86AudioPlay,exec,${playerctl} play-pause"
         ",XF86AudioStop,exec,${playerctl} stop"
-      ])
-      ++
-      # Screen lock
-      (lib.optionals config.programs.swaylock.enable [
-        "$mod,backspace,exec,${swaylock} -i \"$DEFAULT_WP\" --clock --indicator --timestr '%k:%M' --datestr '%a %e.%m.%Y' --daemonize"
       ])
       ++
       # Launcher

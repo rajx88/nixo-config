@@ -18,5 +18,7 @@
 
   home.packages = with pkgs; [
     xdg-utils
+    # for brightness control in hyprlock/hypridle
+    brightnessctl
   ];
 }

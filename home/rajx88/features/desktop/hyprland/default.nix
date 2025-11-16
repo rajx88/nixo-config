@@ -9,8 +9,8 @@
     ../_common
     ../_common/wayland
 
-    # ./swaybg.nix
     ./hyprpaper.nix
+    ./hyprlock.nix
 
     ./config/basic-binds.nix
     ./config/binds.nix
