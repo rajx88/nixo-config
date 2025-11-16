@@ -9,7 +9,9 @@
   pactl = "${pkgs.pulseaudio}/bin/pactl";
   hyprctl = "${config.wayland.windowManager.hyprland.package}/bin/hyprctl";
 
-  isLocked = "${pgrep} -x ${swaylock}";
+  # pgrep -x fails when given a pattern longer than 15 chars (common with nix store paths).
+  # Use -f to match against the full command line (matches the full nix-store path to swaylock).
+  isLocked = "${pgrep} -f ${swaylock}";
   lockTime = 10 * 60; # TODO: make this configurable for different hosts
 
   # Makes two timeouts: one for when the screen is not locked (lockTime+timeout) and one for when it is.
@@ -36,7 +38,8 @@ in {
       [
         {
           timeout = lockTime;
-          command = "${swaylock} -i \"$DEFAULT_WP\" --daemonize --grace 15";
+          # Use plain swaylock (no effects). Show image and daemonize.
+          command = "${swaylock} -i \"$DEFAULT_WP\" --daemonize";
         }
       ]
       ++

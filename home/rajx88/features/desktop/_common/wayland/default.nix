@@ -7,7 +7,6 @@
     ./thunar.nix
     ./waybar
     ./wlogout
-    # ./wofi.nix
   ];
 
   xdg.mimeApps.enable = true;
