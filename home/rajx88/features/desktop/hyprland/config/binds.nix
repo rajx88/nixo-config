@@ -60,7 +60,7 @@
       ++
       # Screen lock
       (lib.optionals config.programs.swaylock.enable [
-        "$mod,backspace,exec,${swaylock} -i \"$DEFAULT_WP\" --daemonize"
+        "$mod,backspace,exec,${swaylock} -i \"$DEFAULT_WP\" --clock --indicator --timestr '%k:%M' --datestr '%a %e.%m.%Y' --daemonize"
       ])
       ++
       # Launcher

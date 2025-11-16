@@ -1,6 +1,6 @@
 {pkgs, ...}: {
   programs.swaylock = {
     enable = true;
-    package = pkgs.swaylock;
+    package = pkgs.swaylock-effects;
   };
 }

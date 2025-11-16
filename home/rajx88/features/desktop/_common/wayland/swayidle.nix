@@ -38,8 +38,10 @@ in {
       [
         {
           timeout = lockTime;
-          # Use plain swaylock (no effects). Show image and daemonize.
-          command = "${swaylock} -i \"$DEFAULT_WP\" --daemonize";
+          # Use swaylock-effects to show a background image and a simple clock/indicator.
+          # systemd unit strings need % escaped as %% so the executed command receives a single %
+          # Add a gentle blur; if this causes issues on a host, reduce/remove the --effect-blur value.
+          command = "${swaylock} -i \"$DEFAULT_WP\" --clock --indicator --timestr '%%k:%%M' --datestr '%%a %%e.%%m.%%Y' --daemonize";
         }
       ]
       ++
