@@ -48,7 +48,7 @@
         "SHIFT,XF86AudioMute,exec,${pactl} set-source-mute @DEFAULT_SOURCE@ toggle"
         ",XF86AudioMicMute,exec,${pactl} set-source-mute @DEFAULT_SOURCE@ toggle"
         # Screenshotting
-        "$mod SHIFT,p,exec,${grim} -t jpeg -g \"$(slurp)\" ${config.xdg.userDirs.pictures}/scrnsht/$(date +%Y-%m-%d_%H-%m-%s).jpg"
+        "$mod SHIFT,p,exec,${grim} -t jpeg -g \"$(slurp)\" ${config.xdg.userDirs.extraConfig.XDG_SCRNSHTS_DIR}/$(date +%Y-%m-%d_%H-%m-%s).jpg"
       ]
       ++ (lib.optionals config.services.playerctld.enable [
         # Media control
