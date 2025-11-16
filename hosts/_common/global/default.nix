@@ -38,7 +38,7 @@
 
   # Enable polkit for system authentication
   security.polkit.enable = true;
-  security.soteria.enable = true;
+  # security.soteria.enable = true;
 
   hardware.enableRedistributableFirmware = true;
 }
