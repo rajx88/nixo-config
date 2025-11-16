@@ -34,6 +34,20 @@ in {
     enable = true;
     package = pkgs.swaylock-effects;
   };
+
+  # Only inject Hyprland settings if Hyprland is enabled
+  lib.optionalAttrs config.wayland.windowManager.hyprland.enable {
+    wayland.windowManager.hyprland = {
+      settings = {
+        bind = let
+          swaylock = lib.getExe config.programs.swaylock.package;
+        in [
+          "$mod,backspace,exec,${swaylock} -i \"$DEFAULT_WP\" --clock --indicator --timestr '%k:%M' --datestr '%a %e.%m.%Y' --daemonize"
+        ];
+      };
+    };
+  };
+
   services.swayidle = {
     enable = true;
     systemdTarget = "graphical-session.target";

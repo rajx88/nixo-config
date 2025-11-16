@@ -23,8 +23,6 @@
     # wl-mirror
     # wl-mirror-pick
     # ydotool
-    # hyprlock/hypridle wrappers
-    (import ../hyprland/hyprlock.nix { inherit stdenv pkgs; bash = pkgs.bash; })
   ];
 
   home.sessionVariables = {
