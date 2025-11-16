@@ -2,8 +2,8 @@
   imports = [
     ./dunst.nix
     ./fuzzel.nix
-    ./swayidle.nix
-    ./swaylock.nix
+    # ./swayidle.nix
+    # ./swaylock.nix
     ./thunar.nix
     ./waybar
     ./wlogout
@@ -23,6 +23,8 @@
     # wl-mirror
     # wl-mirror-pick
     # ydotool
+    # hyprlock/hypridle wrappers
+    (import ../hyprland/hyprlock.nix { inherit stdenv pkgs; bash = pkgs.bash; })
   ];
 
   home.sessionVariables = {
