@@ -11,6 +11,7 @@
     inputs.hardware.nixosModules.common-pc-ssd
 
     inputs.nix-barracudavpn.nixosModules.barracudavpn
+    inputs.nix-barracudavpn.nixosModules.proxy-certs
 
     ./hardware-configuration.nix
     ../../tmpl/efi-luks-btrfs-impermanence.nix
@@ -65,6 +66,8 @@
     # kdeconnect.enable = true;
     barracudavpn.enable = true;
   };
+
+  proxy.certs.enable = true;
 
   services.hardware.openrgb.enable = true;
 
