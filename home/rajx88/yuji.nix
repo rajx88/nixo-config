@@ -26,7 +26,6 @@
     ./features/dev/java.nix
   ];
 
-  # Enable PAC configuration
   programs.proxy.pac.enable = true;
 
   home.sessionVariables = {

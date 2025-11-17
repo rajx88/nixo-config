@@ -26,7 +26,6 @@
       extensions = with pkgs.vscode-extensions;
         [
           github.copilot
-          github.copilot-chat
           kamadorueda.alejandra
           jnoortheen.nix-ide
           mkhl.direnv
