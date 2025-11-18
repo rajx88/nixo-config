@@ -1,4 +1,8 @@
-{lib, ...}: {
+{
+  config,
+  lib,
+  ...
+}: {
   wayland.windowManager.hyprland.settings = {
     "$mod" = "SUPER";
     bindm = [
@@ -43,7 +47,7 @@
         j = down;
       };
     in
-      [
+      lib.optionals (!config.hyprland.scrolling.enable) [
         "$mod SHIFT,q,killactive"
 
         # "$mod,s,togglesplit"
@@ -77,19 +81,19 @@
         workspaces)
       ++
       # Move focus
-      (lib.mapAttrsToList (
+      lib.optionals (!config.hyprland.scrolling.enable) (lib.mapAttrsToList (
           key: direction: "$mod,${key},movefocus,${direction}"
         )
         directions)
       ++
       # Swap windows
-      (lib.mapAttrsToList (
+      lib.optionals (!config.hyprland.scrolling.enable) (lib.mapAttrsToList (
           key: direction: "$mod SHIFT,${key},swapwindow,${direction}"
         )
         directions)
       ++
       # Move windows
-      (lib.mapAttrsToList (
+      lib.optionals (!config.hyprland.scrolling.enable) (lib.mapAttrsToList (
           key: direction: "$mod CONTROL,${key},movewindoworgroup,${direction}"
         )
         directions)
