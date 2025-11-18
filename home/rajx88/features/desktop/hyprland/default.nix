@@ -56,7 +56,7 @@
         gaps_in = 8;
         gaps_out = 8;
         border_size = 2;
-        # layout = "dwindle";
+        layout = lib.mkIf (!config.hyprland.scrolling.enable) "master";
       };
 
       dwindle = {
