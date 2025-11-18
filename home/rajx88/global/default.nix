@@ -53,6 +53,15 @@
     };
   };
 
+  dconf = {
+    enable = true;
+    settings = {
+      "org/gnome/desktop/interface" = {
+        color-scheme = "prefer-dark";
+      };
+    };
+  };
+
   home = {
     username = lib.mkDefault "rajx88";
     homeDirectory = lib.mkDefault "/home/${config.home.username}";
