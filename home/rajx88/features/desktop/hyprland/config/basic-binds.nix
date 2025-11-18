@@ -47,22 +47,17 @@
         j = down;
       };
     in
-      lib.optionals (!config.hyprland.scrolling.enable) [
+      [
         "$mod SHIFT,q,killactive"
 
         # "$mod,s,togglesplit"
         "$mod SHIFT,f,fullscreen,1"
-        # "$mod SHIFT,f,fullscreen,0"
+        "$mod ALT SHIFT,f,fullscreen,0"
         "$mod SHIFT,space,togglefloating"
 
         "$mod,minus,splitratio,-0.25"
 
         "$mod,equal,splitratio,0.25"
-
-        # "$mod,g,togglegroup"
-        # "$mod,t,lockactivegroup,toggle"
-        # "$mod,apostrophe,changegroupactive,f"
-        # "$mod SHIFT,apostrophe,changegroupactive,b"
 
         "$mod,u,togglespecialworkspace"
         "$mod SHIFT,u,movetoworkspacesilent,special"
