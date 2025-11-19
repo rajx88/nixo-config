@@ -71,7 +71,17 @@
       preferredMode = true;
       isLaptop = true;
       refreshRate = 60;
-      position = "auto";
+      position = "auto-center-down";
+      workspaces = [6 7 8 9 0];
+    }
+    {
+      name = "DP-1";
+      width = 3840;
+      height = 2160;
+      preferredMode = true;
+      refreshRate = 60;
+      position = "auto-center-up";
+      workspaces = [1 2 3 4 5];
     }
   ];
 }
