@@ -41,7 +41,7 @@
     # WLR_DRM_NO_ATOMIC = "1";
   };
 
-  hyprland.scrolling.enable = true;
+  # hyprland.scrolling.enable = true;
 
   monitors = [
     {
