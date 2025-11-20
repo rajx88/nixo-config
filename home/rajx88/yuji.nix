@@ -18,6 +18,7 @@
 
     ./features/desktop/optional/plexdesktop.nix
     ./features/desktop/optional/obsidian.nix
+    ./features/games/steam.nix
 
     ./features/desktop/optional/keymapp.nix
     ./features/dev/intellij-ultimate.nix

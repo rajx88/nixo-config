@@ -8,6 +8,7 @@
     ./git.nix
     ./gpg.nix
     ./just.nix
+    ./kubectl.nix
     ./nvim
     # ./pure.nix
     ./ssh.nix
