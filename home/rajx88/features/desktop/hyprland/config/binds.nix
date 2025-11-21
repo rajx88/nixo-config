@@ -36,7 +36,7 @@
     in
       [
         # Program bindings
-        "$mod,Return,exec,${terminal}"
+        "$mod,t,exec,${terminal}"
         "$mod,v,exec,${editor}"
         "$mod,b,exec,${browser}"
         "$mod,e,exec,${files}"

@@ -7,9 +7,6 @@
       ".config/github-copilot" # Copilot plugin settings
       ".java/.userPrefs" # Java intellij settings
     ];
-    files = [
-      ".ideavimrc"
-    ];
   };
 
   home.packages = with pkgs; [
