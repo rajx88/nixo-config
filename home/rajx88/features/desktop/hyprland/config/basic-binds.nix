@@ -51,8 +51,8 @@
         "$mod SHIFT,q,killactive"
 
         # "$mod,s,togglesplit"
-        "$mod ,f,fullscreen,1"
-        "$mod SHIFT,f,fullscreen,0"
+        "$mod SHIFT,f,fullscreen,1"
+        "$mod ALT SHIFT,f,fullscreen,0"
         "$mod SHIFT,space,togglefloating"
 
         "$mod,minus,splitratio,-0.25"
