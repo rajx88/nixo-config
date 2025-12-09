@@ -1,14 +1,8 @@
-{
-  config,
-  pkgs,
-  ...
-}: let
-  dockerEnabled = config.virtualisation.docker.enable;
-in {
+{pkgs, ...}: {
   virtualisation.podman = {
     enable = true;
-    dockerCompat = !dockerEnabled;
-    dockerSocket.enable = !dockerEnabled;
+    dockerCompat = true;
+    dockerSocket.enable = true;
     defaultNetwork.settings.dns_enabled = true;
 
     extraPackages = [
