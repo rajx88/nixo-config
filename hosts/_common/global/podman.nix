@@ -1,6 +1,6 @@
 {pkgs, ...}: {
   virtualisation.podman = {
-    enable = true;
+    enable = false;
     dockerCompat = true;
     dockerSocket.enable = true;
     defaultNetwork.settings.dns_enabled = true;
@@ -8,6 +8,12 @@
     extraPackages = [
       pkgs.podman-compose
     ];
+  };
+
+  virtualisation.docker = {
+    enable = true;
+    rootless.enable = true;
+    rootless.setSocketVariable = true;
   };
 
   environment.persistence = {
