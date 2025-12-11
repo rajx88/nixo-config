@@ -35,16 +35,11 @@
   programs.proxy.pac.enable = true;
 
   home.sessionVariables = {
-    WLR_NO_HARDWARE_CURSORS = 1;
-    LIBVA_DRIVER_NAME = "nvidia";
-    GBM_BACKEND = "nvidia-drm";
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-    __GL_VRR_ALLOWED = 1;
-    WLR_DRM_NO_ATOMIC = 1;
-    WLR_DRM_DEVICES = "/dev/dri/card1:/dev/dri/card0"; # dGPU first (usually)
-    WLR_DRM_DISABLE_MODIFIERS = "1";
-    # if it still blacks out on cold boot:
-    # WLR_DRM_NO_ATOMIC = "1";
+    LIBVA_DRIVER_NAME = "nvidia"; # if you installed nvidia-vaapi-driver
+    GBM_BACKEND = "nvidia-drm";
+    __GL_VRR_ALLOWED = "1";
+    # WLR_NO_HARDWARE_CURSORS = "1"; # drop this if everything works fine
   };
 
   # hyprland.scrolling.enable = true;
