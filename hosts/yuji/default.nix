@@ -39,7 +39,9 @@
   };
 
   boot = {
-    kernelPackages = pkgs.linuxKernel.packages.linux_zen;
+    # kernelPackages = pkgs.linuxKernel.packages.linux_zen;
+    # kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = pkgs.linuxPackages_6_17;
     # kernelParams = ["nvidia.NVreg_PreserveVideoMemoryAllocations=1"];
     # kernelParams = ["nvidia-drm.modeset=1"];
     # Belt-and-suspenders: make sure nouveau never grabs the GPU
