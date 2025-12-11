@@ -14,7 +14,6 @@
     ./features/desktop/optional/spotify.nix
     ./features/desktop/optional/signal.nix
     ./features/desktop/optional/ferdium.nix
-    ./features/desktop/optional/teams.nix
 
     ./features/desktop/optional/plexdesktop.nix
     ./features/desktop/optional/obsidian.nix
