@@ -28,7 +28,7 @@
     ./features/dev/java.nix
     ./features/dev/kubectl.nix
     ./features/dev/postman.nix
-    ./features/dev/bruno.nix
+    # ./features/dev/bruno.nix
   ];
 
   programs.proxy.pac.enable = true;

@@ -54,6 +54,7 @@
     home-manager,
     disko,
     systems,
+    impermanence,
     ...
   } @ inputs: let
     inherit (self) outputs;

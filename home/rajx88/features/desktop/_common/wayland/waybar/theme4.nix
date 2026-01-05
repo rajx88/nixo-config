@@ -11,7 +11,7 @@
   playerctl = "${config.services.playerctld.package}/bin/playerctl";
   fuzzel = "${config.programs.fuzzel.package}/bin/fuzzel";
   wlogout = "${config.programs.wlogout.package}/bin/wlogout";
-  thunar = "${pkgs.xfce.thunar}/bin/thunar";
+  thunar = "${pkgs.thunar}/bin/thunar";
 
   gtk-launch = "${pkgs.gtk3}/bin/gtk-launch";
   xdg-mime = "${pkgs.xdg-utils}/bin/xdg-mime";
