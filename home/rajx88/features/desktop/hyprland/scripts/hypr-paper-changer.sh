@@ -30,4 +30,4 @@ if [[ -z "$WALLPAPER" ]]; then
 fi
 
 # Apply the selected wallpaper using reload
-hyprctl hyprpaper reload ",$WALLPAPER"
+hyprctl hyprpaper wallpaper ",$WALLPAPER"
