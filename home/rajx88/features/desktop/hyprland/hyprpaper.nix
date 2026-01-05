@@ -6,10 +6,11 @@
   wallpaperDir = "${config.xdg.dataHome}/wallpapers";
 in {
   xdg.configFile."hypr/hyprpaper.conf".text = ''
-    preload = ${wallpaperDir}/wall-01.jpg
-
     # set the default wallpaper(s) seen on inital workspace(s) --depending on the number of monitors used
-    wallpaper = ,${wallpaperDir}/wall-01.jpg
+    wallpaper {
+     monitor =
+     path = ${wallpaperDir}/wall-01.jpg
+    }
 
   '';
 
