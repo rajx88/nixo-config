@@ -42,10 +42,8 @@
       variables = [
         "--all"
       ];
-      # Same as default, but stop graphical-session too
       extraCommands = lib.mkBefore [
         "systemctl --user stop graphical-session.target"
-        "systemctl --user stop hyprland-session.target"
         "systemctl --user start hyprland-session.target"
       ];
     };
