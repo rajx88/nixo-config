@@ -44,8 +44,16 @@
     # kernelPackages = pkgs.linuxPackages_6_17;
     # kernelParams = ["nvidia.NVreg_PreserveVideoMemoryAllocations=1"];
     # kernelParams = ["nvidia-drm.modeset=1"];
-    # Belt-and-suspenders: make sure nouveau never grabs the GPU
-    blacklistedKernelModules = ["nouveau"];
+    # Uncomment the desired line below to switch between Intel-only (NVIDIA disabled) and default (NVIDIA enabled):
+    # Intel-only (NVIDIA disabled):
+    blacklistedKernelModules = [
+      # when enabling nvidia just outcomment everything below nouveau
+      "nouveau"
+      "nvidia"
+      "nvidia_drm"
+      "nvidia_modeset"
+      "nvidia_uvm"
+    ];
   };
 
   zramSwap = {
