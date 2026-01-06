@@ -42,20 +42,20 @@
       name = "DP-1";
       width = 3840;
       height = 2160;
-      refreshRate = 120;
-      workspace = "2";
+      preferredMode = true;
+      refreshRate = 60;
+      workspaces = [6 7 8 9 0];
       position = "auto-right";
+      # primary = true;
     }
     {
       name = "DP-2";
       width = 3840;
       height = 2160;
-      # width = 1440;
-      # height = 2560;
-      refreshRate = 120;
+      preferredMode = true;
+      refreshRate = 60;
       position = "auto-left";
-      # vertical = "3";
-      workspace = "1";
+      workspaces = [1 2 3 4 5];
       primary = true;
     }
   ];

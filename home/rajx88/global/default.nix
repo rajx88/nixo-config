@@ -68,7 +68,7 @@
     sessionPath = ["$HOME/.local/bin"];
     sessionVariables = {
       FLAKE = "$HOME/code/nixos-config";
-      TERM = "ghostty";
+      TERM = "foot";
       BROWSER = "zen";
     };
 
