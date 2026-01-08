@@ -10,7 +10,7 @@
     ../_common/wayland
 
     ./hyprpaper.nix
-    # ./hyprlock.nix
+    ./hyprlock.nix
 
     ./config/basic-binds.nix
     ./config/binds.nix
