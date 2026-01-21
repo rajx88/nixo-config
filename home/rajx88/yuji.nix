@@ -5,6 +5,7 @@
 }: {
   imports = [
     inputs.nix-barracudavpn.homeManagerModules.proxy
+    inputs.nix-barracudavpn.homeManagerModules.ssh-tunnels
 
     ./global
 
@@ -33,6 +34,8 @@
   ];
 
   programs.proxy.pac.enable = true;
+
+  services.ssh-tunnels.enable = true;
 
   home.sessionVariables = {
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
