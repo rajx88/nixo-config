@@ -12,7 +12,6 @@
 
     inputs.nix-barracudavpn.nixosModules.barracudavpn
     inputs.nix-barracudavpn.nixosModules.proxy-certs
-    inputs.nix-barracudavpn.nixosModules.ssh-tunnels
 
     ./hardware-configuration.nix
     ../../tmpl/efi-luks-btrfs-impermanence.nix
@@ -80,7 +79,6 @@
 
   proxy.certs.enable = true;
 
-  services.ssh-tunnels.enable = true;
   services.hardware.openrgb.enable = true;
 
   hardware = {
