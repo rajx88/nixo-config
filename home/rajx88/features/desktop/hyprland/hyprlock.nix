@@ -101,22 +101,22 @@
           on-timeout = "brightnessctl set 50%-";
         }
         {
-          timeout = 300;
+          timeout = 669;
           on-timeout = "loginctl lock-session";
         }
         {
-          timeout = 320;
+          timeout = 769;
           on-timeout = "hyprctl dispatch dpms off";
           on-resume = "hyprctl dispatch dpms on";
         }
 
         # If already locked
         {
-          timeout = 15;
+          timeout = 30;
           on-timeout = "if ${isLocked}; then brightnessctl set 75%-; fi";
         }
         {
-          timeout = 20;
+          timeout = 60;
           on-timeout = "if ${isLocked}; then hyprctl dispatch dpms off; fi";
           on-resume = "hyprctl dispatch dpms on";
         }
