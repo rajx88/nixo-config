@@ -39,8 +39,8 @@
   };
 
   boot = {
-    kernelPackages = pkgs.linuxKernel.packages.linux_zen;
-    # kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = pkgs.linuxPackages_latest;
+    # kernelPackages = pkgs.linuxKernel.packages.linux_zen;
     # kernelPackages = pkgs.linuxPackages_6_17;
     # kernelParams = ["nvidia.NVreg_PreserveVideoMemoryAllocations=1"];
     # kernelParams = ["nvidia-drm.modeset=1"];
