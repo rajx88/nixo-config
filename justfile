@@ -58,9 +58,8 @@ check-changes:
   #!/usr/bin/env bash
   mkdir -p .flake-diffs
   echo "Building new system..."
-  nixos-rebuild build --flake .#$HOSTNAME --sudo
+  new=$(nix build --print-out-paths ".#nixosConfigurations.${HOSTNAME}.config.system.build.toplevel" --no-link)
   
-  new=$(readlink -f ./result)
   old=$(readlink -f /nix/var/nix/profiles/system)
   
   if [ -z "$new" ] || [ ! -d "$new" ]; then
@@ -71,7 +70,7 @@ check-changes:
   timestamp=$(date '+%Y-%m-%d_%H-%M-%S')
   echo -e "\n=== Changes that will be applied ==="
   tmp_diff=$(mktemp)
-  nix store diff-closures $old $new | tee "$tmp_diff"
+  nix store diff-closures "$old" "$new" | tee "$tmp_diff"
 
   if [ -s "$tmp_diff" ]; then
     mv "$tmp_diff" ".flake-diffs/$HOSTNAME-$timestamp.diff"
