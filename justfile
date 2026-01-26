@@ -47,16 +47,23 @@ debug:
   nixos-rebuild switch --flake .#$HOSTNAME --sudo --show-trace --verbose
 
 up:
+  nix flake update
+
+build:
+  #!/usr/bin/env bash
+  echo "Building new system..."
+  nixos-rebuild build --flake .#$HOSTNAME --sudo
+
+check-changes:
   #!/usr/bin/env bash
   mkdir -p .flake-diffs
-  echo "Updating flake..."
-  nix flake update
-  
   echo "Building new system..."
-  new=$(nix build .#nixosConfigurations.$HOSTNAME.config.system.build.toplevel --no-link --print-out-paths 2>/dev/null | tail -1)
+  nixos-rebuild build --flake .#$HOSTNAME --sudo
+  
+  new=$(readlink -f ./result)
   old=$(readlink -f /nix/var/nix/profiles/system)
   
-  if [ -z "$new" ]; then
+  if [ -z "$new" ] || [ ! -d "$new" ]; then
     echo "Build failed"
     exit 1
   fi
