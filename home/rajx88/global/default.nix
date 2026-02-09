@@ -45,9 +45,9 @@
       enable = true;
       createDirectories = true;
       extraConfig = {
-        XDG_GAMES_DIR = "${config.home.homeDirectory}/games";
-        XDG_CODE_DIR = "${config.home.homeDirectory}/code";
-        XDG_SCRNSHTS_DIR = "${config.home.homeDirectory}/Pictures/scrnshts";
+        GAMES = "${config.home.homeDirectory}/games";
+        CODE = "${config.home.homeDirectory}/code";
+        SCRNSHTS = "${config.home.homeDirectory}/Pictures/scrnshts";
       };
     };
   };
