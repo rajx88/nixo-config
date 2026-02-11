@@ -40,7 +40,8 @@
   security.polkit.enable = true;
   # security.soteria.enable = true;
 
-  services.envfs.enable = true;
+  # when enabled cant boot something with /usr missing
+  # services.envfs.enable = true;
 
   hardware.enableRedistributableFirmware = true;
 }
