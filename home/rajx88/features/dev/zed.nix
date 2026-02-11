@@ -1,4 +1,11 @@
 {
+  home.persistence."/persist" = {
+    directories = [
+      ".local/share/zed"
+      ".config/zed"
+    ];
+  };
+
   programs.zed-editor = {
     enable = true;
     userSettings = {
