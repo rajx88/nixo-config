@@ -24,6 +24,7 @@
 
     # dev
     ./features/dev/intellij-ultimate.nix
+    # ./features/dev/jetbrains-toolbox.nix
     ./features/dev/vscode.nix
     ./features/dev/mise.nix
     ./features/dev/java.nix
