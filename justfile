@@ -15,6 +15,19 @@ hm $MACHINE:
 rb:
   #!/usr/bin/env bash
   old=$(readlink -f /nix/var/nix/profiles/system)
+  
+  # Check if a diff file exists, generate one if missing
+  latest_diff=$(ls -t .flake-diffs/$HOSTNAME-*.diff 2>/dev/null | head -1)
+  if [ -z "$latest_diff" ]; then
+    echo "No predicted diff found - generating one first..."
+    just check-changes
+    latest_diff=$(ls -t .flake-diffs/$HOSTNAME-*.diff 2>/dev/null | head -1)
+    if [ -z "$latest_diff" ]; then
+      echo "No changes detected - system already up to date"
+      exit 0
+    fi
+  fi
+  
   nixos-rebuild switch --flake .#$HOSTNAME --sudo
   new=$(readlink -f /nix/var/nix/profiles/system)
   
@@ -23,19 +36,25 @@ rb:
     applied_diff=$(mktemp)
     nix store diff-closures $old $new | tee "$applied_diff"
 
-    # Compare applied diff with latest predicted diff (from `up`)
-    latest_diff=$(ls -t .flake-diffs/$HOSTNAME-*.diff 2>/dev/null | head -1)
-    if [ -n "$latest_diff" ]; then
-      if diff -q "$latest_diff" "$applied_diff" > /dev/null 2>&1; then
-        echo -e "\n✓ Changes match prediction ($latest_diff)"
+    # Only process if there's actual content
+    if [ -s "$applied_diff" ]; then
+      # Compare applied diff with predicted diff
+      if [ -n "$latest_diff" ] && diff -q "$latest_diff" "$applied_diff" > /dev/null 2>&1; then
+        echo -e "\n✓ Changes match prediction"
         rm -f "$applied_diff"
       else
-        echo -e "\n⚠ WARNING: Applied changes differ from prediction!"
-        echo "Predicted: $latest_diff"
-        echo "Applied diff kept at: $applied_diff"
+        # Save actual diff with timestamp (same format as check-changes)
+        timestamp=$(date '+%Y-%m-%d_%H-%M-%S')
+        saved_diff=".flake-diffs/$HOSTNAME-$timestamp.diff"
+        mv "$applied_diff" "$saved_diff"
+        if [ -n "$latest_diff" ]; then
+          echo -e "\n⚠ Applied changes differ from prediction!"
+          echo "Predicted: $latest_diff"
+          echo "Actual diff saved: $saved_diff"
+        fi
       fi
     else
-      echo -e "\nNo predicted diff found (run 'j up' first)."
+      echo "No actual changes detected after rebuild"
       rm -f "$applied_diff"
     fi
   else
