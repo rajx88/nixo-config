@@ -2,7 +2,12 @@
   programs.zed-editor = {
     enable = true;
     userSettings = {
+      telemetry = {
+        diagnostics = false;
+        metrics = false;
+      };
       vim_mode = true;
+      # base_keymap = "JetBrains";
       ui_font_size = 16;
       buffer_font_size = 15;
       theme = {
