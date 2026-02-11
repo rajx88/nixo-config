@@ -40,5 +40,7 @@
   security.polkit.enable = true;
   # security.soteria.enable = true;
 
+  services.envfs.enable = true;
+
   hardware.enableRedistributableFirmware = true;
 }
