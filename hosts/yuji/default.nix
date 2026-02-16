@@ -50,10 +50,10 @@
     blacklistedKernelModules = [
       # when enabling nvidia just outcomment everything below nouveau
       "nouveau"
-      # "nvidia"
-      # "nvidia_drm"
-      # "nvidia_modeset"
-      # "nvidia_uvm"
+      "nvidia"
+      "nvidia_drm"
+      "nvidia_modeset"
+      "nvidia_uvm"
     ];
   };
 
