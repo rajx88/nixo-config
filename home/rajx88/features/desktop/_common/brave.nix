@@ -25,13 +25,13 @@ in {
     }))
   ];
 
-  # xdg.mimeApps.defaultApplications = {
-  #   "image/*" = ["brave.desktop"];
-  #   "text/html" = ["brave.desktop"];
-  #   "text/xml" = ["brave.desktop"];
-  #   "x-scheme-handler/http" = ["brave.desktop"];
-  #   "x-scheme-handler/https" = ["brave.desktop"];
-  # };
+  xdg.mimeApps.defaultApplications = {
+    "image/*" = ["brave.desktop"];
+    "text/html" = ["brave.desktop"];
+    "text/xml" = ["brave.desktop"];
+    "x-scheme-handler/http" = ["brave.desktop"];
+    "x-scheme-handler/https" = ["brave.desktop"];
+  };
 
   home.persistence."/persist".directories = [".config/BraveSoftware/Brave-Browser"];
 }
