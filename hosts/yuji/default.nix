@@ -39,7 +39,8 @@
   };
 
   boot = {
-    kernelPackages = pkgs.linuxPackages_latest;
+    # kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = pkgs.linuxPackages;
     # kernelPackages = pkgs.linuxKernel.packages.linux_zen;
     # kernelPackages = pkgs.linuxPackages_6_17;
     # kernelParams = ["nvidia.NVreg_PreserveVideoMemoryAllocations=1"];
@@ -49,10 +50,10 @@
     blacklistedKernelModules = [
       # when enabling nvidia just outcomment everything below nouveau
       "nouveau"
-      "nvidia"
-      "nvidia_drm"
-      "nvidia_modeset"
-      "nvidia_uvm"
+      # "nvidia"
+      # "nvidia_drm"
+      # "nvidia_modeset"
+      # "nvidia_uvm"
     ];
   };
 
