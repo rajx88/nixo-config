@@ -24,13 +24,13 @@
 
     # dev
     ./features/dev/intellij-ultimate.nix
-    # ./features/dev/jetbrains-toolbox.nix
     ./features/dev/vscode.nix
     ./features/dev/mise.nix
     ./features/dev/java.nix
     ./features/dev/kubectl.nix
     ./features/dev/postman.nix
     ./features/dev/zed.nix
+    ./features/dev/opencode.nix
 
     # ./features/dev/bruno.nix
   ];
@@ -46,8 +46,6 @@
     __GL_VRR_ALLOWED = "1";
     # WLR_NO_HARDWARE_CURSORS = "1"; # drop this if everything works fine
   };
-
-  # hyprland.scrolling.enable = true;
 
   monitors = [
     {
