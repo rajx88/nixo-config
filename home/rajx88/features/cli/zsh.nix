@@ -62,6 +62,9 @@ in {
     initContent = ''
       fpath=($HOME/.local/completions $fpath ${config.xdg.cacheHome}/completions)
 
+      # Enable bash completion compatibility for tools like AWS CLI
+      autoload -Uz bashcompinit && bashcompinit
+
       bindkey -M emacs "^[[3~" delete-char
       bindkey -M viins "^[[3~" delete-char
       bindkey -M vicmd "^[[3~" delete-char
