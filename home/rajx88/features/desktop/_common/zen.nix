@@ -16,7 +16,7 @@ in {
     # or inputs.zen-browser.homeModules.twilight-official
   ];
 
-  home.persistence."/persist".directories = [".zen" ".config/zen"];
+  home.persistence."/persist".directories = [".config/zen"];
 
   programs.zen-browser = {
     enable = true;
@@ -48,20 +48,5 @@ in {
         "network.proxy.share_proxy_settings" = true;
       };
     };
-  };
-
-  xdg.desktopEntries.zen = {
-    name = "Zen Browser";
-    genericName = "Web Browser";
-    exec = "zen %u";
-    icon = "web-browser";
-    type = "Application";
-    terminal = false;
-    categories = ["Network" "WebBrowser"];
-    mimeType = [
-      "text/html"
-      "x-scheme-handler/http"
-      "x-scheme-handler/https"
-    ];
   };
 }
