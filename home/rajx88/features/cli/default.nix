@@ -30,7 +30,7 @@
     fd # Better find
     fzf # fuzzy finder
     httpie # Better curl
-    diffsitter # Better diff
+    # diffsitter # Better diff
     jq # JSON pretty printer and manipulator
 
     nil # Nix LSP

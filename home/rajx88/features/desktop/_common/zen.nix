@@ -16,7 +16,7 @@ in {
     # or inputs.zen-browser.homeModules.twilight-official
   ];
 
-  home.persistence."/persist".directories = [".zen"];
+  home.persistence."/persist".directories = [".zen" ".config/zen"];
 
   programs.zen-browser = {
     enable = true;
