@@ -15,7 +15,8 @@
     "1password/custom_allowed_browsers" = {
       text = ''
         zen
-      ''; # or just "zen" if you use unwrapped package
+        zen-beta
+      ''; # include both names to support either the unwrapped/stable binary or the beta package
       mode = "0755";
     };
   };
