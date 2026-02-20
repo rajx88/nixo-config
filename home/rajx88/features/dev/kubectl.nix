@@ -1,6 +1,7 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
     kubectl
+    argo-rollouts
     kubie
     k9s
   ];
