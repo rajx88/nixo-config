@@ -28,7 +28,7 @@ rb:
     fi
   fi
   
-  nixos-rebuild switch --flake .#$HOSTNAME --sudo
+  sudo -H nixos-rebuild switch --flake .#$HOSTNAME
   new=$(readlink -f /nix/var/nix/profiles/system)
   
   if [ "$old" != "$new" ]; then
@@ -63,7 +63,7 @@ rb:
 
 
 debug:
-  nixos-rebuild switch --flake .#$HOSTNAME --sudo --show-trace --verbose
+  sudo -H nixos-rebuild switch --flake .#$HOSTNAME --show-trace --verbose
 
 up:
   nix flake update
@@ -71,7 +71,7 @@ up:
 build:
   #!/usr/bin/env bash
   echo "Building new system..."
-  nixos-rebuild build --flake .#$HOSTNAME --sudo
+  sudo -H nixos-rebuild build --flake .#$HOSTNAME
 
 check-changes:
   #!/usr/bin/env bash
