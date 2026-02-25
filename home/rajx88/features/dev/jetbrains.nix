@@ -11,5 +11,7 @@
 
   home.packages = with pkgs; [
     jetbrains.idea
+    jetbrains.datagrip
+    # jetbrains-toolbox
   ];
 }

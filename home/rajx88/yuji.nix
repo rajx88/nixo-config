@@ -23,7 +23,7 @@
     ./features/desktop/optional/keymapp.nix
 
     # dev
-    ./features/dev/intellij-ultimate.nix
+    ./features/dev/jetbrains.nix
     ./features/dev/vscode.nix
     ./features/dev/mise.nix
     ./features/dev/java.nix
@@ -79,14 +79,16 @@
       position = "auto-center-down";
       workspaces = [6 7 8 9 0];
     }
-    {
-      name = "DP-1";
-      width = 3840;
-      height = 2160;
-      preferredMode = true;
-      refreshRate = 60;
-      position = "auto-center-up";
-      workspaces = [1 2 3 4 5];
-    }
+    # {
+    #   name = "HDMI-A-1";
+    #   width = 1920;
+    #   height = 1200;
+    #   preferredMode = true;
+    #   primary = true;
+    #   isLaptop = false;
+    #   refreshRate = 60;
+    #   position = "auto-center-up";
+    #   workspaces = [1 2 3 4 5];
+    # }
   ];
 }
