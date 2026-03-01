@@ -59,6 +59,16 @@
       position = "auto-right";
       # primary = true;
     }
+    # {
+    #   name = "DP-4";
+    #   width = 1920;
+    #   height = 1080;
+    #   preferredMode = true;
+    #   refreshRate = 60;
+    #   workspaces = [1 2 3 4 5];
+    #   position = "auto-left";
+    #   # primary = true;
+    # }
     {
       name = "DP-5";
       width = 3840;
