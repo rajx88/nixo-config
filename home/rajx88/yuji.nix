@@ -67,7 +67,7 @@
     #   refreshRate = 60;
     #   workspaces = [1 2 3 4 5];
     #   position = "auto-left";
-    #   # primary = true;
+    #   primary = true;
     # }
     {
       name = "DP-5";
