@@ -4,7 +4,8 @@
   ...
 }: {
   imports = [./bluetooth.nix];
-  programs.light.enable = true;
+
+  environment.systemPackages = [pkgs.brightnessctl];
 
   # Configure logind to suspend on lid close
   services.logind.settings.Login = {
@@ -18,7 +19,7 @@
     wantedBy = ["multi-user.target"];
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = "${pkgs.light}/bin/light -S 100";
+      ExecStart = "${pkgs.brightnessctl}/bin/brightnessctl -s set 100%";
       User = "root";
     };
   };
