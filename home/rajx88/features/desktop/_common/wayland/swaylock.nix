@@ -29,14 +29,44 @@
       inherit resumeCommand timeout;
     }
   ];
-in {
-  programs.swaylock = {
-    enable = true;
-    package = pkgs.swaylock-effects;
-  };
+in
+  {
+    programs.swaylock = {
+      enable = true;
+      package = pkgs.swaylock-effects;
+    };
 
-  # Only inject Hyprland settings if Hyprland is enabled
-  lib.optionalAttrs config.wayland.windowManager.hyprland.enable {
+    services.swayidle = {
+      enable = true;
+      systemdTarget = "graphical-session.target";
+      timeouts =
+        # Lock screen
+        [
+          {
+            timeout = lockTime;
+            # Use swaylock-effects to show a background image and a simple clock/indicator.
+            # systemd unit strings need % escaped as %% so the executed command receives a single %
+            # Add a gentle blur; if this causes issues on a host, reduce/remove the --effect-blur value.
+            command = "${swaylock} -i \"$DEFAULT_WP\" --clock --indicator --timestr '%%k:%%M' --datestr '%%a %%e.%%m.%%Y' --daemonize";
+          }
+        ]
+        ++
+        # Mute mic
+        (afterLockTimeout {
+          timeout = 10;
+          command = "${pactl} set-source-mute @DEFAULT_SOURCE@ yes";
+          resumeCommand = "${pactl} set-source-mute @DEFAULT_SOURCE@ no";
+        })
+        ++
+        # Turn off displays (hyprland)
+        (lib.optionals config.wayland.windowManager.hyprland.enable (afterLockTimeout {
+          timeout = 40;
+          command = "${hyprctl} dispatch dpms off";
+          resumeCommand = "${hyprctl} dispatch dpms on";
+        }));
+    };
+  }
+  // lib.optionalAttrs config.wayland.windowManager.hyprland.enable {
     wayland.windowManager.hyprland = {
       settings = {
         bind = let
@@ -46,35 +76,4 @@ in {
         ];
       };
     };
-  };
-
-  services.swayidle = {
-    enable = true;
-    systemdTarget = "graphical-session.target";
-    timeouts =
-      # Lock screen
-      [
-        {
-          timeout = lockTime;
-          # Use swaylock-effects to show a background image and a simple clock/indicator.
-          # systemd unit strings need % escaped as %% so the executed command receives a single %
-          # Add a gentle blur; if this causes issues on a host, reduce/remove the --effect-blur value.
-          command = "${swaylock} -i \"$DEFAULT_WP\" --clock --indicator --timestr '%%k:%%M' --datestr '%%a %%e.%%m.%%Y' --daemonize";
-        }
-      ]
-      ++
-      # Mute mic
-      (afterLockTimeout {
-        timeout = 10;
-        command = "${pactl} set-source-mute @DEFAULT_SOURCE@ yes";
-        resumeCommand = "${pactl} set-source-mute @DEFAULT_SOURCE@ no";
-      })
-      ++
-      # Turn off displays (hyprland)
-      (lib.optionals config.wayland.windowManager.hyprland.enable (afterLockTimeout {
-        timeout = 40;
-        command = "${hyprctl} dispatch dpms off";
-        resumeCommand = "${hyprctl} dispatch dpms on";
-      }));
-  };
-}
+  }
