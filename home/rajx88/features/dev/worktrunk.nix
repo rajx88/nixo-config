@@ -6,5 +6,11 @@
       bash = true;
       fish = true;
     };
+    config = {
+      worktree-path = ".worktrees/{{ branch | sanitize }}";
+      merge = {
+        commit = true;
+      };
+    };
   };
 }
