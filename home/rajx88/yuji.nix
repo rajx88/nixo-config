@@ -32,6 +32,7 @@
     ./features/dev/zed.nix
     ./features/dev/opencode.nix
     ./features/dev/aws.nix
+    ./features/dev/worktrunk.nix
 
     # ./features/dev/bruno.nix
   ];

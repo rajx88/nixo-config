@@ -1,8 +1,6 @@
-{
-  pkgs,
-  ...
-}: let
-  ocd = pkgs.writeShellScriptBin "ocd"
+{pkgs, ...}: let
+  ocd =
+    pkgs.writeShellScriptBin "ocd"
     (builtins.readFile ../../../../scripts/opencode.sh);
 in {
   programs.opencode = {
