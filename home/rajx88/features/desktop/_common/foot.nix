@@ -16,7 +16,7 @@
         font = "${config.fontProfiles.monospace.name}:size=${toString config.fontProfiles.monospace.size}";
       };
 
-      colors = {
+      colors-dark = {
         alpha = "0.85";
       };
       mouse = {
