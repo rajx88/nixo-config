@@ -41,13 +41,14 @@
 
   services.ssh-tunnels.enable = true;
 
-  home.sessionVariables = {
-    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-    LIBVA_DRIVER_NAME = "nvidia"; # if you installed nvidia-vaapi-driver
-    GBM_BACKEND = "nvidia-drm";
-    __GL_VRR_ALLOWED = "1";
-    # WLR_NO_HARDWARE_CURSORS = "1"; # drop this if everything works fine
-  };
+  # nvidia session variables — commented out, using Intel iGPU only. Uncomment to re-enable.
+  # home.sessionVariables = {
+  #   __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+  #   LIBVA_DRIVER_NAME = "nvidia"; # if you installed nvidia-vaapi-driver
+  #   GBM_BACKEND = "nvidia-drm";
+  #   __GL_VRR_ALLOWED = "1";
+  #   # WLR_NO_HARDWARE_CURSORS = "1"; # drop this if everything works fine
+  # };
 
   monitors = [
     {
