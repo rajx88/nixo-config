@@ -7,7 +7,7 @@
 }: {
   imports = [
     inputs.hardware.nixosModules.common-cpu-intel
-    inputs.hardware.nixosModules.common-gpu-nvidia
+    # inputs.hardware.nixosModules.common-gpu-nvidia  # commented out — using Intel iGPU only
     inputs.hardware.nixosModules.common-pc-ssd
 
     inputs.nix-barracudavpn.nixosModules.barracudavpn
@@ -40,20 +40,20 @@
 
   boot = {
     # kernelPackages = pkgs.linuxPackages_latest;
-    kernelPackages = pkgs.linuxPackages;
-    # kernelPackages = pkgs.linuxKernel.packages.linux_zen;
+    # kernelPackages = pkgs.linuxPackages;
+    kernelPackages = pkgs.linuxKernel.packages.linux_zen;
     # kernelPackages = pkgs.linuxPackages_6_17;
     # kernelParams = ["nvidia.NVreg_PreserveVideoMemoryAllocations=1"];
     # kernelParams = ["nvidia-drm.modeset=1"];
     # Uncomment the desired line below to switch between Intel-only (NVIDIA disabled) and default (NVIDIA enabled):
     # Intel-only (NVIDIA disabled):
     blacklistedKernelModules = [
-      # when enabling nvidia just outcomment everything below nouveau
       "nouveau"
-      "nvidia"
-      "nvidia_drm"
-      "nvidia_modeset"
-      "nvidia_uvm"
+      # Uncomment below when re-enabling nvidia drivers
+      # "nvidia"
+      # "nvidia_drm"
+      # "nvidia_modeset"
+      # "nvidia_uvm"
     ];
   };
 
@@ -88,39 +88,22 @@
       enable32Bit = true;
     };
 
-    nvidia = {
-      # Modesetting is required.
-      modesetting.enable = true;
-
-      # Nvidia power management. Experimental, and can cause sleep/suspend to fail.
-      powerManagement.enable = false;
-      # Fine-grained power management. Turns off GPU when not in use.
-      # Experimental and only works on modern Nvidia GPUs (Turing or newer).
-      powerManagement.finegrained = false;
-      # Use the NVidia open source kernel module (not to be confused with the
-      # independent third-party "nouveau" open source driver).
-      # Support is limited to the Turing and later architectures. Full list of
-      # supported GPUs is at:
-      # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus
-      # Only available from driver 515.43.04+
-      # Currently alpha-quality/buggy, so false is currently the recommended setting.
-      open = true;
-
-      # Enable the Nvidia settings menu,
-      # accessible via `nvidia-settings`.
-      nvidiaSettings = true;
-
-      prime = {
-        offload.enable = false;
-        # offload.enableOffloadCmd = true;
-        sync.enable = true;
-        intelBusId = "PCI:0:2:0";
-        nvidiaBusId = "PCI:1:0:0";
-      };
-
-      # Optionally, you may need to select the appropriate driver version for your specific GPU.
-      package = config.boot.kernelPackages.nvidiaPackages.latest;
-    };
+    # nvidia — commented out, using Intel iGPU only. Uncomment to re-enable.
+    # nvidia = {
+    #   modesetting.enable = true;
+    #   powerManagement.enable = false;
+    #   powerManagement.finegrained = false;
+    #   open = true;
+    #   nvidiaSettings = true;
+    #   prime = {
+    #     offload.enable = false;
+    #     # offload.enableOffloadCmd = true;
+    #     sync.enable = true;
+    #     intelBusId = "PCI:0:2:0";
+    #     nvidiaBusId = "PCI:1:0:0";
+    #   };
+    #   package = config.boot.kernelPackages.nvidiaPackages.latest;
+    # };
   };
 
   # DO NOT TOUCH BEFORE GOOGLING IT.
