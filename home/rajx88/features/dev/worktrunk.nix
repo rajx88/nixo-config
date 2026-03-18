@@ -9,13 +9,17 @@
     config = {
       # worktree-path = ".worktrees/{{ branch | sanitize }}";
       worktree-path = "../{{ branch | sanitize }}";
-      merge = {
-        commit = true;
-      };
+      merge.commit = true;
+      commit.generation.command = "opencode run -m github-copilot/claude-sonnet-4.6 --variant fast";
+      list.summary = true;
       post-create = {
-        copy-opencode = "ln -sf {{ base_worktree_path }}/.opencode {{ worktree_path }}/.opencode 2>/dev/null || true";
+        copy-opencode = "ln -sf {{ primary_worktree_path }}/.opencode {{ worktree_path }}/.opencode 2>/dev/null || true";
         mise-trust = "mise trust {{ worktree_path }} 2>/dev/null || true";
       };
     };
+  };
+
+  programs.zsh.shellAliases = {
+    wsc = "wt switch --create --execute=opencode";
   };
 }
