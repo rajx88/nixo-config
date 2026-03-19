@@ -21,6 +21,6 @@
   };
 
   programs.zsh.shellAliases = {
-    wsc = "wt switch --create --execute=opencode";
+    wso = "wt switch --create --execute=opencode";
   };
 }
