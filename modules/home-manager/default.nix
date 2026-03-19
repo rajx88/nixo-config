@@ -5,4 +5,5 @@
   fonts = import ./fonts.nix;
   monitors = import ./monitors.nix;
   worktrunk = import ./worktrunk.nix;
+  agent-of-empires = import ./agent-of-empires.nix;
 }
