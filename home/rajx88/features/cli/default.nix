@@ -10,8 +10,9 @@
     ./just.nix
     ./nvim
     # ./pure.nix
+    ./prmt.nix
     ./ssh.nix
-    ./starship
+    # ./starship
     ./tmux.nix
     ./zoxide.nix
     # ./zellij.nix
