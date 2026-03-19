@@ -35,8 +35,8 @@ in {
 
   config = lib.mkIf cfg.enable {
     home.packages = [pkgs.worktrunk];
-    home.file = lib.mkIf (cfg.config != {}) {
-      ".config/worktrunk/config.toml" = {
+    xdg.configFile = lib.mkIf (cfg.config != {}) {
+      "worktrunk/config.toml" = {
         source = tomlFormat.generate "worktrunk-config" cfg.config;
       };
     };
