@@ -14,6 +14,7 @@
       list.summary = true;
       post-create = {
         copy-opencode = "ln -sf {{ primary_worktree_path }}/.opencode {{ worktree_path }}/.opencode 2>/dev/null || true";
+        copy-idea = "ln -sf {{ primary_worktree_path }}/.idea {{ worktree_path }}/.idea 2>/dev/null || true";
         mise-trust = "mise trust {{ worktree_path }} 2>/dev/null || true";
       };
     };
