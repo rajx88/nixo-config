@@ -6,6 +6,7 @@
 }: let
   cfg = config.programs.agent-of-empires;
   tomlFormat = pkgs.formats.toml {};
+  configFile = tomlFormat.generate "aoe-config" cfg.config;
 in {
   options.programs.agent-of-empires = {
     enable = lib.mkEnableOption "Agent of Empires terminal session manager for AI coding agents";
@@ -35,11 +36,21 @@ in {
 
   config = lib.mkIf cfg.enable {
     home.packages = [pkgs.agent-of-empires];
-    xdg.configFile = lib.mkIf (cfg.config != {}) {
-      "agent-of-empires/config.toml" = {
-        source = tomlFormat.generate "aoe-config" cfg.config;
-      };
-    };
+
+    # Use activation script instead of xdg.configFile to produce a mutable
+    # copy.  aoe needs to write back to config.toml at runtime (e.g. color
+    # codes, schema migrations), which fails when the file is a read-only
+    # symlink into the Nix store.
+    home.activation.aoeConfig = lib.mkIf (cfg.config != {}) (
+      lib.hm.dag.entryAfter ["writeBoundary"] ''
+        aoe_dir="${config.xdg.configHome}/agent-of-empires"
+        $DRY_RUN_CMD mkdir -p "$aoe_dir"
+        $DRY_RUN_CMD rm -f "$aoe_dir/config.toml"
+        $DRY_RUN_CMD cp ${configFile} "$aoe_dir/config.toml"
+        $DRY_RUN_CMD chmod u+w "$aoe_dir/config.toml"
+      ''
+    );
+
     programs.zsh.initContent = lib.mkIf cfg.shellIntegration.zsh ''
       eval "$(aoe completion zsh)"
     '';
