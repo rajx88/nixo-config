@@ -66,7 +66,7 @@ in {
           "interval" = 3600; # every hour
           "exec" = "(checkupdates;pacman -Qm | aur vercmp) | wc -l"; # # of updates
           "exec-if" = "exit 0"; # always run; consider advanced run conditions
-          "on-click" = "foot sh -c 'yay; echo Done - Press enter to exit; read'; pkill -SIGRTMIN+8 waybar"; # update system
+          "on-click" = "ghostty sh -c 'yay; echo Done - Press enter to exit; read'; pkill -SIGRTMIN+8 waybar"; # update system
           "signal" = 8;
           "tooltip" = false;
         };
