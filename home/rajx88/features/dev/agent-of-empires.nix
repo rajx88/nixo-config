@@ -16,4 +16,8 @@
       ];
     };
   };
+
+  home.persistence."/persist".directories = [
+    ".config/agent-of-empires"
+  ];
 }
