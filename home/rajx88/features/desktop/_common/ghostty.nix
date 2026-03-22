@@ -14,6 +14,7 @@
       # theme = "Builtin Pastel Dark";
 
       mouse-hide-while-typing = true;
+      confirm-close-surface = false;
       window-decoration = false;
       background-opacity = 0.85;
 
