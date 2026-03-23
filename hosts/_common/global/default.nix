@@ -44,4 +44,6 @@
   # services.envfs.enable = true;
 
   hardware.enableRedistributableFirmware = true;
+
+  services.fwupd.enable = true;
 }
