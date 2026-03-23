@@ -64,7 +64,7 @@
   home = {
     username = lib.mkDefault "rajx88";
     homeDirectory = lib.mkDefault "/home/${config.home.username}";
-    stateVersion = lib.mkDefault "23.11";
+    stateVersion = lib.mkDefault "26.05";
     sessionPath = ["$HOME/.local/bin"];
     sessionVariables = {
       FLAKE = "$HOME/code/nixos-config";
