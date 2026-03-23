@@ -7,8 +7,8 @@
     symbola
     # proggyfonts
     # tamsyn
-    nerd-fonts.fira-code
-    nerd-fonts.caskaydia-mono
+    nerd-fonts.go-mono
+    nerd-fonts.jetbrains-mono
   ];
 
   fonts.fontconfig = {
@@ -27,14 +27,14 @@
     #   package = pkgs.tamsyn;
     # };
     monospace = {
-      name = "Comic Mono";
+      name = "GoMono Nerd Font Mono";
       size = 12;
-      package = pkgs.comic-mono;
+      package = pkgs.nerd-fonts.go-mono;
     };
     regular = {
-      name = "FiraCode Nerd Font Ret";
+      name = "GoMono Nerd Font";
       size = 12;
-      package = pkgs.nerd-fonts.fira-code;
+      package = pkgs.nerd-fonts.go-mono;
     };
   };
 }

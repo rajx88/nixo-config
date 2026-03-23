@@ -33,13 +33,8 @@
         end
 
         config.font = wezterm.font_with_fallback {
-            "${config.fontProfiles.monospace.family}",
-            "Hack Nerd Font",
-            "CaskaydiaCove Nerd Font",
-            "JetBrains Mono",
-            "DejaVu Sans Mono",
-            "Noto Sans Mono",
-            "monospace",
+            "${config.fontProfiles.monospace.name}",
+            "JetBrainsMono Nerd Font Mono",
         }
 
         config.colors = require('lua/rose-pine').colors()

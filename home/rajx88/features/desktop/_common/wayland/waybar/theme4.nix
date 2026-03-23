@@ -317,7 +317,7 @@ in {
 
 
         * {
-            font-family: "${config.fontProfiles.regular.family}, Fira Sans Semibold", FontAwesome, Roboto, Helvetica, Arial, sans-serif;
+            font-family: "${config.fontProfiles.regular.name}", "JetBrainsMono Nerd Font", FontAwesome, sans-serif;
             border: none;
             border-radius: 0px;
         }
