@@ -15,6 +15,7 @@
       post-create = {
         copy-opencode = "ln -sf {{ repo_path }}/.opencode {{ worktree_path }}/.opencode 2>/dev/null || true";
         copy-idea = "ln -sf {{ repo_path }}/.idea {{ worktree_path }}/.idea 2>/dev/null || true";
+        copy-claude = "ln -sf {{ repo_path }}/.claude {{ worktree_path }}/.claude 2>/dev/null || true";
         mise-trust = "mise trust {{ worktree_path }} 2>/dev/null || true";
       };
     };
