@@ -15,7 +15,7 @@
   '';
 
   programs.jujutsu = {
-    enable = true;
+    enable = false;
     settings = {
       ui = {
         default-command = ["log"];
@@ -30,7 +30,7 @@
   programs.delta = {
     enable = true;
     enableGitIntegration = true;
-    enableJujutsuIntegration = true;
+    enableJujutsuIntegration = false;
     options = {
       line-numbers = true;
       side-by-side = true;
@@ -38,6 +38,10 @@
   };
   programs.git = {
     enable = true;
+    ignores = [
+      ".claude"
+      ".opencode"
+    ];
     settings = {
       extraConfig = {
         init.defaultBranch = "main";
