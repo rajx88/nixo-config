@@ -64,16 +64,6 @@
       position = "auto-right";
       # primary = true;
     }
-    # {
-    #   name = "DP-4";
-    #   width = 1920;
-    #   height = 1080;
-    #   preferredMode = true;
-    #   refreshRate = 60;
-    #   workspaces = [1 2 3 4 5];
-    #   position = "auto-left";
-    #   primary = true;
-    # }
     {
       name = "DP-5";
       width = 3840;
@@ -94,6 +84,17 @@
       position = "auto-center-down";
       workspaces = [6 7 8 9 0];
     }
+    # {
+    #   name = "DP-1";
+    #   width = 3440;
+    #   height = 1440;
+    #   preferredMode = true;
+    #   primary = true;
+    #   isLaptop = false;
+    #   refreshRate = 60;
+    #   position = "auto-center-up";
+    #   workspaces = [1 2 3 4 5];
+    # }
     # {
     #   name = "HDMI-A-1";
     #   width = 1920;
