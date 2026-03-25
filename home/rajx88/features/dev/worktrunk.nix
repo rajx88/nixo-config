@@ -8,7 +8,7 @@
     };
     config = {
       # worktree-path = ".worktrees/{{ branch | sanitize }}";
-      worktree-path = "../{{ branch | sanitize }}";
+      worktree-path = "~/code/worktrees/{{ repo }}/{{ branch | sanitize }}";
       merge.commit = true;
       commit.generation.command = "opencode run -m github-copilot/claude-sonnet-4.6 --variant fast";
       list.summary = true;
