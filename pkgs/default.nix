@@ -3,5 +3,4 @@
 {pkgs}: {
   # example = pkgs.callPackage ./example { };
   worktrunk = pkgs.callPackage ./worktrunk {};
-  agent-of-empires = pkgs.callPackage ./agent-of-empires {};
 }
