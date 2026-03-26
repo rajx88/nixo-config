@@ -35,7 +35,6 @@
     ./features/dev/rtk.nix
     ./features/dev/aws.nix
     ./features/dev/worktrunk.nix
-    ./features/dev/agent-of-empires.nix
 
     # ./features/dev/bruno.nix
   ];
