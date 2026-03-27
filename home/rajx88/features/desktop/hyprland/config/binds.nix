@@ -18,6 +18,7 @@
 
       grim = "${pkgs.grim}/bin/grim";
       slurp = "${pkgs.slurp}/bin/slurp";
+      wl-copy = "${pkgs.wl-clipboard}/bin/wl-copy";
       pactl = "${pkgs.pulseaudio}/bin/pactl";
 
       gtk-launch = "${pkgs.gtk3}/bin/gtk-launch";
@@ -49,7 +50,7 @@
         "SHIFT,XF86AudioMute,exec,${pactl} set-source-mute @DEFAULT_SOURCE@ toggle"
         ",XF86AudioMicMute,exec,${pactl} set-source-mute @DEFAULT_SOURCE@ toggle"
         # Screenshotting
-        "$mod SHIFT,p,exec,${grim} -t jpeg -g \"$(slurp)\" ${config.xdg.userDirs.extraConfig.SCRNSHTS}/$(date +%Y-%m-%d_%H-%m-%s).jpg"
+        "$mod SHIFT,p,exec,${grim} -g \"$(${slurp})\" - | tee ${config.xdg.userDirs.extraConfig.SCRNSHTS}/$(date +%Y-%m-%d_%H-%m-%s).png | ${wl-copy} --type image/png"
       ]
       ++ (lib.optionals config.services.playerctld.enable [
         # Media control
