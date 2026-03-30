@@ -47,6 +47,8 @@
       url = "git+ssh://git@github.com/rajx88/nix-barracudavpn";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    opencode-flake.url = "github:anomalyco/opencode/v1.3.7";
   };
 
   outputs = {
