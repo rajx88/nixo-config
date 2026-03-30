@@ -1,4 +1,9 @@
-{pkgs, inputs, ...}: let
+{
+  pkgs,
+  inputs,
+  config,
+  ...
+}: let
   ocd =
     pkgs.writeShellScriptBin "ocd"
     (builtins.readFile ../../../../scripts/opencode.sh);
@@ -9,6 +14,15 @@ in {
     settings = {
       default_agent = "plan";
       plugin = ["@tarquinen/opencode-dcp@latest"];
+      permission = {
+        bash = {
+          "rm *" = "ask";
+        };
+        external_directory = {
+          "${config.xdg.configHome}/opencode/**" = "allow";
+          "/tmp/**" = "allow";
+        };
+      };
     };
   };
 
