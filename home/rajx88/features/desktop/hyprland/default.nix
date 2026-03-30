@@ -73,6 +73,7 @@
 
         follow_mouse = 2;
         mouse_refocus = false;
+        float_switch_override_focus = 0;
 
         touchpad = {
           natural_scroll = false;
