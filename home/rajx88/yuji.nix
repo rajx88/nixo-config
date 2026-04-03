@@ -28,10 +28,10 @@
     ./features/dev/mise.nix
     ./features/dev/java.nix
     ./features/dev/kubectl.nix
+    ./features/dev/gh.nix
     ./features/dev/postman.nix
     ./features/dev/zed.nix
     ./features/dev/opencode.nix
-    ./features/dev/claude.nix
     ./features/dev/rtk.nix
     ./features/dev/aws.nix
     ./features/dev/worktrunk.nix
