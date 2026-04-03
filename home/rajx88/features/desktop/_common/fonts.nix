@@ -7,34 +7,37 @@
     symbola
     # proggyfonts
     # tamsyn
-    nerd-fonts.go-mono
+    # nerd-fonts.go-mono
     nerd-fonts.jetbrains-mono
+    atkinson-hyperlegible-mono
+    comic-mono
   ];
 
   fonts.fontconfig = {
     enable = true;
-    # defaultFonts = {
-    #   monospace = ["Tamsyn"];
-    #   emoji = ["NotoColorEmoji"];
-    # };
   };
 
   fontProfiles = {
     enable = true;
-    # monospace = {
-    #   name = "Tamsyn";
-    #   size = 12;
-    #   package = pkgs.tamsyn;
-    # };
     monospace = {
-      name = "GoMono Nerd Font Mono";
-      size = 12;
-      package = pkgs.nerd-fonts.go-mono;
+      name = "Atkinson Hyperlegible Mono";
+      size = 13;
+      package = pkgs.atkinson-hyperlegible-mono;
     };
     regular = {
-      name = "GoMono Nerd Font";
-      size = 12;
-      package = pkgs.nerd-fonts.go-mono;
+      name = "Atkinson Hyperlegible Mono";
+      size = 13;
+      package = pkgs.atkinson-hyperlegible-mono;
     };
+    # monospace = {
+    #   name = "Comic Mono";
+    #   size = 13;
+    #   package = pkgs.comic-mono;
+    # };
+    # regular = {
+    #   name = "Comic Mono";
+    #   size = 13;
+    #   package = pkgs.comic-mono;
+    # };
   };
 }
