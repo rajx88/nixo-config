@@ -9,23 +9,33 @@ return {
       desc = "Diagnostics (Trouble)",
     },
     {
+      "<leader>xX",
+      "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
+      desc = "Buffer Diagnostics (Trouble)",
+    },
+    {
       "<leader>xq",
       "<cmd>Trouble qflist toggle<cr>",
       desc = "Quickfix List (Trouble)",
     },
     {
-      "[t",
-      function()
-        require("trouble").next { skip_groups = true, jump = true }
-      end,
-      desc = "Next Trouble",
+      "<leader>xl",
+      "<cmd>Trouble loclist toggle<cr>",
+      desc = "Location List (Trouble)",
     },
     {
-      "]t",
+      "[q",
       function()
         require("trouble").prev { skip_groups = true, jump = true }
       end,
-      desc = "Previous Trouble",
+      desc = "Previous Trouble/Quickfix",
+    },
+    {
+      "]q",
+      function()
+        require("trouble").next { skip_groups = true, jump = true }
+      end,
+      desc = "Next Trouble/Quickfix",
     },
   },
   specs = {

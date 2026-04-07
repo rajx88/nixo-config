@@ -7,6 +7,10 @@ return {
         "stylua",
         "alejandra",
         "gofumpt",
+        "goimports",
+        "jsonnetfmt",
+        "shfmt",
+        "prettierd",
       },
     },
     config = function(_, opts)
@@ -32,8 +36,10 @@ return {
         "bashls",
         "gopls",
         "jsonls",
+        "jsonnet_ls",
         "lua_ls",
         "nil_ls",
+        "templ",
         "yamlls",
       },
       -- Automatically calls vim.lsp.enable() for installed servers
@@ -107,20 +113,6 @@ return {
             schemas = require("schemastore").yaml.schemas(),
           },
         },
-      })
-
-      -- LSP keymaps on attach
-      vim.api.nvim_create_autocmd("LspAttach", {
-        group = vim.api.nvim_create_augroup("lsp-attach-keymaps", { clear = true }),
-        callback = function(event)
-          local map = function(keys, func, desc, mode)
-            mode = mode or "n"
-            vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
-          end
-
-          map("grn", vim.lsp.buf.rename, "Rename")
-          map("gra", vim.lsp.buf.code_action, "Code Action", { "n", "x" })
-        end,
       })
     end,
   },
