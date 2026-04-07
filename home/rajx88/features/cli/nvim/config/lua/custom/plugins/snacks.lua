@@ -9,9 +9,9 @@ return {
     },
     picker = {
       enabled = true,
-      debug = {
-        scores = true, -- show scores in the list
-      },
+      -- debug = {
+      --   scores = true, -- show scores in the list
+      -- },
       layout = {
         preset = "ivy",
         -- When reaching the bottom of the results in the picker, I don't want
@@ -73,6 +73,17 @@ return {
           truncate = 80,
         },
       },
+      sources = {
+        explorer = {
+          icons = {
+            tree = {
+              vertical = "  ",
+              middle = "  ",
+              last = "  ",
+            },
+          },
+        },
+      },
     },
     notifier = {
       enabled = true,
@@ -80,6 +91,9 @@ return {
     },
     indent = {
       enable = true,
+    },
+    explorer = {
+      enabled = true,
     },
   },
   init = function()
@@ -100,6 +114,22 @@ return {
     })
   end,
   keys = {
+    -- Explorer
+    {
+      "<leader>e",
+      function()
+        Snacks.explorer()
+      end,
+      desc = "File Explorer",
+    },
+    -- Find
+    {
+      "<leader>ff",
+      function()
+        Snacks.picker.files()
+      end,
+      desc = "Find Files",
+    },
     {
       "<leader>fg",
       function()
@@ -114,14 +144,7 @@ return {
       end,
       desc = "Recent",
     },
-
-    {
-      "<leader>sb",
-      function()
-        Snacks.picker.lines()
-      end,
-      desc = "Buffer Lines",
-    },
+    -- Search
     {
       "<leader>sg",
       function()
@@ -129,14 +152,21 @@ return {
       end,
       desc = "Grep",
     },
-
     {
-      "<leader>ff",
+      "<leader>/",
       function()
-        Snacks.picker.files()
+        Snacks.picker.grep()
       end,
-      desc = "Find Files",
+      desc = "Grep",
     },
+    {
+      "<leader>sR",
+      function()
+        Snacks.picker.resume()
+      end,
+      desc = "Resume Last Picker",
+    },
+    -- Buffers
     {
       "<M-h>",
       function()
@@ -158,21 +188,15 @@ return {
           },
         }
       end,
-      desc = "Snacks picker buffers",
+      desc = "Buffers",
     },
+    -- Misc
     {
       "<leader>n",
       function()
         Snacks.picker.notifications()
       end,
       desc = "Notification History",
-    },
-    {
-      "<leader>gl",
-      function()
-        Snacks.picker.git_log()
-      end,
-      desc = "Git Log",
     },
     {
       "<M-k>",
@@ -183,37 +207,28 @@ return {
       end,
       desc = "Keymaps",
     },
+    -- Git
     {
-      "<leader>N",
-      desc = "Neovim News",
+      "<leader>gl",
       function()
-        Snacks.win {
-          file = vim.api.nvim_get_runtime_file("doc/news.txt", false)[1],
-          width = 0.6,
-          height = 0.6,
-          wo = {
-            spell = false,
-            wrap = false,
-            signcolumn = "yes",
-            statuscolumn = " ",
-            conceallevel = 3,
-          },
-        }
+        Snacks.picker.git_log()
       end,
+      desc = "Git Log",
     },
+    {
+      "<leader>gg",
+      function()
+        Snacks.terminal("lazygit", { cwd = Snacks.git.get_root() })
+      end,
+      desc = "LazyGit",
+    },
+    -- LSP
     {
       "grd",
       function()
         Snacks.picker.lsp_definitions()
       end,
       desc = "Goto Definition",
-    },
-    {
-      "grD",
-      function()
-        Snacks.picker.lsp_declarations()
-      end,
-      desc = "Goto Declaration",
     },
     {
       "grr",
@@ -236,20 +251,6 @@ return {
         Snacks.picker.lsp_type_definitions()
       end,
       desc = "Goto Type Definition",
-    },
-    {
-      "gW",
-      function()
-        Snacks.picker.lsp_workspace_symbols()
-      end,
-      desc = "LSP Workspace Symbols",
-    },
-    {
-      "<leader>lg",
-      function()
-        Snacks.terminal("lazygit", { cwd = Snacks.git.get_root() })
-      end,
-      desc = "LazyGit",
     },
   },
 }
