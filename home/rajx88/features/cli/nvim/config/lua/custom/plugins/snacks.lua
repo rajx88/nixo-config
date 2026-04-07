@@ -19,9 +19,6 @@ return {
         cycle = false,
       },
       layouts = {
-        -- Then call this layout in the keymaps above
-        -- got example from here
-        -- https://github.com/folke/snacks.nvim/discussions/468
         ivy = {
           layout = {
             box = "vertical",
@@ -40,8 +37,6 @@ return {
             },
           },
         },
-        -- I wanted to modify the layout width
-        --
         vertical = {
           layout = {
             backdrop = false,
@@ -65,10 +60,6 @@ return {
       win = {
         input = {
           keys = {
-            -- to close the picker on ESC instead of going to normal mode,
-            -- add the following keymap to your config
-            -- ["<Esc>"] = { "close", mode = { "n", "i" } },
-            -- I'm used to scrolling like this in LazyGit
             ["J"] = { "preview_scroll_down", mode = { "i", "n" } },
             ["K"] = { "preview_scroll_up", mode = { "i", "n" } },
             ["H"] = { "preview_scroll_left", mode = { "i", "n" } },
@@ -91,6 +82,23 @@ return {
       enable = true,
     },
   },
+  init = function()
+    -- LSP progress notifications (replaces fidget.nvim)
+    vim.api.nvim_create_autocmd("LspProgress", {
+      ---@param ev {data: {client_id: integer, params: lsp.ProgressParams}}
+      callback = function(ev)
+        local spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
+        vim.notify(vim.lsp.status(), "info", {
+          id = "lsp_progress",
+          title = "LSP Progress",
+          opts = function(notif)
+            notif.icon = ev.data.params.value.kind == "end" and " "
+              or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
+          end,
+        })
+      end,
+    })
+  end,
   keys = {
     {
       "<leader>fg",
@@ -125,12 +133,7 @@ return {
     {
       "<leader>ff",
       function()
-        Snacks.picker.files {
-          finder = "files",
-          format = "file",
-          show_empty = true,
-          supports_live = true,
-        }
+        Snacks.picker.files()
       end,
       desc = "Find Files",
     },
@@ -138,12 +141,9 @@ return {
       "<M-h>",
       function()
         Snacks.picker.buffers {
-          -- I always want my buffers picker to start in normal mode
           on_show = function()
             vim.cmd.stopinsert()
           end,
-          finder = "buffers",
-          format = "buffer",
           hidden = false,
           unloaded = true,
           current = true,
@@ -158,7 +158,7 @@ return {
           },
         }
       end,
-      desc = "[P]Snacks picker buffers",
+      desc = "Snacks picker buffers",
     },
     {
       "<leader>n",
@@ -170,13 +170,7 @@ return {
     {
       "<leader>gl",
       function()
-        Snacks.picker.git_log {
-          finder = "git_log",
-          format = "git_log",
-          preview = "git_show",
-          confirm = "git_checkout",
-          -- layout = "vertical",
-        }
+        Snacks.picker.git_log()
       end,
       desc = "Git Log",
     },
@@ -241,7 +235,7 @@ return {
       function()
         Snacks.picker.lsp_type_definitions()
       end,
-      desc = "Goto T[y]pe Definition",
+      desc = "Goto Type Definition",
     },
     {
       "gW",
@@ -249,6 +243,13 @@ return {
         Snacks.picker.lsp_workspace_symbols()
       end,
       desc = "LSP Workspace Symbols",
+    },
+    {
+      "<leader>lg",
+      function()
+        Snacks.terminal("lazygit", { cwd = Snacks.git.get_root() })
+      end,
+      desc = "LazyGit",
     },
   },
 }

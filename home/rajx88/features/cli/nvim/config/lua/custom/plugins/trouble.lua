@@ -15,33 +15,37 @@ return {
     },
     {
       "[t",
-      "<cmd>TroubleNext<cr>",
+      function()
+        require("trouble").next { skip_groups = true, jump = true }
+      end,
       desc = "Next Trouble",
     },
     {
       "]t",
-      "<cmd>TroublePrevious<cr>",
+      function()
+        require("trouble").prev { skip_groups = true, jump = true }
+      end,
       desc = "Previous Trouble",
     },
   },
-  -- specs = {
-  --   "folke/snacks.nvim",
-  --   opts = function(_, opts)
-  --     return vim.tbl_deep_extend("force", opts or {}, {
-  --       picker = {
-  --         actions = require("trouble.sources.snacks").actions,
-  --         win = {
-  --           input = {
-  --             keys = {
-  --               ["<c-t>"] = {
-  --                 "trouble_open",
-  --                 mode = { "n", "i" },
-  --               },
-  --             },
-  --           },
-  --         },
-  --       },
-  --     })
-  --   end,
-  -- },
+  specs = {
+    "folke/snacks.nvim",
+    opts = function(_, opts)
+      return vim.tbl_deep_extend("force", opts or {}, {
+        picker = {
+          actions = require("trouble.sources.snacks").actions,
+          win = {
+            input = {
+              keys = {
+                ["<c-t>"] = {
+                  "trouble_open",
+                  mode = { "n", "i" },
+                },
+              },
+            },
+          },
+        },
+      })
+    end,
+  },
 }

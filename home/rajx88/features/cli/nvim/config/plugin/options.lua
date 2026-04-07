@@ -43,7 +43,7 @@ opt.breakindent = true
 
 opt.swapfile = false
 opt.backup = false
-opt.undodir = os.getenv "HOME" .. "/.config/nvim/undodir"
+opt.undodir = vim.fn.stdpath "state" .. "/undodir"
 opt.undofile = true
 
 -- Case-insensitive searching UNLESS \C or capital in search
