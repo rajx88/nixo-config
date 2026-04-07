@@ -46,14 +46,4 @@ return {
       graphql = { "prettierd" },
     },
   },
-  -- -- enables auto format on save, copied from the github.
-  -- vim.api.nvim_create_autocmd("BufWritePre", {
-  --   callback = function(args)
-  --     require("conform").format {
-  --       bufnr = args.buf,
-  --       lsp_fallback = true,
-  --       quiet = true,
-  --     }
-  --   end,
-  -- })
 }
