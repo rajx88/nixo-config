@@ -222,35 +222,28 @@ return {
       end,
       desc = "LazyGit",
     },
-    -- LSP
-    {
-      "grd",
-      function()
-        Snacks.picker.lsp_definitions()
-      end,
-      desc = "Goto Definition",
-    },
-    {
-      "grr",
-      function()
-        Snacks.picker.lsp_references()
-      end,
-      nowait = true,
-      desc = "References",
-    },
-    {
-      "gri",
-      function()
-        Snacks.picker.lsp_implementations()
-      end,
-      desc = "Goto Implementation",
-    },
-    {
-      "grt",
-      function()
-        Snacks.picker.lsp_type_definitions()
-      end,
-      desc = "Goto Type Definition",
-    },
+    -- LSP navigation (LazyVim style)
+    { "gd", function() Snacks.picker.lsp_definitions() end, desc = "Goto Definition" },
+    { "gD", vim.lsp.buf.declaration, desc = "Goto Declaration" },
+    { "gr", function() Snacks.picker.lsp_references() end, nowait = true, desc = "References" },
+    { "gI", function() Snacks.picker.lsp_implementations() end, desc = "Goto Implementation" },
+    { "gy", function() Snacks.picker.lsp_type_definitions() end, desc = "Goto T[y]pe Definition" },
+    { "gK", vim.lsp.buf.signature_help, desc = "Signature Help" },
+    { "<c-k>", vim.lsp.buf.signature_help, mode = "i", desc = "Signature Help" },
+    -- LSP code actions (<leader>c prefix, LazyVim style)
+    { "<leader>cl", function() Snacks.picker.lsp_config() end, desc = "LSP Info" },
+    { "<leader>cm", "<cmd>Mason<cr>", desc = "Mason" },
+    { "<leader>ca", vim.lsp.buf.code_action, mode = { "n", "x" }, desc = "Code Action" },
+    { "<leader>cr", vim.lsp.buf.rename, desc = "Rename" },
+    { "<leader>cc", vim.lsp.codelens.run, mode = { "n", "x" }, desc = "Run Codelens" },
+    { "<leader>cC", vim.lsp.codelens.refresh, desc = "Refresh Codelens" },
+    { "<leader>co", function()
+      vim.lsp.buf.code_action({
+        apply = true,
+        context = { only = { "source.organizeImports" }, diagnostics = {} },
+      })
+    end, desc = "Organize Imports" },
+    { "<leader>ss", function() Snacks.picker.lsp_symbols() end, desc = "LSP Symbols (Document)" },
+    { "<leader>sS", function() Snacks.picker.lsp_workspace_symbols() end, desc = "LSP Symbols (Workspace)" },
   },
 }

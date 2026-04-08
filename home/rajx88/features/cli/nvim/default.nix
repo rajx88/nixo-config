@@ -4,8 +4,6 @@
   home.persistence."/persist".directories = [
     ".config/nvim"
     ".local/share/nvim"
-    ".local/share/supermaven"
-    ".supermaven"
   ];
 
   # home.packages = with pkgs; [
@@ -39,6 +37,10 @@
         gcc
         nodejs
         go
+        python3 # mason jdtls wrapper
+
+        # runtime deps for LSP servers
+        jdk21 # jdtls requires Java 21+
 
         # LSP's and formatters
         ## shell

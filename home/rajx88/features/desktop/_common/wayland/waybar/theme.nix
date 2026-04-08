@@ -18,6 +18,9 @@ in {
     settings = {
       primary = {
         layer = "top";
+        position = "top";
+        height = 30;
+        width = 0;
         modules-left = ["custom/launcher" "cpu" "memory" "custom/media" "tray"];
         modules-center =
           (lib.optionals hasSway [

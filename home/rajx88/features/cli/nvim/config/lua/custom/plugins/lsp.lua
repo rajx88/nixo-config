@@ -6,8 +6,12 @@ return {
       ensure_installed = {
         "stylua",
         "alejandra",
+        "delve",
         "gofumpt",
         "goimports",
+        "google-java-format",
+        "java-debug-adapter",
+        "java-test",
         "jsonnetfmt",
         "shfmt",
         "prettierd",
@@ -35,6 +39,7 @@ return {
       ensure_installed = {
         "bashls",
         "gopls",
+        "jdtls",
         "jsonls",
         "jsonnet_ls",
         "lua_ls",
@@ -42,8 +47,10 @@ return {
         "templ",
         "yamlls",
       },
-      -- Automatically calls vim.lsp.enable() for installed servers
-      automatic_enable = true,
+      -- nvim-jdtls manages the jdtls lifecycle itself
+      automatic_enable = {
+        exclude = { "jdtls" },
+      },
     },
   },
   {

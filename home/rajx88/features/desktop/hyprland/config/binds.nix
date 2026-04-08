@@ -5,24 +5,7 @@
   ...
 }: let
   vaultPath = "${config.home.homeDirectory}/code/prvt/github/second-brain";
-
-  notesScript = pkgs.writeShellScriptBin "notes-scratchpad" ''
-    if ! hyprctl clients -j | ${pkgs.jq}/bin/jq -e '.[] | select(.workspace.name=="special:notes")' > /dev/null 2>&1; then
-      ghostty --class=notes -e nvim "${vaultPath}" &
-      sleep 0.3
-    fi
-    hyprctl dispatch togglespecialworkspace notes
-  '';
-
-  todoScript = pkgs.writeShellScriptBin "todo-scratchpad" ''
-    if ! hyprctl clients -j | ${pkgs.jq}/bin/jq -e '.[] | select(.workspace.name=="special:todo")' > /dev/null 2>&1; then
-      ghostty --class=todo -e nvim "${vaultPath}/0300-todos/todo.md" &
-      sleep 0.3
-    fi
-    hyprctl dispatch togglespecialworkspace todo
-  '';
 in {
-  home.packages = [ notesScript todoScript ];
 
   wayland.windowManager.hyprland.settings = {
     "$mod" = "SUPER";
@@ -88,10 +71,9 @@ in {
         # reload waybar
         "$mod SHIFT,w,exec,systemctl --user restart waybar"
 
-        # Notes scratchpad: nvim in vault root
-        "$mod,n,exec,notes-scratchpad"
-        # Todo scratchpad: nvim with todo.md
-        "$mod,m,exec,todo-scratchpad"
+        # Scratchpad toggles
+        "$mod,n,togglespecialworkspace,notes"
+        "$mod,m,togglespecialworkspace,todo"
       ];
   };
 }
