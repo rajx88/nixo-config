@@ -51,7 +51,7 @@
       preferredMode = true;
       refreshRate = 60;
       workspaces = [6 7 8 9 0];
-      position = "auto-right";
+      position = "3840x-1620";
       vertical = "3";
       # primary = true;
     }
@@ -61,7 +61,7 @@
       height = 2160;
       preferredMode = true;
       refreshRate = 60;
-      position = "auto-left";
+      position = "0x0";
       workspaces = [1 2 3 4 5];
       primary = true;
     }
