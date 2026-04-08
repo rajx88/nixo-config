@@ -31,6 +31,7 @@ return {
       sh = { "shfmt" },
       nix = { "alejandra" },
       go = { "goimports", "gofumpt" },
+      java = { "google-java-format" },
       jsonnet = { "jsonnetfmt" },
       templ = { "templ" },
       javascript = { "prettierd" },
