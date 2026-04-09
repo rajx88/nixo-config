@@ -44,19 +44,29 @@
   services.ssh-tunnels.enable = true;
 
   monitors = [
+    # {
+    #   name = "DP-3";
+    #   width = 3840;
+    #   height = 2160;
+    #   preferredMode = true;
+    #   refreshRate = 60;
+    #   workspaces = [6 7 8 9 0];
+    #   position = "3840x-1620";
+    #   vertical = "3";
+    #   # primary = true;
+    # }
+    # {
+    #   name = "DP-5";
+    #   width = 3840;
+    #   height = 2160;
+    #   preferredMode = true;
+    #   refreshRate = 60;
+    #   position = "0x0";
+    #   workspaces = [1 2 3 4 5];
+    #   primary = true;
+    # }
     {
-      name = "DP-3";
-      width = 3840;
-      height = 2160;
-      preferredMode = true;
-      refreshRate = 60;
-      workspaces = [6 7 8 9 0];
-      position = "3840x-1620";
-      vertical = "3";
-      # primary = true;
-    }
-    {
-      name = "DP-5";
+      name = "DP-1";
       width = 3840;
       height = 2160;
       preferredMode = true;
@@ -64,6 +74,18 @@
       position = "0x0";
       workspaces = [1 2 3 4 5];
       primary = true;
+    }
+    {
+      name = "HDMI-A-1";
+      width = 3840;
+      height = 2160;
+      preferredMode = true;
+      refreshRate = 60;
+      workspaces = [6 7 8 9 0];
+      position = "auto-right";
+      # position = "3840x-1620";
+      # vertical = "3";
+      # primary = true;
     }
     {
       name = "eDP-1";
