@@ -111,6 +111,7 @@ return {
       })
 
       vim.lsp.config("yamlls", {
+        filetypes = { "yaml", "yaml.docker-compose", "yaml.gitlab" },
         settings = {
           yaml = {
             schemaStore = {
