@@ -36,8 +36,8 @@
           {
             name = "rose-pine";
             publisher = "mvllow";
-            version = "2.9.0";
-            sha256 = "ibx19iDUXumpc1vTIUubceFyWyD7nUEBlunFDMcdW6E=";
+            version = "2.15.0";
+            sha256 = "4l4KzxrLU34dIHI7ycypyN0yi2jzRs8voAD5HE4fgII=";
           }
         ];
     };
