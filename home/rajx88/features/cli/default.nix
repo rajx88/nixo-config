@@ -53,5 +53,7 @@
     unzip
 
     tldr
+
+    nodejs
   ];
 }

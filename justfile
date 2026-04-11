@@ -1,138 +1,45 @@
 DISK := "nvme0n1"
 MACHINE := "akarnae"
-ENC_PASS := "" 
+ENC_PASS := ""
 user := env('USER')
+
+rb:
+  nh os switch
+
+build:
+  nh os build
+
+debug:
+  nh os switch -- --show-trace --verbose
+
+hms:
+  nh home switch
+
+clean:
+  nh clean all --keep-since 7d --keep 3
 
 arch:
 	just hm arch
 
 wsl:
-	just hm wsl 
+	just hm wsl
 
 hm $MACHINE:
 	home-manager switch --flake .#{{user}}@{{MACHINE}}
 
-rb:
-  #!/usr/bin/env bash
-  old=$(readlink -f /nix/var/nix/profiles/system)
-  
-  # Check if a diff file exists, generate one if missing
-  latest_diff=$(ls -t .flake-diffs/$HOSTNAME-*.diff 2>/dev/null | head -1)
-  if [ -z "$latest_diff" ]; then
-    echo "No predicted diff found - generating one first..."
-    just check-changes
-    latest_diff=$(ls -t .flake-diffs/$HOSTNAME-*.diff 2>/dev/null | head -1)
-    if [ -z "$latest_diff" ]; then
-      echo "No changes detected - system already up to date"
-      exit 0
-    fi
-  fi
-  
-  sudo -H nixos-rebuild switch --flake .#$HOSTNAME
-  new=$(readlink -f /nix/var/nix/profiles/system)
-  
-  if [ "$old" != "$new" ]; then
-    echo -e "\n=== Changes applied ==="
-    applied_diff=$(mktemp)
-    nix store diff-closures $old $new | tee "$applied_diff"
-
-    # Only process if there's actual content
-    if [ -s "$applied_diff" ]; then
-      # Compare applied diff with predicted diff
-      if [ -n "$latest_diff" ] && diff -q "$latest_diff" "$applied_diff" > /dev/null 2>&1; then
-        echo -e "\n✓ Changes match prediction"
-        rm -f "$applied_diff"
-      else
-        # Save actual diff with timestamp (same format as check-changes)
-        timestamp=$(date '+%Y-%m-%d_%H-%M-%S')
-        saved_diff=".flake-diffs/$HOSTNAME-$timestamp.diff"
-        mv "$applied_diff" "$saved_diff"
-        if [ -n "$latest_diff" ]; then
-          echo -e "\n⚠ Applied changes differ from prediction!"
-          echo "Predicted: $latest_diff"
-          echo "Actual diff saved: $saved_diff"
-        fi
-      fi
-    else
-      echo "No actual changes detected after rebuild"
-      rm -f "$applied_diff"
-    fi
-  else
-    echo "No changes - system already up to date"
-  fi
-
-
-debug:
-  sudo -H nixos-rebuild switch --flake .#$HOSTNAME --show-trace --verbose
-
 up:
   nix flake update
-
-build:
-  #!/usr/bin/env bash
-  echo "Building new system..."
-  sudo -H nixos-rebuild build --flake .#$HOSTNAME
-
-check-changes:
-  #!/usr/bin/env bash
-  mkdir -p .flake-diffs
-  echo "Building new system..."
-  new=$(nix build --print-out-paths ".#nixosConfigurations.${HOSTNAME}.config.system.build.toplevel" --no-link)
-  
-  old=$(readlink -f /nix/var/nix/profiles/system)
-  
-  if [ -z "$new" ] || [ ! -d "$new" ]; then
-    echo "Build failed"
-    exit 1
-  fi
-
-  timestamp=$(date '+%Y-%m-%d_%H-%M-%S')
-  echo -e "\n=== Changes that will be applied ==="
-  tmp_diff=$(mktemp)
-  nix store diff-closures "$old" "$new" | tee "$tmp_diff"
-
-  if [ -s "$tmp_diff" ]; then
-    mv "$tmp_diff" ".flake-diffs/$HOSTNAME-$timestamp.diff"
-    echo -e "\nDiff saved to .flake-diffs/$HOSTNAME-$timestamp.diff"
-    echo "Run 'j rb' to apply these changes"
-  else
-    echo "No differences detected; not saving diff file"
-    rm -f "$tmp_diff"
-  fi
-
-
-# Show recent flake diffs
-diff-show:
-  #!/usr/bin/env bash
-  if [ ! -d .flake-diffs ]; then
-    echo "No diffs yet. Run 'j up' to generate a preview diff."
-    exit 0
-  fi
-  echo "Recent flake diffs:"
-  ls -lht .flake-diffs/ | head -10
-
-# Show specific diff file (usage: j diff-view akarnae-2026-01-22_09-28-19.diff)
-diff-view $file:
-  cat .flake-diffs/{{file}}
 
 # Update specific input
 # usage: make upp i=home-manager
 upp:
   nix flake update $(i)
 
-clean:
-  # remove all generations older than 7 days
-  sudo nix profile wipe-history --profile /nix/var/nix/profiles/system  --older-than 7d
-
-gc:
-  # garbage collect all unused nix store entries
-  sudo nix-collect-garbage --delete-old
-
 ####
 # installation stuff
 ####
 
-nix-install: 
+nix-install:
 	sudo nixos-install --no-root-passwd --flake '.#${MACHINE}' --impure
 
 format-disks-luks-btrfs-impermanence: enc-pass

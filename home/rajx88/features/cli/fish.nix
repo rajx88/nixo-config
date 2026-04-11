@@ -23,13 +23,6 @@ in {
       nbn = "nix build nixpkgs#";
       nf = "nix flake";
 
-      nr = "nixos-rebuild --flake .";
-      nrs = "nixos-rebuild --flake . switch";
-      snr = "sudo nixos-rebuild --flake .";
-      snrs = "sudo nixos-rebuild --flake . switch";
-      hm = "home-manager --flake .";
-      hms = "home-manager --flake . switch";
-
       ls = mkIf hasEza "eza";
       exa = mkIf hasEza "eza";
 

@@ -2,7 +2,18 @@
   pkgs,
   config,
   ...
-}: {
+}: let
+  prvtIdentity = {
+    contentSuffix = "prvt-gitconfig";
+    contents = {
+      user = {
+        email = "44810778+rajx88@users.noreply.github.com";
+        name = "rajx88";
+      };
+    };
+  };
+  prvtDirs = ["~/code/prvt/" "~/code/nix/"];
+in {
   home.persistence."/persist".directories = [
     ".config/git"
   ];
@@ -58,16 +69,6 @@
         condition = "gitdir:~/code/work/";
         path = "${config.xdg.configHome}/git/work.inc";
       }
-      {
-        condition = "gitdir:~/code/prvt/";
-        contentSuffix = "prvt-gitconfig";
-        contents = {
-          user = {
-            email = "44810778+rajx88@users.noreply.github.com";
-            name = "rajx88";
-          };
-        };
-      }
-    ];
+    ] ++ map (dir: prvtIdentity // {condition = "gitdir:${dir}";}) prvtDirs;
   };
 }

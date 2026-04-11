@@ -67,7 +67,8 @@
     stateVersion = lib.mkDefault "26.05";
     sessionPath = ["$HOME/.local/bin"];
     sessionVariables = {
-      FLAKE = "$HOME/code/nixos-config";
+      FLAKE = "$HOME/code/nix/nixo-config";
+      NH_FLAKE = "$HOME/code/nix/nixo-config";
       TERM = "ghostty";
       BROWSER = "brave";
     };
