@@ -15,17 +15,15 @@ return {
       { name = vim.fn.fnamemodify(vault, ":t"), path = vault },
     },
     daily_notes = {
-      folder = "0300-daily",
+      folder = "20-areas/journal",
       date_format = "%Y-%m-%d",
     },
     picker = {
       name = "mini.pick",
     },
-    -- Disable obsidian.nvim UI for checkboxes — checkmate handles those
     ui = {
       enable = false,
     },
-    -- Follow the vault's kebab-case naming convention
     note_id_func = function(title)
       local id = ""
       if title ~= nil then
@@ -37,20 +35,26 @@ return {
       end
       return id
     end,
-    -- New notes go to the inbox, matching app.json newFileFolderPath
     new_notes_location = "notes_subdir",
-    notes_subdir = "0100-unsorted",
+    notes_subdir = "50-inbox",
     attachments = {
-      img_folder = "8000-resources/files",
+      img_folder = "_attachments",
+    },
+    templates = {
+      folder = "_templates",
+      date_format = "%Y-%m-%d",
+      time_format = "%H:%M",
     },
   },
   keys = {
-    { "<leader>ot", function() vim.cmd("e " .. vault .. "/0300-todos/todo.md") end, desc = "Open todo file" },
-    { "<leader>od", "<cmd>ObsidianToday<cr>",      desc = "Open today's daily note" },
-    { "<leader>on", "<cmd>ObsidianNew<cr>",         desc = "New note" },
-    { "<leader>os", "<cmd>ObsidianSearch<cr>",      desc = "Search notes" },
-    { "<leader>ob", "<cmd>ObsidianBacklinks<cr>",   desc = "Note backlinks" },
-    { "<leader>oo", "<cmd>ObsidianFollowLink<cr>",  desc = "Follow link" },
-    { "<leader>ol", "<cmd>ObsidianLinks<cr>",       desc = "List links in note" },
+    { "<leader>ot", function() vim.cmd("e " .. vault .. "/scratchpad.md") end, desc = "Open scratchpad" },
+    { "<leader>od", "<cmd>ObsidianToday<cr>",              desc = "Open today's daily note" },
+    { "<leader>on", "<cmd>ObsidianNew<cr>",                desc = "New note" },
+    { "<leader>oN", "<cmd>ObsidianNewFromTemplate<cr>",    desc = "New note from template" },
+    { "<leader>os", "<cmd>ObsidianSearch<cr>",             desc = "Search notes" },
+    { "<leader>ob", "<cmd>ObsidianBacklinks<cr>",          desc = "Note backlinks" },
+    { "<leader>oo", "<cmd>ObsidianFollowLink<cr>",         desc = "Follow link" },
+    { "<leader>ol", "<cmd>ObsidianLinks<cr>",              desc = "List links in note" },
+    { "<leader>oi", "<cmd>ObsidianTemplate<cr>",           desc = "Insert template" },
   },
 }
