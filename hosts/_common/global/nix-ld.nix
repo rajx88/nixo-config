@@ -23,6 +23,22 @@
       libdrm
       mesa
       stdenv.cc.cc.lib # libstdc++
+      # JCEF (embedded Chromium for task descriptions, etc.)
+      glib
+      nss
+      nspr
+      dbus
+      atk
+      at-spi2-atk
+      cups
+      expat
+      xorg.libxcb
+      pango
+      cairo
+      udev
+      alsa-lib
+      at-spi2-core
+      libgbm
     ];
   };
 
