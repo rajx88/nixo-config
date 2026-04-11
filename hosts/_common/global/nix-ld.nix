@@ -32,7 +32,7 @@
       at-spi2-atk
       cups
       expat
-      xorg.libxcb
+      libxcb
       pango
       cairo
       udev
