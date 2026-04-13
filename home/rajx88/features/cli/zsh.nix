@@ -20,7 +20,7 @@ in {
     dotDir = config.xdg.configHome + "/zsh";
     enableCompletion = true;
 
-    defaultKeymap = "viins";
+    defaultKeymap = "emacs";
 
     sessionVariables = {
       MINIKUBE_HOME = "${config.xdg.dataHome}/minikube";

@@ -35,6 +35,7 @@
     ./features/dev/claude.nix
     ./features/dev/rtk.nix
     ./features/dev/aws.nix
+    ./features/dev/python.nix
     ./features/dev/worktrunk.nix
 
     ./features/dev/bruno.nix
