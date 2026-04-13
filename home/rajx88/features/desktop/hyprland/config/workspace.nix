@@ -18,7 +18,7 @@ in {
       )
       ++ [
         "special:notes, on-created-empty:ghostty --class=scratchpad.notes -e zsh -ic 'nvim ${vaultPath}'"
-        "special:todo, on-created-empty:ghostty --class=scratchpad.todo -e zsh -ic 'nvim ${vaultPath}/0300-todos/todo.md'"
+        "special:todo, on-created-empty:ghostty --class=scratchpad.todo -e zsh -ic 'nvim ${vaultPath}/scratchpad.md'"
       ];
   };
 }
