@@ -88,6 +88,12 @@
         disable_splash_rendering = true;
         close_special_on_empty = true;
       };
+
+      render = {
+        cm_enabled = true;
+        cm_fs_passthrough = 1;
+        cm_auto_hdr = true;
+      };
     };
   };
 }
