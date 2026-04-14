@@ -6,10 +6,6 @@
     ".local/share/nvim"
   ];
 
-  # home.packages = with pkgs; [
-  #   stylua
-  # ];
-
   programs = {
     zsh = {
       shellAliases = {
@@ -37,40 +33,33 @@
         gcc
         nodejs
         go
-        python3 # mason jdtls wrapper
+        python3
 
-        # runtime deps for LSP servers
-        jdk21 # jdtls requires Java 21+
+        # LSP servers
+        gopls
+        lua-language-server
+        nil
+        bash-language-server
+        yaml-language-server
+        vscode-langservers-extracted
+        templ
+        jsonnet-language-server
 
-        # LSP's and formatters
-        ## shell
-        # nodePackages.bash-language-server
-        # shellcheck
-        # shfmt
+        # formatters
+        stylua
+        alejandra
+        gofumpt
+        gotools # goimports
+        shfmt
+        prettierd
+        google-java-format
+        go-jsonnet # includes jsonnetfmt
 
-        # java
-        # jdt-language-server
+        # debug
+        delve
 
-        # go
-        # gopls
-        # gotools
-        # gofumpt
-
-        # templ
-
-        # nix
-        # nil
-        # alejandra
-
-        ## Lua
-        # stylua
-        # lua-language-server
-        # luajitPackages.luarocks-nix
-
-        ## yaml json etc.
-        # vscode-langservers-extracted
-        # yaml-language-server
-        # prettierd
+        # java runtime (jdtls via Mason needs Java 21+)
+        jdk21
       ];
     };
   };

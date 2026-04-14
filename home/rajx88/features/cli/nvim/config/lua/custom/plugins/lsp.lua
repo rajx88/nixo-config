@@ -1,20 +1,13 @@
 return {
   {
-    -- Mason: tool installer (LSP servers, formatters, linters)
+    -- Mason: only for jdtls ecosystem (complex jar/bundle management)
     "mason-org/mason.nvim",
     opts = {
       ensure_installed = {
-        "stylua",
-        "alejandra",
-        "delve",
-        "gofumpt",
-        "goimports",
-        "google-java-format",
+        "jdtls",
         "java-debug-adapter",
         "java-test",
-        "jsonnetfmt",
-        "shfmt",
-        "prettierd",
+        "google-java-format",
       },
     },
     config = function(_, opts)
@@ -32,21 +25,11 @@ return {
     end,
   },
   {
-    -- Bridge between Mason and nvim-lspconfig (v2 API)
+    -- Bridge: only manages jdtls via Mason, all other LSPs via Nix PATH
     "mason-org/mason-lspconfig.nvim",
     dependencies = { "mason-org/mason.nvim", "neovim/nvim-lspconfig" },
     opts = {
-      ensure_installed = {
-        "bashls",
-        "gopls",
-        "jdtls",
-        "jsonls",
-        "jsonnet_ls",
-        "lua_ls",
-        "nil_ls",
-        "templ",
-        "yamlls",
-      },
+      ensure_installed = { "jdtls" },
       -- nvim-jdtls manages the jdtls lifecycle itself
       automatic_enable = {
         exclude = { "jdtls" },
@@ -67,6 +50,18 @@ return {
       local capabilities = require("blink.cmp").get_lsp_capabilities()
       vim.lsp.config("*", {
         capabilities = capabilities,
+      })
+
+      -- Enable Nix-provided LSP servers (on PATH via extraPackages)
+      vim.lsp.enable({
+        "bashls",
+        "gopls",
+        "jsonls",
+        "jsonnet_ls",
+        "lua_ls",
+        "nil_ls",
+        "templ",
+        "yamlls",
       })
 
       -- Per-server configuration using the Neovim 0.12 native API
