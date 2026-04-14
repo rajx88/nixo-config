@@ -49,6 +49,10 @@ in {
             type = types.bool;
             default = true;
           };
+          bitdepth = mkOption {
+            type = types.nullOr (types.enum [8 10]);
+            default = null;
+          };
           workspaces = mkOption {
             type = types.listOf types.int;
             default = [];
