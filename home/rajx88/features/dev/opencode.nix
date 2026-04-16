@@ -15,7 +15,11 @@ in {
     package = opencodePkgs.opencode;
     settings = {
       default_agent = "plan";
-      plugin = ["@tarquinen/opencode-dcp@latest"];
+      plugin = [
+        "@tarquinen/opencode-dcp@latest"
+        "@simonwjackson/opencode-direnv"
+        "superpowers@git+https://github.com/obra/superpowers.git"
+      ];
       permission = {
         bash = {
           "rm *" = "ask";
