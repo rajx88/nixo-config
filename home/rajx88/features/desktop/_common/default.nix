@@ -1,5 +1,6 @@
 {pkgs, ...}: {
   imports = [
+    ./pipewire
     ./1password.nix
     ./alacritty
     ./foot.nix
