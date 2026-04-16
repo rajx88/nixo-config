@@ -48,7 +48,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    opencode-flake.url = "github:anomalyco/opencode/v1.4.3";
+    opencode-flake.url = "github:anomalyco/opencode/v1.4.6";
 
     claude-code.url = "github:sadjow/claude-code-nix";
   };
