@@ -8,17 +8,11 @@
     pkgs.writeShellScriptBin "ocd"
     (builtins.readFile ../../../../scripts/opencode.sh);
 
-  # Override the upstream opencode package to fix node_modules hash mismatch on x86_64-linux
   opencodePkgs = inputs.opencode-flake.packages.${pkgs.stdenv.hostPlatform.system};
-  opencodePackage = opencodePkgs.opencode.override {
-    node_modules = opencodePkgs.opencode.node_modules.override {
-      hash = "sha256-285KZ7rZLRoc6XqCZRHc25NE+mmpGh/BVeMpv8aPQtQ=";
-    };
-  };
 in {
   programs.opencode = {
     enable = true;
-    package = opencodePackage;
+    package = opencodePkgs.opencode;
     settings = {
       default_agent = "plan";
       plugin = ["@tarquinen/opencode-dcp@latest"];
