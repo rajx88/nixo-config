@@ -29,6 +29,7 @@
     ./features/dev/java.nix
     ./features/dev/kubectl.nix
     ./features/dev/gh.nix
+    ./features/dev/glab.nix
     ./features/dev/postman.nix
     ./features/dev/zed.nix
     ./features/dev/opencode.nix
