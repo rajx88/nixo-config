@@ -27,8 +27,7 @@ in {
         external_directory = {
           "${config.xdg.configHome}/opencode/**" = "allow";
           "/tmp/**" = "allow";
-          "${config.home.homeDirectory}/code/work/**" = "allow";
-          "${config.home.homeDirectory}/code/worktrees/**" = "allow";
+          "${config.home.homeDirectory}/code/**" = "allow";
         };
       };
     };
