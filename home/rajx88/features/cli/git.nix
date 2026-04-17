@@ -52,16 +52,19 @@ in {
     ignores = [
       ".claude"
       ".opencode"
+      # jdtls generated files
+      ".project"
+      ".classpath"
+      ".factorypath"
+      ".settings/"
     ];
     settings = {
-      extraConfig = {
-        init.defaultBranch = "main";
-        pull.ff = "only";
-        rerere.enable = true;
-        branch.sort = "-committerdate";
-        maintenance.auto = false;
-        maintenance.strategy = "incremental";
-      };
+      init.defaultBranch = "main";
+      pull.rebase = true;
+      rerere.enabled = true;
+      branch.sort = "-committerdate";
+      maintenance.auto = false;
+      maintenance.strategy = "incremental";
     };
     lfs.enable = true;
     includes = [
