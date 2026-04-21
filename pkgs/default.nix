@@ -3,4 +3,5 @@
 {pkgs}: {
   # example = pkgs.callPackage ./example { };
   worktrunk = pkgs.callPackage ./worktrunk {};
+  opencode = pkgs.callPackage ./opencode {};
 }
