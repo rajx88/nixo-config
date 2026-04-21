@@ -1,18 +1,15 @@
 {
   pkgs,
-  inputs,
   config,
   ...
 }: let
   ocd =
     pkgs.writeShellScriptBin "ocd"
     (builtins.readFile ../../../../scripts/opencode.sh);
-
-  opencodePkgs = inputs.opencode-flake.packages.${pkgs.stdenv.hostPlatform.system};
 in {
   programs.opencode = {
     enable = true;
-    package = opencodePkgs.opencode;
+    package = pkgs.opencode;
     settings = {
       default_agent = "plan";
       plugin = [
