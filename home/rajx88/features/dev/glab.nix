@@ -3,5 +3,8 @@
     glab
   ];
 
-  home.persistence."/persist".directories = [".config/glab"];
+  home.persistence."/persist".directories = [
+    ".config/glab"
+    ".config/glab-cli"
+  ];
 }
