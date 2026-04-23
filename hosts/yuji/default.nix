@@ -26,6 +26,7 @@
     ../_common/optional/pipewire.nix
     ../_common/optional/laptop.nix
     ../_common/optional/openvpn.nix
+    ../_common/optional/net-debug.nix
   ];
 
   host.filesystem = {
