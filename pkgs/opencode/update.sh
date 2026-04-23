@@ -1,5 +1,5 @@
 #!/usr/bin/env nix-shell
-#!nix-shell -i bash -p curl jq nix-prefetch common-updater-scripts
+#!nix-shell -i bash -p curl jq common-updater-scripts
 
 set -euo pipefail
 
@@ -19,13 +19,18 @@ fi
 
 echo "Updating opencode: $CURRENT -> $LATEST"
 
-# Prefetch new hash
+# Update version first
+sed -i "s/version = \"$CURRENT\"/version = \"$LATEST\"/" "$PKG_FILE"
+
+# Fetch hash (tarball, no unpack — matches fetchurl)
 URL="https://github.com/anomalyco/opencode/releases/download/v${LATEST}/opencode-linux-x64.tar.gz"
-HASH=$(nix-prefetch-url --unpack --type sha256 "$URL" 2>/dev/null)
+HASH=$(nix-prefetch-url "$URL" 2>/dev/null)
 SRI=$(nix hash convert --hash-algo sha256 --to sri "$HASH")
 
-# Update version
-sed -i "s/version = \"$CURRENT\"/version = \"$LATEST\"/" "$PKG_FILE"
+if [ -z "$SRI" ]; then
+  echo "ERROR: failed to compute hash for $URL" >&2
+  exit 1
+fi
 
 # Update hash
 sed -i "s|hash = \"sha256-.*\"|hash = \"$SRI\"|" "$PKG_FILE"
