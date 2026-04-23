@@ -13,7 +13,7 @@ in {
     settings = {
       default_agent = "plan";
       plugin = [
-        "@tarquinen/opencode-dcp@latest"
+        # "@tarquinen/opencode-dcp@latest"
         "@simonwjackson/opencode-direnv"
         "superpowers@git+https://github.com/obra/superpowers.git"
       ];
