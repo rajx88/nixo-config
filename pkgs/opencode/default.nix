@@ -1,19 +1,18 @@
 {
   lib,
   stdenv,
-  fetchzip,
+  fetchurl,
   ripgrep,
   makeWrapper,
   glibc,
 }:
 stdenv.mkDerivation rec {
   pname = "opencode";
-  version = "1.14.19";
+  version = "1.14.22";
 
-  src = fetchzip {
+  src = fetchurl {
     url = "https://github.com/anomalyco/opencode/releases/download/v${version}/opencode-linux-x64.tar.gz";
-    hash = "sha256-Ar4j8WoX+G3ceCuEtdctj21raa5nYaJ05ClZhSm25/A=";
-    stripRoot = false;
+    hash = "sha256-aUbNIJicdzajIbm603Ew3MMidGexeP054gpKAoTugWU=";
   };
 
   nativeBuildInputs = [
@@ -23,6 +22,10 @@ stdenv.mkDerivation rec {
   dontBuild = true;
   dontPatchELF = true;
   dontStrip = true;
+
+  unpackPhase = ''
+    tar xzf $src
+  '';
 
   installPhase = ''
     runHook preInstall
