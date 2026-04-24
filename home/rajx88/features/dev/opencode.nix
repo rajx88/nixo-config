@@ -37,5 +37,6 @@ in {
   home.persistence."/persist".directories = [
     ".local/share/opencode"
     ".config/opencode"
+    ".agents"
   ];
 }
