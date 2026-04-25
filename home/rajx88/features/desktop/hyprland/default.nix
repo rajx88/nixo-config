@@ -9,7 +9,6 @@
     ../_common
     ../_common/wayland
 
-    ./hyprpaper.nix
     ./hyprlock.nix
 
     ./config/basic-binds.nix
@@ -49,6 +48,10 @@
     };
 
     settings = {
+      exec-once = [
+        "noctalia-shell"
+      ];
+
       general = {
         # See https://wiki.hyprland.org/Configuring/Variables/ for more
         gaps_in = 8;

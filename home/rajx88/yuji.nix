@@ -101,7 +101,7 @@
       isLaptop = true;
       refreshRate = 60;
       position = "auto-center-down";
-      workspaces = [6 7 8 9 0];
+      workspaces = [];
     }
     # {
     #   name = "DP-1";
