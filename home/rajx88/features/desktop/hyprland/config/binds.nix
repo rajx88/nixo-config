@@ -64,11 +64,10 @@ in {
       ++
       # Launcher — noctalia built-in
       [
-        "$mod,d,exec,noctalia-shell ipc call launcher toggle"
         "$mod,space,exec,noctalia-shell ipc call launcher toggle"
       ]
       ++ [
-        # reload waybar / noctalia control center
+        # noctalia control center
         "$mod SHIFT,w,exec,noctalia-shell ipc call controlCenter toggle"
 
         # Noctalia session menu (power options)
