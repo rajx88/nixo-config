@@ -12,7 +12,6 @@
 
     bind = let
       workspaces = [
-        "0"
         "1"
         "2"
         "3"
@@ -61,17 +60,20 @@
 
         "$mod,u,togglespecialworkspace"
         "$mod SHIFT,u,movetoworkspacesilent,special"
+
+        "$mod,0,workspace,10"
+        "$mod SHIFT,0,movetoworkspacesilent,10"
       ]
       ++
       # Change workspace
       (map (
-          n: "$mod,${n},workspace,name:${n}"
+          n: "$mod,${n},workspace,${n}"
         )
         workspaces)
       ++
       # Move window to workspace
       (map (
-          n: "$mod SHIFT,${n},movetoworkspacesilent,name:${n}"
+          n: "$mod SHIFT,${n},movetoworkspacesilent,${n}"
         )
         workspaces)
       ++

@@ -87,7 +87,7 @@
       preferredMode = false;
       refreshRate = 120;
       bitdepth = 10;
-      workspaces = [6 7 8 9 0];
+      workspaces = [6 7 8 9 10];
       position = "auto-right";
       # position = "3840x-1620";
       # vertical = "3";
