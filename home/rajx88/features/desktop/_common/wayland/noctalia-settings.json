@@ -88,6 +88,13 @@
       ],
       "center": [
         {
+          "defaultSettings": {
+            "hideBackground": false,
+            "minimumThreshold": 10
+          },
+          "id": "plugin:catwalk"
+        },
+        {
           "characterCount": 2,
           "colorizeIcons": false,
           "emptyColor": "secondary",
@@ -107,6 +114,51 @@
           "showBadge": true,
           "showLabelsOnlyWhenOccupied": true,
           "unfocusedIconsOpacity": 1
+        },
+        {
+          "defaultSettings": {
+            "completedCount": 0,
+            "count": 0,
+            "current_page_id": 0,
+            "exportEmptySections": false,
+            "exportFormat": "markdown",
+            "exportPath": "~/Documents",
+            "isExpanded": false,
+            "pages": [
+              {
+                "id": 0,
+                "name": "General"
+              }
+            ],
+            "priorityColors": {
+              "high": "#f44336",
+              "low": "#9e9e9e",
+              "medium": "#2196f3"
+            },
+            "showBackground": true,
+            "showCompleted": true,
+            "todos": [],
+            "useCustomColors": false
+          },
+          "id": "plugin:todo"
+        },
+        {
+          "defaultSettings": {
+            "autoPaste": false,
+            "autoPasteDelay": 300,
+            "autoPasteOnRightClick": false,
+            "cardColors": {},
+            "customColors": {},
+            "enableTodoIntegration": false,
+            "fullscreenMode": false,
+            "hidePanelBackground": false,
+            "notecardsEnabled": true,
+            "panelHeight": 0,
+            "panelWidth": 1450,
+            "pincardsEnabled": true,
+            "showCloseButton": true
+          },
+          "id": "plugin:clipper"
         }
       ],
       "right": [
@@ -167,7 +219,7 @@
           "enableColorization": false,
           "icon": "noctalia",
           "id": "ControlCenter",
-          "useDistroLogo": false
+          "useDistroLogo": true
         }
       ]
     },
