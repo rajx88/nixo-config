@@ -11,7 +11,7 @@ in {
         map (
           m:
             map (
-              ws: "name:${toString ws},monitor:${m.name}"
+              ws: "${toString ws},monitor:${m.name},persistent:true"
             )
             m.workspaces
         ) (lib.filter (m: m.enabled && m.workspaces != []) config.monitors)

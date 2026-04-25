@@ -42,7 +42,7 @@
       height = 2160;
       preferredMode = true;
       refreshRate = 60;
-      workspaces = [6 7 8 9 0];
+      workspaces = [6 7 8 9 10];
       position = "auto-right";
       # primary = true;
     }
