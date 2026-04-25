@@ -1,4 +1,4 @@
-{inputs, ...}: {
+{inputs, config, ...}: {
   imports = [
     inputs.noctalia.homeModules.default
   ];
@@ -20,6 +20,10 @@
       colorSchemes = {
         predefinedScheme = "Noctalia (default)";
         darkMode = true;
+      };
+      wallpaper = {
+        enabled = true;
+        directory = "${config.xdg.dataHome}/wallpapers";
       };
     };
   };
