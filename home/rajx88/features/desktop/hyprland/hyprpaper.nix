@@ -37,6 +37,7 @@ in {
     ];
     exec-once = [
       "${pkgs.hyprpaper}/bin/hyprpaper"
+      "noctalia-shell"
     ];
   };
 }

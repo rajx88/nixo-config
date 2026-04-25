@@ -1,11 +1,12 @@
 {pkgs, ...}: {
   imports = [
-    ./dunst.nix
-    ./fuzzel.nix
+    # ./dunst.nix  # replaced by noctalia notifications
+    # ./fuzzel.nix  # replaced by noctalia launcher
     # ./swayidle.nix
     # ./swaylock.nix
+    ./noctalia.nix
     ./thunar.nix
-    ./waybar
+    # ./waybar  # replaced by noctalia bar
     ./wlogout
   ];
 
