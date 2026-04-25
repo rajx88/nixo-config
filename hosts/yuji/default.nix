@@ -7,7 +7,7 @@
 }: {
   imports = [
     inputs.hardware.nixosModules.common-cpu-intel
-    inputs.hardware.nixosModules.common-gpu-nvidia
+    # inputs.hardware.nixosModules.common-gpu-nvidia  # commented out — using Intel iGPU only
     inputs.hardware.nixosModules.common-pc-ssd
 
     inputs.nix-barracudavpn.nixosModules.barracudavpn
@@ -83,22 +83,22 @@
       enable32Bit = true;
     };
 
-    # nvidia — re-enabled with Blackwell open drivers + PRIME sync
-    nvidia = {
-      modesetting.enable = true;
-      powerManagement.enable = true;
-      powerManagement.finegrained = false;
-      open = true; # required for Blackwell (50xx series)
-      nvidiaSettings = true;
-      prime = {
-        offload.enable = false;
-        # offload.enableOffloadCmd = true;
-        sync.enable = true;
-        intelBusId = "PCI:0:2:0";
-        nvidiaBusId = "PCI:1:0:0";
-      };
-      package = config.boot.kernelPackages.nvidiaPackages.latest;
-    };
+    # nvidia — commented out, using Intel iGPU only. Uncomment to re-enable.
+    # nvidia = {
+    #   modesetting.enable = true;
+    #   powerManagement.enable = true;
+    #   powerManagement.finegrained = false;
+    #   open = true; # required for Blackwell (50xx series)
+    #   nvidiaSettings = true;
+    #   prime = {
+    #     offload.enable = false;
+    #     # offload.enableOffloadCmd = true;
+    #     sync.enable = true;
+    #     intelBusId = "PCI:0:2:0";
+    #     nvidiaBusId = "PCI:1:0:0";
+    #   };
+    #   package = config.boot.kernelPackages.nvidiaPackages.latest;
+    # };
   };
 
   # DO NOT TOUCH BEFORE GOOGLING IT.
