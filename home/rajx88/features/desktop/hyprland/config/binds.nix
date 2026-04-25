@@ -14,7 +14,6 @@ in {
       swaylock = "${config.programs.swaylock.package}/bin/swaylock";
       hyprlock = "${config.programs.hyprlock.package}/bin/hyprlock";
 
-      fuzzel = "${config.programs.fuzzel.package}/bin/fuzzel";
 
       playerctl = "${config.services.playerctld.package}/bin/playerctl";
       playerctld = "${config.services.playerctld.package}/bin/playerctld";
@@ -63,13 +62,17 @@ in {
         ",XF86AudioStop,exec,${playerctl} stop"
       ])
       ++
-      # Launcher
-      (lib.optionals config.programs.fuzzel.enable [
-        "$mod,d,exec,${fuzzel}"
-      ])
+      # Launcher — noctalia built-in
+      [
+        "$mod,d,exec,noctalia-shell ipc call launcher toggle"
+        "$mod,space,exec,noctalia-shell ipc call launcher toggle"
+      ]
       ++ [
-        # reload waybar
-        "$mod SHIFT,w,exec,systemctl --user restart waybar"
+        # reload waybar / noctalia control center
+        "$mod SHIFT,w,exec,noctalia-shell ipc call controlCenter toggle"
+
+        # Noctalia session menu (power options)
+        "$mod,Escape,exec,noctalia-shell ipc call sessionMenu toggle"
 
         # Scratchpad toggles
         "$mod,n,togglespecialworkspace,notes"
