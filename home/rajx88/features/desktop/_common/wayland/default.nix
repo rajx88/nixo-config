@@ -32,6 +32,12 @@
 
   xdg.portal = {
     extraPortals = [pkgs.xdg-desktop-portal-wlr];
-    config.common.default = "*";
+    config = {
+      common = {
+        default = ["gtk"];
+        "org.freedesktop.impl.portal.ScreenCast" = ["wlr"];
+        "org.freedesktop.impl.portal.Screenshot" = ["wlr"];
+      };
+    };
   };
 }
