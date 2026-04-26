@@ -5,7 +5,7 @@
   ...
 }: let
   terminal = config.home.sessionVariables.TERM;
-  vaultPath = config.home.sessionVariables.VAULT_PATH or "${config.home.homeDirectory}/code/prvt/github/second-brain";
+  vaultPath = config.home.sessionVariables.VAULT_PATH;
   files = "${pkgs.thunar}/bin/thunar";
 
   monitors = config.monitors;
