@@ -1,7 +1,5 @@
 {
   inputs,
-  lib,
-  config,
   pkgs,
   ...
 }: {
@@ -13,14 +11,8 @@
 
     ./binds.nix
     ./monitor.nix
-    ./appearance.nix
     ./lid.nix
   ];
-
-  xdg.portal = {
-    extraPortals = [pkgs.xdg-desktop-portal-wlr];
-    configPackages = [config.wayland.windowManager.mango.package];
-  };
 
   wayland.windowManager.mango = {
     enable = true;
@@ -32,17 +24,11 @@
       xkb_rules_layout = "us";
       tap_to_click = true;
       trackpad_natural_scrolling = false;
-      accel_profile = 0; # no acceleration
+      accel_profile = 0;
 
-      # Misc
+      # Focus
       sloppyfocus = true;
       warpcursor = true;
-
-      # Gaps (match hyprland: gaps_in=8, gaps_out=8)
-      gappih = 8;
-      gappiv = 8;
-      gappoh = 8;
-      gappov = 8;
 
       # Layouts
       circle_layout = "tile,scroller";
@@ -56,8 +42,7 @@
     systemd.enable = true;
   };
 
-  # Noctalia idle + lock config for mango
-  # (Hyprland uses hyprlock/hypridle instead)
+  # Noctalia idle + lock (hyprland uses hyprlock/hypridle instead)
   programs.noctalia-shell.settings = {
     general = {
       allowPasswordWithFprintd = true;

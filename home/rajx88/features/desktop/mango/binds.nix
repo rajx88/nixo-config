@@ -29,10 +29,10 @@ in {
 
       # App launchers
       "SUPER,t,spawn,${terminal}"
-      "SUPER,v,spawn,${editor}"
-      "SUPER,b,spawn,${browser}"
+      "SUPER,v,spawn_shell,${editor}"
+      "SUPER,b,spawn_shell,${browser}"
       "SUPER,e,spawn,${files}"
-      "SUPER,p,spawn,${passman}"
+      "SUPER,p,spawn_shell,${passman}"
 
       # Noctalia IPC
       "SUPER,space,spawn,noctalia-shell ipc call launcher toggle"
