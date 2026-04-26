@@ -111,30 +111,11 @@ in {
       })
       ++
       # DPMS off (after lock)
-      [
-        {
-          timeout = lockTime + 100;
-          command = "${wlopm} --off '*'";
-          resumeCommand = "${wlopm} --on '*'";
-        }
-      ]
-      ++
-      # If already locked: dim
-      [
-        {
-          timeout = 30;
-          command = "${isLocked} && ${brightnessctl} set 75%-";
-        }
-      ]
-      ++
-      # If already locked: DPMS off
-      [
-        {
-          timeout = 60;
-          command = "${isLocked} && ${wlopm} --off '*'";
-          resumeCommand = "${wlopm} --on '*'";
-        }
-      ]
+      (afterLockTimeout {
+        timeout = 100;
+        command = "${wlopm} --off '*'";
+        resumeCommand = "${wlopm} --on '*'";
+      })
       ++
       # If discharging: suspend
       [
