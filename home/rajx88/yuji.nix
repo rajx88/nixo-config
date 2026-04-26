@@ -9,7 +9,7 @@
 
     ./global
 
-    ./features/desktop/hyprland
+    ./features/desktop/mango
 
     ./features/desktop/optional/discord
     ./features/desktop/optional/spotify.nix
