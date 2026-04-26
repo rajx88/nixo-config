@@ -2,7 +2,7 @@
   imports = [
     # ./swayidle.nix
     # ./swaylock.nix
-    ./noctalia.nix
+    ./noctalia
     ./thunar.nix
     ./wlogout
   ];
