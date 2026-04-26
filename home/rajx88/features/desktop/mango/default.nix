@@ -35,6 +35,8 @@
 
       # Scroller config
       scroller_default_proportion = 0.5;
+      scroller_default_proportion_single = 1.0;
+      scroller_ignore_proportion_single = 0;
       scroller_proportion_preset = "0.33,0.5,0.67,1.0";
 
       # Default layouts per tag: scroller on DP-1 (1-5), tile on DP-2 (6-10)
