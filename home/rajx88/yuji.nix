@@ -1,6 +1,7 @@
 {
   inputs,
   outputs,
+  config,
   ...
 }: {
   imports = [
@@ -46,6 +47,8 @@
   programs.proxy.pac.enable = true;
 
   services.ssh-tunnels.enable = true;
+
+  home.sessionVariables.VAULT_PATH = "${config.home.homeDirectory}/code/prvt/github/second-brain";
 
   monitors = [
     # {
