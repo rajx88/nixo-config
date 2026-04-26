@@ -30,5 +30,8 @@
     QT_QPA_PLATFORM = "wayland";
   };
 
-  xdg.portal.extraPortals = [pkgs.xdg-desktop-portal-wlr];
+  xdg.portal = {
+    extraPortals = [pkgs.xdg-desktop-portal-wlr];
+    config.common.default = "*";
+  };
 }
