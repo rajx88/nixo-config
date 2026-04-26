@@ -5,13 +5,8 @@
   ...
 }: let
   terminal = config.home.sessionVariables.TERM;
-  gtk-launch = "${pkgs.gtk3}/bin/gtk-launch";
-  xdg-mime = "${pkgs.xdg-utils}/bin/xdg-mime";
-  defaultApp = type: "${gtk-launch} $(${xdg-mime} query default ${type})";
-  browser = defaultApp "x-scheme-handler/https";
-  editor = defaultApp "text/plain";
+  vaultPath = "${config.home.homeDirectory}/code/prvt/github/second-brain";
   files = "${pkgs.thunar}/bin/thunar";
-  passman = "${gtk-launch} 1password || 1password";
 
   grim = "${pkgs.grim}/bin/grim";
   slurp = "${pkgs.slurp}/bin/slurp";
@@ -20,111 +15,123 @@
   playerctl = "${config.services.playerctld.package}/bin/playerctl";
 in {
   wayland.windowManager.mango.settings = {
-    bind = [
-      # Window management
-      "SUPER+SHIFT,q,killclient"
-      "SUPER+SHIFT,space,togglefloating"
-      "SUPER+SHIFT,f,togglefullscreen"
-      "SUPER,s,zoom"
+    bind =
+      [
+        # ── Terminal ──
+        "SUPER,Return,spawn,${terminal}"
 
-      # App launchers
-      "SUPER,t,spawn,${terminal}"
-      "SUPER,v,spawn_shell,${editor}"
-      "SUPER,b,spawn_shell,${browser}"
-      "SUPER,e,spawn,${files}"
-      "SUPER,p,spawn_shell,${passman}"
+        # ── App speed dial ──
+        "SUPER+SHIFT,b,spawn_shell,$BROWSER"
+        "SUPER+SHIFT,e,spawn,${files}"
+        "SUPER+SHIFT,slash,spawn,1password"
 
-      # Noctalia IPC
-      "SUPER,space,spawn,noctalia-shell ipc call launcher toggle"
-      "SUPER+SHIFT,w,spawn,noctalia-shell ipc call controlCenter toggle"
-      "SUPER,Escape,spawn,noctalia-shell ipc call sessionMenu toggle"
+        # ── Core WM ──
+        "SUPER+SHIFT,q,killclient"
+        "SUPER,f,togglemaximizescreen"
+        "SUPER+SHIFT,f,togglefullscreen"
+        "SUPER+SHIFT,space,togglefloating"
+        "SUPER,s,zoom"
+        "SUPER,Tab,toggleoverview"
+        "SUPER,r,reload_config"
 
-      # Lock screen via noctalia
-      "SUPER,backspace,spawn,noctalia-shell ipc call lockScreen lock"
+        # ── Layouts (dedicated keys) ──
+        "SUPER,n,setlayout,scroller"
+        "SUPER,m,setlayout,tile"
+        "SUPER,comma,setlayout,right_tile"
+        "SUPER,period,setlayout,tgmix"
 
-      # Volume
-      "NONE,XF86AudioRaiseVolume,spawn,${pactl} set-sink-volume @DEFAULT_SINK@ +5%"
-      "NONE,XF86AudioLowerVolume,spawn,${pactl} set-sink-volume @DEFAULT_SINK@ -5%"
-      "NONE,XF86AudioMute,spawn,${pactl} set-sink-mute @DEFAULT_SINK@ toggle"
-      "SHIFT,XF86AudioMute,spawn,${pactl} set-source-mute @DEFAULT_SOURCE@ toggle"
-      "NONE,XF86AudioMicMute,spawn,${pactl} set-source-mute @DEFAULT_SOURCE@ toggle"
+        # ── Tags: DP-1 (1-5) ──
+        "SUPER,1,viewcrossmon,1,DP-1"
+        "SUPER,2,viewcrossmon,2,DP-1"
+        "SUPER,3,viewcrossmon,3,DP-1"
+        "SUPER,4,viewcrossmon,4,DP-1"
+        "SUPER,5,viewcrossmon,5,DP-1"
 
-      # Screenshot
-      "SUPER+SHIFT,p,spawn_shell,${grim} -g \"$(${slurp})\" - | tee ${config.xdg.userDirs.extraConfig.SCRNSHTS}/$(date +%Y-%m-%d_%H-%m-%s).png | ${wl-copy} --type image/png"
+        # ── Tags: DP-2 (6-10) ──
+        "SUPER,6,viewcrossmon,6,DP-2"
+        "SUPER,7,viewcrossmon,7,DP-2"
+        "SUPER,8,viewcrossmon,8,DP-2"
+        "SUPER,9,viewcrossmon,9,DP-2"
+        "SUPER,0,viewcrossmon,10,DP-2"
 
-      # Focus (arrows + hjkl)
-      "SUPER,Left,focusdir,left"
-      "SUPER,Right,focusdir,right"
-      "SUPER,Up,focusdir,up"
-      "SUPER,Down,focusdir,down"
-      "SUPER,h,focusdir,left"
-      "SUPER,l,focusdir,right"
-      "SUPER,k,focusdir,up"
-      "SUPER,j,focusdir,down"
+        # ── Move client to tag: DP-1 ──
+        "SUPER+SHIFT,1,tagcrossmon,1,DP-1"
+        "SUPER+SHIFT,2,tagcrossmon,2,DP-1"
+        "SUPER+SHIFT,3,tagcrossmon,3,DP-1"
+        "SUPER+SHIFT,4,tagcrossmon,4,DP-1"
+        "SUPER+SHIFT,5,tagcrossmon,5,DP-1"
 
-      # Swap windows
-      "SUPER+SHIFT,Left,exchange_client,left"
-      "SUPER+SHIFT,Right,exchange_client,right"
-      "SUPER+SHIFT,Up,exchange_client,up"
-      "SUPER+SHIFT,Down,exchange_client,down"
-      "SUPER+SHIFT,h,exchange_client,left"
-      "SUPER+SHIFT,l,exchange_client,right"
-      "SUPER+SHIFT,k,exchange_client,up"
-      "SUPER+SHIFT,j,exchange_client,down"
+        # ── Move client to tag: DP-2 ──
+        "SUPER+SHIFT,6,tagcrossmon,6,DP-2"
+        "SUPER+SHIFT,7,tagcrossmon,7,DP-2"
+        "SUPER+SHIFT,8,tagcrossmon,8,DP-2"
+        "SUPER+SHIFT,9,tagcrossmon,9,DP-2"
+        "SUPER+SHIFT,0,tagcrossmon,10,DP-2"
 
-      # Monitor focus
-      "SUPER+ALT,Left,focusmon,left"
-      "SUPER+ALT,Right,focusmon,right"
-      "SUPER+ALT,h,focusmon,left"
-      "SUPER+ALT,l,focusmon,right"
+        # ── Focus direction ──
+        "SUPER,Left,focusdir,left"
+        "SUPER,Right,focusdir,right"
+        "SUPER,Up,focusdir,up"
+        "SUPER,Down,focusdir,down"
+        "SUPER,h,focusdir,left"
+        "SUPER,l,focusdir,right"
+        "SUPER,k,focusdir,up"
+        "SUPER,j,focusdir,down"
 
-      # Move client to monitor
-      "SUPER+ALT+SHIFT,Left,tagmon,left"
-      "SUPER+ALT+SHIFT,Right,tagmon,right"
-      "SUPER+ALT+SHIFT,h,tagmon,left"
-      "SUPER+ALT+SHIFT,l,tagmon,right"
+        # ── Swap windows ──
+        "SUPER+SHIFT,Left,exchange_client,left"
+        "SUPER+SHIFT,Right,exchange_client,right"
+        "SUPER+SHIFT,Up,exchange_client,up"
+        "SUPER+SHIFT,Down,exchange_client,down"
+        "SUPER+SHIFT,h,exchange_client,left"
+        "SUPER+SHIFT,l,exchange_client,right"
+        "SUPER+SHIFT,k,exchange_client,up"
+        "SUPER+SHIFT,j,exchange_client,down"
 
-      # Overview
-      "SUPER,Tab,toggleoverview"
+        # ── Monitor focus ──
+        "SUPER+ALT,Left,focusmon,left"
+        "SUPER+ALT,Right,focusmon,right"
+        "SUPER+ALT,h,focusmon,left"
+        "SUPER+ALT,l,focusmon,right"
 
-      # Scratchpad
-      "SUPER,z,toggle_scratchpad"
+        # ── Move client to monitor ──
+        "SUPER+ALT+SHIFT,Left,tagmon,left"
+        "SUPER+ALT+SHIFT,Right,tagmon,right"
+        "SUPER+ALT+SHIFT,h,tagmon,left"
+        "SUPER+ALT+SHIFT,l,tagmon,right"
 
-      # Resize master
-      "SUPER,minus,setmfact,-0.05"
-      "SUPER,equal,setmfact,+0.05"
+        # ── Resize (scroller proportion presets) ──
+        "SUPER,minus,switch_proportion_preset,prev"
+        "SUPER,equal,switch_proportion_preset,next"
 
-      # Cycle layouts
-      "SUPER,n,switch_layout"
+        # ── Scratchpads ──
+        "SUPER,u,toggle_scratchpad"
+        "SUPER+SHIFT,u,minimized"
+        "SUPER+SHIFT,n,toggle_named_scratchpad,scratchpad.notes,none,ghostty --class=scratchpad.notes -e zsh -ic 'nvim ${vaultPath}'"
+        "SUPER+SHIFT,m,toggle_named_scratchpad,scratchpad.todo,none,ghostty --class=scratchpad.todo -e zsh -ic 'nvim ${vaultPath}/scratchpad.md'"
 
-      # Tags 1-9 (view) — mango tags are 1-indexed
-      "CTRL,1,view,1"
-      "CTRL,2,view,2"
-      "CTRL,3,view,3"
-      "CTRL,4,view,4"
-      "CTRL,5,view,5"
-      "CTRL,6,view,6"
-      "CTRL,7,view,7"
-      "CTRL,8,view,8"
-      "CTRL,9,view,9"
+        # ── Noctalia ──
+        "SUPER,space,spawn,noctalia-shell ipc call launcher toggle"
+        "SUPER+SHIFT,w,spawn,noctalia-shell ipc call controlCenter toggle"
+        "SUPER,Escape,spawn,noctalia-shell ipc call sessionMenu toggle"
+        "SUPER,backspace,spawn,noctalia-shell ipc call lockScreen lock"
 
-      # Move client to tag 1-9
-      "SUPER,1,tag,1"
-      "SUPER,2,tag,2"
-      "SUPER,3,tag,3"
-      "SUPER,4,tag,4"
-      "SUPER,5,tag,5"
-      "SUPER,6,tag,6"
-      "SUPER,7,tag,7"
-      "SUPER,8,tag,8"
-      "SUPER,9,tag,9"
-    ]
-    ++ (lib.optionals config.services.playerctld.enable [
-      "NONE,XF86AudioNext,spawn,${playerctl} next"
-      "NONE,XF86AudioPrev,spawn,${playerctl} previous"
-      "NONE,XF86AudioPlay,spawn,${playerctl} play-pause"
-      "NONE,XF86AudioStop,spawn,${playerctl} stop"
-    ]);
+        # ── Volume ──
+        "NONE,XF86AudioRaiseVolume,spawn,${pactl} set-sink-volume @DEFAULT_SINK@ +5%"
+        "NONE,XF86AudioLowerVolume,spawn,${pactl} set-sink-volume @DEFAULT_SINK@ -5%"
+        "NONE,XF86AudioMute,spawn,${pactl} set-sink-mute @DEFAULT_SINK@ toggle"
+        "SHIFT,XF86AudioMute,spawn,${pactl} set-source-mute @DEFAULT_SOURCE@ toggle"
+        "NONE,XF86AudioMicMute,spawn,${pactl} set-source-mute @DEFAULT_SOURCE@ toggle"
+
+        # ── Screenshot ──
+        "SUPER+SHIFT,p,spawn_shell,${grim} -g \"$(${slurp})\" - | tee ${config.xdg.userDirs.extraConfig.SCRNSHTS}/$(date +%Y-%m-%d_%H-%m-%s).png | ${wl-copy} --type image/png"
+      ]
+      ++ (lib.optionals config.services.playerctld.enable [
+        "NONE,XF86AudioNext,spawn,${playerctl} next"
+        "NONE,XF86AudioPrev,spawn,${playerctl} previous"
+        "NONE,XF86AudioPlay,spawn,${playerctl} play-pause"
+        "NONE,XF86AudioStop,spawn,${playerctl} stop"
+      ]);
 
     mousebind = [
       "SUPER,btn_left,moveresize,curmove"
