@@ -51,7 +51,7 @@
         "id:10,layout_name:tile"
       ];
 
-      # Named scratchpad window rules
+      # Window rules
       windowrule = [
         "isnamedscratchpad:1,width:1280,height:800,appid:scratchpad.notes"
         "isnamedscratchpad:1,width:1280,height:800,appid:scratchpad.todo"
@@ -60,11 +60,13 @@
 
     autostart_sh = ''
       noctalia-shell &
-      ${pkgs.lxqt.lxqt-policykit}/bin/lxqt-policykit-agent &
     '';
 
     systemd.enable = true;
   };
+
+  # Polkit agent (wayland-native, works with any wlroots compositor)
+  services.hyprpolkitagent.enable = true;
 
   # Noctalia idle + lock (hyprland uses hyprlock/hypridle instead)
   programs.noctalia-shell.settings = {
