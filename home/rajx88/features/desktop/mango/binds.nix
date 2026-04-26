@@ -43,11 +43,11 @@ in {
       "SUPER,backspace,spawn,noctalia-shell ipc call lockScreen lock"
 
       # Volume
-      ",XF86AudioRaiseVolume,spawn,${pactl} set-sink-volume @DEFAULT_SINK@ +5%"
-      ",XF86AudioLowerVolume,spawn,${pactl} set-sink-volume @DEFAULT_SINK@ -5%"
-      ",XF86AudioMute,spawn,${pactl} set-sink-mute @DEFAULT_SINK@ toggle"
+      "NONE,XF86AudioRaiseVolume,spawn,${pactl} set-sink-volume @DEFAULT_SINK@ +5%"
+      "NONE,XF86AudioLowerVolume,spawn,${pactl} set-sink-volume @DEFAULT_SINK@ -5%"
+      "NONE,XF86AudioMute,spawn,${pactl} set-sink-mute @DEFAULT_SINK@ toggle"
       "SHIFT,XF86AudioMute,spawn,${pactl} set-source-mute @DEFAULT_SOURCE@ toggle"
-      ",XF86AudioMicMute,spawn,${pactl} set-source-mute @DEFAULT_SOURCE@ toggle"
+      "NONE,XF86AudioMicMute,spawn,${pactl} set-source-mute @DEFAULT_SOURCE@ toggle"
 
       # Screenshot
       "SUPER+SHIFT,p,spawn_shell,${grim} -g \"$(${slurp})\" - | tee ${config.xdg.userDirs.extraConfig.SCRNSHTS}/$(date +%Y-%m-%d_%H-%m-%s).png | ${wl-copy} --type image/png"
@@ -120,10 +120,10 @@ in {
       "SUPER,9,tag,9"
     ]
     ++ (lib.optionals config.services.playerctld.enable [
-      ",XF86AudioNext,spawn,${playerctl} next"
-      ",XF86AudioPrev,spawn,${playerctl} previous"
-      ",XF86AudioPlay,spawn,${playerctl} play-pause"
-      ",XF86AudioStop,spawn,${playerctl} stop"
+      "NONE,XF86AudioNext,spawn,${playerctl} next"
+      "NONE,XF86AudioPrev,spawn,${playerctl} previous"
+      "NONE,XF86AudioPlay,spawn,${playerctl} play-pause"
+      "NONE,XF86AudioStop,spawn,${playerctl} stop"
     ]);
 
     mousebind = [
