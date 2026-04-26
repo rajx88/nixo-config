@@ -59,7 +59,7 @@ in {
 
   services.swayidle = lib.mkIf enabled {
     enable = true;
-    systemdTargets = [ "graphical-session.target" ];
+    systemdTarget = "graphical-session.target";
     timeouts =
       # Dim: save brightness
       [
