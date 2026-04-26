@@ -12,7 +12,7 @@
   wlopm = "${pkgs.wlopm}/bin/wlopm";
   isDischarging = "grep -q Discharging /sys/class/power_supply/BAT*/status 2>/dev/null";
 
-  isLocked = "${pgrep} -f ${swaylock}";
+  isLocked = "${pgrep} -x swaylock";
   lockTime = 10 * 60;
 
   afterLockTimeout = {
@@ -34,13 +34,18 @@
 
   lockscreenWp = config.home.sessionVariables.LOCKSCREEN_WP or "";
 
-  lockScriptBin = pkgs.writeShellScriptBin "swaylock-lock" ''
+  mkLockScript = { grace ? false }: let
+    graceArg = lib.optionalString grace "--grace 5";
+  in pkgs.writeShellScriptBin "swaylock-lock${lib.optionalString grace "-idle"}" ''
     if [ -f "${lockscreenWp}" ]; then
-      exec ${swaylock} -i "${lockscreenWp}" --grace 5 ${commonArgs}
+      exec ${swaylock} -i "${lockscreenWp}" ${graceArg} ${commonArgs}
     else
-      exec ${swaylock} --screenshots --effect-scale 0.5 --effect-blur 10x3 --grace 5 ${commonArgs}
+      exec ${swaylock} --screenshots --effect-scale 0.5 --effect-blur 10x3 ${graceArg} ${commonArgs}
     fi
   '';
+
+  lockScriptBin     = mkLockScript { grace = false; }; # keybind — no grace
+  lockScriptIdleBin = mkLockScript { grace = true;  }; # swayidle — 5s grace
 
   # Skip when hypridle is handling idle/lock (e.g. hyprland uses hyprlock/hypridle)
   enabled = !config.services.hypridle.enable;
@@ -50,7 +55,7 @@ in {
     package = swaylockPkg;
   };
 
-  home.packages = lib.mkIf enabled [ lockScriptBin pkgs.wlopm ];
+  home.packages = lib.mkIf enabled [ lockScriptBin lockScriptIdleBin pkgs.wlopm ];
 
   services.swayidle = lib.mkIf enabled {
     enable = true;
@@ -94,7 +99,7 @@ in {
       [
         {
           timeout = lockTime;
-          command = "${lockScriptBin}/bin/swaylock-lock";
+          command = "${lockScriptIdleBin}/bin/swaylock-lock-idle";
         }
       ]
       ++
