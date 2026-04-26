@@ -8,6 +8,9 @@
   vaultPath = "${config.home.homeDirectory}/code/prvt/github/second-brain";
   files = "${pkgs.thunar}/bin/thunar";
 
+  monitors = config.monitors;
+  wsToKey = ws: if ws == 10 then "0" else toString ws;
+
   grim = "${pkgs.grim}/bin/grim";
   slurp = "${pkgs.slurp}/bin/slurp";
   wl-copy = "${pkgs.wl-clipboard}/bin/wl-copy";
@@ -40,33 +43,13 @@ in {
         "SUPER,comma,setlayout,right_tile"
         "SUPER,period,setlayout,tgmix"
 
-        # ── Tags: DP-1 (1-5) ──
-        "SUPER,1,viewcrossmon,1,DP-1"
-        "SUPER,2,viewcrossmon,2,DP-1"
-        "SUPER,3,viewcrossmon,3,DP-1"
-        "SUPER,4,viewcrossmon,4,DP-1"
-        "SUPER,5,viewcrossmon,5,DP-1"
-
-        # ── Tags: DP-2 (6-10) ──
-        "SUPER,6,viewcrossmon,6,DP-2"
-        "SUPER,7,viewcrossmon,7,DP-2"
-        "SUPER,8,viewcrossmon,8,DP-2"
-        "SUPER,9,viewcrossmon,9,DP-2"
-        "SUPER,0,viewcrossmon,10,DP-2"
-
-        # ── Move client to tag: DP-1 ──
-        "SUPER+SHIFT,1,tagcrossmon,1,DP-1"
-        "SUPER+SHIFT,2,tagcrossmon,2,DP-1"
-        "SUPER+SHIFT,3,tagcrossmon,3,DP-1"
-        "SUPER+SHIFT,4,tagcrossmon,4,DP-1"
-        "SUPER+SHIFT,5,tagcrossmon,5,DP-1"
-
-        # ── Move client to tag: DP-2 ──
-        "SUPER+SHIFT,6,tagcrossmon,6,DP-2"
-        "SUPER+SHIFT,7,tagcrossmon,7,DP-2"
-        "SUPER+SHIFT,8,tagcrossmon,8,DP-2"
-        "SUPER+SHIFT,9,tagcrossmon,9,DP-2"
-        "SUPER+SHIFT,0,tagcrossmon,10,DP-2"
+      ]
+      # ── Per-monitor tag binds (from config.monitors) ──
+      ++ lib.concatMap (m:
+        map (ws: "SUPER,${wsToKey ws},viewcrossmon,${toString ws},${m.name}") m.workspaces
+        ++ map (ws: "SUPER+SHIFT,${wsToKey ws},tagcrossmon,${toString ws},${m.name}") m.workspaces
+      ) (lib.filter (m: m.workspaces != []) monitors)
+      ++ [
 
         # ── Focus direction ──
         "SUPER,Left,focusdir,left"
