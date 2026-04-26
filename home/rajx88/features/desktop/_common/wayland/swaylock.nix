@@ -8,9 +8,12 @@
   swaylock = "${swaylockPkg}/bin/swaylock";
   pgrep = "${pkgs.procps}/bin/pgrep";
   pactl = "${pkgs.pulseaudio}/bin/pactl";
+  brightnessctl = "${pkgs.brightnessctl}/bin/brightnessctl";
+  wlopm = "${pkgs.wlopm}/bin/wlopm";
+  isDischarging = "grep -q Discharging /sys/class/power_supply/BAT*/status 2>/dev/null";
 
   isLocked = "${pgrep} -f ${swaylock}";
-  lockTime = 60; # TODO: change back to 10 * 60 after testing
+  lockTime = 10 * 60;
 
   afterLockTimeout = {
     timeout,
@@ -29,11 +32,13 @@
 
   commonArgs = "--clock --indicator --timestr '%k:%M' --datestr '%a %e.%m.%Y' --daemonize";
 
+  lockscreenWp = config.home.sessionVariables.LOCKSCREEN_WP or "";
+
   lockScriptBin = pkgs.writeShellScriptBin "swaylock-lock" ''
-    if [ -n "$LOCKSCREEN_WP" ] && [ -f "$LOCKSCREEN_WP" ]; then
-      exec ${swaylock} -i "$LOCKSCREEN_WP" ${commonArgs}
+    if [ -f "${lockscreenWp}" ]; then
+      exec ${swaylock} -i "${lockscreenWp}" --grace 5 ${commonArgs}
     else
-      exec ${swaylock} --screenshots --effect-scale 0.5 --effect-blur 10x3 ${commonArgs}
+      exec ${swaylock} --screenshots --effect-scale 0.5 --effect-blur 10x3 --grace 5 ${commonArgs}
     fi
   '';
 
@@ -45,12 +50,47 @@ in {
     package = swaylockPkg;
   };
 
-  home.packages = lib.mkIf enabled [ lockScriptBin ];
+  home.packages = lib.mkIf enabled [ lockScriptBin pkgs.wlopm ];
 
   services.swayidle = lib.mkIf enabled {
     enable = true;
     systemdTargets = [ "graphical-session.target" ];
     timeouts =
+      # Dim: save brightness
+      [
+        {
+          timeout = 10;
+          command = "${brightnessctl} --save";
+          resumeCommand = "${brightnessctl} --restore";
+        }
+      ]
+      ++
+      # Dim: kbd backlight off
+      [
+        {
+          timeout = 30;
+          command = "${brightnessctl} --device '*:kbd_backlight' --save set 0";
+          resumeCommand = "${brightnessctl} --device '*:kbd_backlight' --restore";
+        }
+      ]
+      ++
+      # Dim: screen 50%
+      [
+        {
+          timeout = 50;
+          command = "${brightnessctl} set 50%-";
+        }
+      ]
+      ++
+      # Dim: screen another 50%
+      [
+        {
+          timeout = 110;
+          command = "${brightnessctl} set 50%-";
+        }
+      ]
+      ++
+      # Lock screen
       [
         {
           timeout = lockTime;
@@ -58,11 +98,45 @@ in {
         }
       ]
       ++
-      # Mute mic
+      # Mute mic (after lock)
       (afterLockTimeout {
         timeout = 10;
         command = "${pactl} set-source-mute @DEFAULT_SOURCE@ yes";
         resumeCommand = "${pactl} set-source-mute @DEFAULT_SOURCE@ no";
-      });
+      })
+      ++
+      # DPMS off (after lock)
+      [
+        {
+          timeout = lockTime + 100;
+          command = "${wlopm} --off '*'";
+          resumeCommand = "${wlopm} --on '*'";
+        }
+      ]
+      ++
+      # If already locked: dim
+      [
+        {
+          timeout = 30;
+          command = "${isLocked} && ${brightnessctl} set 75%-";
+        }
+      ]
+      ++
+      # If already locked: DPMS off
+      [
+        {
+          timeout = 60;
+          command = "${isLocked} && ${wlopm} --off '*'";
+          resumeCommand = "${wlopm} --on '*'";
+        }
+      ]
+      ++
+      # If discharging: suspend
+      [
+        {
+          timeout = 900;
+          command = "${isDischarging} && systemctl suspend";
+        }
+      ];
   };
 }
