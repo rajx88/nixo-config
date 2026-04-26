@@ -23,7 +23,6 @@
     ../_common/optional/systemd-boot.nix
     ../_common/optional/greetd.nix
     ../_common/optional/mango.nix
-    ../_common/optional/xwayland.nix
 
     ../_common/optional/pipewire.nix
     ../_common/optional/laptop.nix
