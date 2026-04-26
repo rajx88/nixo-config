@@ -69,22 +69,4 @@
 
   # Polkit agent (wayland-native, works with any wlroots compositor)
   services.hyprpolkitagent.enable = true;
-
-  # Noctalia idle + lock (hyprland uses hyprlock/hypridle instead)
-  programs.noctalia-shell.settings = {
-    general = {
-      allowPasswordWithFprintd = true;
-      lockScreenBlur = 20;
-      lockScreenTint = 0.3;
-      lockOnSuspend = true;
-      clockFormat = "HH\nmm";
-    };
-    idle = {
-      enabled = true;
-      screenOffTimeout = 300;
-      lockTimeout = 660;
-      suspendTimeout = 900;
-      fadeDuration = 5;
-    };
-  };
 }

@@ -1,7 +1,7 @@
 {pkgs, ...}: {
   imports = [
     # ./swayidle.nix
-    # ./swaylock.nix
+    ./swaylock.nix
     ./noctalia
     ./thunar.nix
     # ./wlogout

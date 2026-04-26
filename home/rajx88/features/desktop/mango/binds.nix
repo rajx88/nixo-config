@@ -114,7 +114,7 @@ in {
         "SUPER,space,spawn,noctalia-shell ipc call launcher toggle"
         "SUPER+SHIFT,w,spawn,noctalia-shell ipc call controlCenter toggle"
         "SUPER,Escape,spawn,noctalia-shell ipc call sessionMenu toggle"
-        "SUPER,backspace,spawn,noctalia-shell ipc call lockScreen lock"
+        "SUPER,backspace,spawn,swaylock-lock"
 
         # ── Volume ──
         "NONE,XF86AudioRaiseVolume,spawn,${pactl} set-sink-volume @DEFAULT_SINK@ +5%"
