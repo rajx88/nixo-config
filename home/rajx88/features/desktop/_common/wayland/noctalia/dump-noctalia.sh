@@ -15,12 +15,16 @@ echo "=== Runtime drift (add to nix if intentional) ==="
 NOCTALIA_BIN=$(readlink -f "$(which noctalia-shell)")
 DEFAULTS_FILE="${NOCTALIA_BIN%/bin/*}/share/noctalia-shell/Assets/settings-default.json"
 
-python3 - <<EOF
+export DEFAULTS_FILE
+export LIVE_SETTINGS
+LIVE_SETTINGS=$(echo "$LIVE" | jq -c ".settings | del(.bar.widgets)")
+
+python3 <<'EOF'
 import json, os
 
-defaults = json.load(open('$DEFAULTS_FILE'))
+defaults = json.load(open(os.environ['DEFAULTS_FILE']))
 nix     = json.load(open(os.path.expanduser('~/.config/noctalia/settings.json')))
-live    = json.loads('$(echo "$LIVE" | jq -c ".settings | del(.bar.widgets)")')
+live    = json.loads(os.environ['LIVE_SETTINGS'])
 
 def merge(base, overlay):
     result = dict(base)
