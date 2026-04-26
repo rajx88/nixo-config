@@ -4,23 +4,13 @@
   ...
 }: let
   monitors = config.monitors;
+  enabledMonitors = lib.filter (m: m.enabled) monitors;
 in {
   wayland.windowManager.mango.settings = {
-    # monitorr=<name>,<width>x<height>@<rate>,<x>,<y>,<scale>
-    monitorr = map (
-      m: "${m.name},${
-        if m.enabled
-        then "${toString m.width}x${toString m.height}@${toString m.refreshRate},auto,1"
-        else "disable"
-      }"
-    ) monitors;
-
-    # Tag-to-monitor: tagmon=<tag-index>,<monitor-name>
-    # Tags are 0-indexed, workspaces in monitors option are 1-indexed
-    tagmon = lib.flatten (map (
-      m: map (
-        ws: "${toString (ws - 1)},${m.name}"
-      ) m.workspaces
-    ) monitors);
+    # monitorrule=name:REGEX,width:W,height:H,refresh:R[,x:PX,y:PY,scale:S]
+    # x/y omitted → mango auto-arranges
+    monitorrule = map (
+      m: "name:^${m.name}$,width:${toString m.width},height:${toString m.height},refresh:${toString m.refreshRate},scale:1"
+    ) enabledMonitors;
   };
 }

@@ -29,15 +29,14 @@
       # Input
       repeat_rate = 25;
       repeat_delay = 600;
-      kb_layout = "us";
+      xkb_rules_layout = "us";
       tap_to_click = true;
-      natural_scroll = false;
-      force_no_accel = true;
+      trackpad_natural_scrolling = false;
+      accel_profile = 0; # no acceleration
 
       # Misc
-      xwayland = true;
-      sloppy_focus = true;
-      warp_cursor = true;
+      sloppyfocus = true;
+      warpcursor = true;
 
       # Gaps (match hyprland: gaps_in=8, gaps_out=8)
       gappih = 8;

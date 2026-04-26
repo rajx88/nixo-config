@@ -50,7 +50,7 @@ in {
       ",XF86AudioMicMute,spawn,${pactl} set-source-mute @DEFAULT_SOURCE@ toggle"
 
       # Screenshot
-      "SUPER+SHIFT,p,spawn,${grim} -g \"$(${slurp})\" - | tee ${config.xdg.userDirs.extraConfig.SCRNSHTS}/$(date +%Y-%m-%d_%H-%m-%s).png | ${wl-copy} --type image/png"
+      "SUPER+SHIFT,p,spawn_shell,${grim} -g \"$(${slurp})\" - | tee ${config.xdg.userDirs.extraConfig.SCRNSHTS}/$(date +%Y-%m-%d_%H-%m-%s).png | ${wl-copy} --type image/png"
 
       # Focus (arrows + hjkl)
       "SUPER,Left,focusdir,left"
@@ -63,14 +63,14 @@ in {
       "SUPER,j,focusdir,down"
 
       # Swap windows
-      "SUPER+SHIFT,Left,exchangedir,left"
-      "SUPER+SHIFT,Right,exchangedir,right"
-      "SUPER+SHIFT,Up,exchangedir,up"
-      "SUPER+SHIFT,Down,exchangedir,down"
-      "SUPER+SHIFT,h,exchangedir,left"
-      "SUPER+SHIFT,l,exchangedir,right"
-      "SUPER+SHIFT,k,exchangedir,up"
-      "SUPER+SHIFT,j,exchangedir,down"
+      "SUPER+SHIFT,Left,exchange_client,left"
+      "SUPER+SHIFT,Right,exchange_client,right"
+      "SUPER+SHIFT,Up,exchange_client,up"
+      "SUPER+SHIFT,Down,exchange_client,down"
+      "SUPER+SHIFT,h,exchange_client,left"
+      "SUPER+SHIFT,l,exchange_client,right"
+      "SUPER+SHIFT,k,exchange_client,up"
+      "SUPER+SHIFT,j,exchange_client,down"
 
       # Monitor focus
       "SUPER+ALT,Left,focusmon,left"
@@ -88,37 +88,36 @@ in {
       "SUPER,Tab,toggleoverview"
 
       # Scratchpad
-      "SUPER,z,togglescratchpad"
+      "SUPER,z,toggle_scratchpad"
 
       # Resize master
       "SUPER,minus,setmfact,-0.05"
       "SUPER,equal,setmfact,+0.05"
 
       # Cycle layouts
-      "SUPER,n,cyclelayout"
+      "SUPER,n,switch_layout"
 
-      # Tags 1-9 (view)
-      "CTRL,1,view,0"
-      "CTRL,2,view,1"
-      "CTRL,3,view,2"
-      "CTRL,4,view,3"
-      "CTRL,5,view,4"
-      "CTRL,6,view,5"
-      "CTRL,7,view,6"
-      "CTRL,8,view,7"
-      "CTRL,9,view,8"
+      # Tags 1-9 (view) — mango tags are 1-indexed
+      "CTRL,1,view,1"
+      "CTRL,2,view,2"
+      "CTRL,3,view,3"
+      "CTRL,4,view,4"
+      "CTRL,5,view,5"
+      "CTRL,6,view,6"
+      "CTRL,7,view,7"
+      "CTRL,8,view,8"
+      "CTRL,9,view,9"
 
       # Move client to tag 1-9
-      "SUPER,1,tag,0"
-      "SUPER,2,tag,1"
-      "SUPER,3,tag,2"
-      "SUPER,4,tag,3"
-      "SUPER,5,tag,4"
-      "SUPER,6,tag,5"
-      "SUPER,7,tag,6"
-      "SUPER,8,tag,7"
-      "SUPER,9,tag,8"
-      "SUPER,0,tag,8"
+      "SUPER,1,tag,1"
+      "SUPER,2,tag,2"
+      "SUPER,3,tag,3"
+      "SUPER,4,tag,4"
+      "SUPER,5,tag,5"
+      "SUPER,6,tag,6"
+      "SUPER,7,tag,7"
+      "SUPER,8,tag,8"
+      "SUPER,9,tag,9"
     ]
     ++ (lib.optionals config.services.playerctld.enable [
       ",XF86AudioNext,spawn,${playerctl} next"
@@ -128,8 +127,8 @@ in {
     ]);
 
     mousebind = [
-      "SUPER,LMB,moveresize,move"
-      "SUPER,RMB,moveresize,resize"
+      "SUPER,btn_left,moveresize,curmove"
+      "SUPER,btn_right,moveresize,curresize"
     ];
   };
 }

@@ -48,12 +48,13 @@
     ${wlr-randr} --output ${internalPanel} --on
   '';
 in {
-  # Only add lid handling if laptop monitor detected
-  # Mango lid switch bind syntax needs verification
+  # switchbind=fold,cmd  → on lid close
+  # switchbind=unfold,cmd → on lid open
+  # Note: requires HandleLidSwitch=ignore in logind (set at NixOS level)
   wayland.windowManager.mango.settings = lib.mkIf isLaptopFlag {
-    bindl = [
-      ",switch:on:Lid Switch,spawn,${lidCloseScript}"
-      ",switch:off:Lid Switch,spawn,${lidOpenScript}"
+    switchbind = [
+      "fold,spawn,${lidCloseScript}"
+      "unfold,spawn,${lidOpenScript}"
     ];
   };
 
