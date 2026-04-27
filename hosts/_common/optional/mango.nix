@@ -1,7 +1,7 @@
 {inputs, ...}: {
   imports = [
     inputs.mango.nixosModules.mango
-    ./xwayland.nix
   ];
   programs.mango.enable = true;
+  programs.xwayland.enable = true;
 }
