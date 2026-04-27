@@ -1,8 +1,16 @@
 {
   inputs,
   pkgs,
+  config,
+  lib,
   ...
-}: {
+}: let
+  monitors = config.monitors;
+  primaryMon = lib.findFirst (m: m.primary or false) (builtins.head monitors) monitors;
+  notesWidth = primaryMon.width / 2;
+  todoWidth = primaryMon.width / 10 * 4;
+  fullHeight = primaryMon.height;
+in {
   imports = [
     inputs.mango.hmModules.mango
 
@@ -53,10 +61,10 @@
         "id:10,layout_name:tile"
       ];
 
-      # Window rules
+      # Window rules — explicit size; isnosizehint bypasses ghostty size constraints
       windowrule = [
-        "isnamedscratchpad:1,width:1280,height:800,appid:scratchpad.notes"
-        "isnamedscratchpad:1,width:1280,height:800,appid:scratchpad.todo"
+        "isnamedscratchpad:1,isnosizehint:1,width:${toString notesWidth},height:${toString fullHeight},appid:scratchpad.notes"
+        "isnamedscratchpad:1,isnosizehint:1,width:${toString todoWidth},height:${toString fullHeight},appid:scratchpad.todo"
       ];
     };
 
