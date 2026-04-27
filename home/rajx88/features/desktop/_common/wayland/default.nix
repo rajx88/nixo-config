@@ -4,7 +4,6 @@
     ./swaylock.nix
     ./noctalia
     ./thunar.nix
-    # ./wlogout
   ];
 
   xdg.mimeApps.enable = true;
