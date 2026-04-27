@@ -4,7 +4,7 @@
   lib,
   ...
 }: let
-  vaultPath = "${config.home.homeDirectory}/code/prvt/github/second-brain";
+  vaultPath = config.home.sessionVariables.VAULT_PATH;
 in {
 
   wayland.windowManager.hyprland.settings = {
