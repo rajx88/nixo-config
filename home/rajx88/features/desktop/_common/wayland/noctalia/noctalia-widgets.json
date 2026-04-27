@@ -11,6 +11,12 @@
       "useDistroLogo": false
     },
     {
+      "defaultSettings": {
+        "monitorOrder": []
+      },
+      "id": "plugin:mangowc-layout-switcher"
+    },
+    {
       "compactMode": true,
       "diskPath": "/",
       "iconColor": "none",

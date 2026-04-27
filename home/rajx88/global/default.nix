@@ -71,6 +71,7 @@
       NH_FLAKE = "$HOME/code/nix/nixo-config";
       TERM = "ghostty";
       BROWSER = "brave";
+      VAULT_PATH = "${config.home.homeDirectory}/code/notes";
     };
 
     persistence."/persist".directories = [

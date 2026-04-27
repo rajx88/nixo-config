@@ -1,4 +1,4 @@
-local vault = vim.env.OBSIDIAN_VAULT_PATH
+local vault = vim.env.VAULT_PATH
 
 if not vault then
   return {}
