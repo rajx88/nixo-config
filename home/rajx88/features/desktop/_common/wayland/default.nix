@@ -1,10 +1,9 @@
 {pkgs, ...}: {
   imports = [
     # ./swayidle.nix
-    # ./swaylock.nix
+    ./swaylock.nix
     ./noctalia
     ./thunar.nix
-    ./wlogout
   ];
 
   xdg.mimeApps.enable = true;
@@ -30,5 +29,14 @@
     QT_QPA_PLATFORM = "wayland";
   };
 
-  xdg.portal.extraPortals = [pkgs.xdg-desktop-portal-wlr];
+  xdg.portal = {
+    extraPortals = [pkgs.xdg-desktop-portal-wlr];
+    config = {
+      common = {
+        default = ["gtk"];
+        "org.freedesktop.impl.portal.ScreenCast" = ["wlr"];
+        "org.freedesktop.impl.portal.Screenshot" = ["wlr"];
+      };
+    };
+  };
 }

@@ -4,7 +4,7 @@
   lib,
   ...
 }: let
-  vaultPath = "${config.home.homeDirectory}/code/prvt/github/second-brain";
+  vaultPath = config.home.sessionVariables.VAULT_PATH;
 in {
 
   wayland.windowManager.hyprland.settings = {
@@ -21,6 +21,11 @@ in {
       grim = "${pkgs.grim}/bin/grim";
       slurp = "${pkgs.slurp}/bin/slurp";
       wl-copy = "${pkgs.wl-clipboard}/bin/wl-copy";
+      screenshot = pkgs.writeShellScript "screenshot" ''
+        geom=$(${slurp}) || exit 1
+        file=${config.xdg.userDirs.extraConfig.SCRNSHTS}/$(date +%Y-%m-%d_%H-%M-%S).png
+        ${grim} -g "$geom" "$file" && ${wl-copy} --type image/png < "$file"
+      '';
       pactl = "${pkgs.pulseaudio}/bin/pactl";
 
       gtk-launch = "${pkgs.gtk3}/bin/gtk-launch";
@@ -52,7 +57,7 @@ in {
         "SHIFT,XF86AudioMute,exec,${pactl} set-source-mute @DEFAULT_SOURCE@ toggle"
         ",XF86AudioMicMute,exec,${pactl} set-source-mute @DEFAULT_SOURCE@ toggle"
         # Screenshotting
-        "$mod SHIFT,p,exec,${grim} -g \"$(${slurp})\" - | tee ${config.xdg.userDirs.extraConfig.SCRNSHTS}/$(date +%Y-%m-%d_%H-%m-%s).png | ${wl-copy} --type image/png"
+        "$mod SHIFT,p,exec,${screenshot}"
       ]
       ++ (lib.optionals config.services.playerctld.enable [
         # Media control

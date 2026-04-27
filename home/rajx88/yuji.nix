@@ -1,6 +1,7 @@
 {
   inputs,
   outputs,
+  config,
   ...
 }: {
   imports = [
@@ -9,7 +10,7 @@
 
     ./global
 
-    ./features/desktop/hyprland
+    ./features/desktop/mango
 
     ./features/desktop/optional/discord
     ./features/desktop/optional/spotify.nix
@@ -88,7 +89,7 @@
       refreshRate = 120;
       bitdepth = 10;
       workspaces = [6 7 8 9 10];
-      position = "auto-right";
+      position = "3840x0";
       # position = "3840x-1620";
       # vertical = "3";
       # primary = true;
