@@ -14,6 +14,11 @@
   grim = "${pkgs.grim}/bin/grim";
   slurp = "${pkgs.slurp}/bin/slurp";
   wl-copy = "${pkgs.wl-clipboard}/bin/wl-copy";
+  screenshot = pkgs.writeShellScript "screenshot" ''
+    geom=$(${slurp}) || exit 1
+    file=${config.xdg.userDirs.extraConfig.SCRNSHTS}/$(date +%Y-%m-%d_%H-%M-%S).png
+    ${grim} -g "$geom" "$file" && ${wl-copy} --type image/png < "$file"
+  '';
   pactl = "${pkgs.pulseaudio}/bin/pactl";
   playerctl = "${config.services.playerctld.package}/bin/playerctl";
 in {
@@ -107,7 +112,7 @@ in {
         "NONE,XF86AudioMicMute,spawn,${pactl} set-source-mute @DEFAULT_SOURCE@ toggle"
 
         # ── Screenshot ──
-        "SUPER+SHIFT,p,spawn_shell,${grim} -g \"$(${slurp})\" - | tee ${config.xdg.userDirs.extraConfig.SCRNSHTS}/$(date +%Y-%m-%d_%H-%m-%s).png | ${wl-copy} --type image/png"
+        "SUPER+SHIFT,p,spawn_shell,${screenshot}"
       ]
       ++ (lib.optionals config.services.playerctld.enable [
         "NONE,XF86AudioNext,spawn,${playerctl} next"
