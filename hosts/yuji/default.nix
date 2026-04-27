@@ -21,7 +21,7 @@
 
     ../_common/optional/zsa.nix
     ../_common/optional/systemd-boot.nix
-    ../_common/optional/greetd.nix
+    ../_common/optional/ly.nix
     ../_common/optional/mango.nix
 
     ../_common/optional/pipewire.nix

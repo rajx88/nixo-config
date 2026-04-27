@@ -4,5 +4,4 @@
     ./xwayland.nix
   ];
   programs.mango.enable = true;
-  services.greetd.sessionCommand = "mango";
 }
