@@ -46,44 +46,7 @@
       restore)
         SNAP="''${2:-latest}"
         echo "Restoring home from snapshot $SNAP..."
-        LOG=$(mktemp /tmp/restic-restore-XXXXXX.log)
-
-        # verbose=2 file list → log + filtered terminal, progress bar (stderr) → terminal
-        $RESTIC "''${RESTIC_ARGS[@]}" restore "$SNAP" --target / --verbose=2 \
-          | ${pkgs.coreutils}/bin/stdbuf -oL tee "$LOG" \
-          | grep --line-buffered -E "^(updated |Summary:)"
-        RC=''${PIPESTATUS[0]}
-        echo ""
-
-        # parse restic's summary line
-        SUMMARY_LINE=$(grep "^Summary:" "$LOG" || true)
-
-        # count by status
-        RESTORED=$(grep -c "^restored " "$LOG" || true)
-        UPDATED=$(grep -c "^updated " "$LOG" || true)
-        UNCHANGED=$(grep -c "^unchanged " "$LOG" || true)
-
-        # collect errors
-        ERRORS=$(grep -iE "^error|permission denied|access denied" "$LOG" || true)
-
-        echo "=== Restore Complete ==="
-        [ -n "$SUMMARY_LINE" ] && echo "  $SUMMARY_LINE"
-        echo ""
-        echo "  New files/dirs: $RESTORED"
-        echo "  Updated:        $UPDATED"
-        echo "  Unchanged:      $UNCHANGED"
-
-        echo ""
-        if [ -n "$ERRORS" ]; then
-          echo "=== Errors ==="
-          echo "$ERRORS"
-        else
-          echo "  No errors."
-        fi
-
-        echo ""
-        echo "Full log: $LOG"
-        [ $RC -ne 0 ] && echo "WARNING: restic exited with code $RC" && exit $RC
+        $RESTIC "''${RESTIC_ARGS[@]}" restore "$SNAP" --target / --verbose
         ;;
       restore-path)
         if [ -z "$2" ]; then
@@ -92,44 +55,7 @@
         fi
         SNAP="''${3:-latest}"
         echo "Restoring $2 from snapshot $SNAP..."
-        LOG=$(mktemp /tmp/restic-restore-XXXXXX.log)
-
-        # verbose=2 file list → log + filtered terminal, progress bar (stderr) → terminal
-        $RESTIC "''${RESTIC_ARGS[@]}" restore "$SNAP" --target / --verbose=2 --include "$2" \
-          | ${pkgs.coreutils}/bin/stdbuf -oL tee "$LOG" \
-          | grep --line-buffered -E "^(updated |Summary:)"
-        RC=''${PIPESTATUS[0]}
-        echo ""
-
-        # parse restic's summary line
-        SUMMARY_LINE=$(grep "^Summary:" "$LOG" || true)
-
-        # count by status
-        RESTORED=$(grep -c "^restored " "$LOG" || true)
-        UPDATED=$(grep -c "^updated " "$LOG" || true)
-        UNCHANGED=$(grep -c "^unchanged " "$LOG" || true)
-
-        # collect errors
-        ERRORS=$(grep -iE "^error|permission denied|access denied" "$LOG" || true)
-
-        echo "=== Restore Complete ==="
-        [ -n "$SUMMARY_LINE" ] && echo "  $SUMMARY_LINE"
-        echo ""
-        echo "  New files/dirs: $RESTORED"
-        echo "  Updated:        $UPDATED"
-        echo "  Unchanged:      $UNCHANGED"
-
-        echo ""
-        if [ -n "$ERRORS" ]; then
-          echo "=== Errors ==="
-          echo "$ERRORS"
-        else
-          echo "  No errors."
-        fi
-
-        echo ""
-        echo "Full log: $LOG"
-        [ $RC -ne 0 ] && echo "WARNING: restic exited with code $RC" && exit $RC
+        $RESTIC "''${RESTIC_ARGS[@]}" restore "$SNAP" --target / --verbose --include "$2"
         ;;
       ls)
         SNAP="''${2:-latest}"
