@@ -48,9 +48,11 @@
         echo "Restoring home from snapshot $SNAP..."
         LOG=$(mktemp /tmp/restic-restore-XXXXXX.log)
 
-        # verbose file list → log only, progress bar (stderr) → terminal
-        $RESTIC "''${RESTIC_ARGS[@]}" restore "$SNAP" --target / --verbose=2 > "$LOG"
-        RC=$?
+        # verbose=2 file list → log + filtered terminal, progress bar (stderr) → terminal
+        $RESTIC "''${RESTIC_ARGS[@]}" restore "$SNAP" --target / --verbose=2 \
+          | tee "$LOG" \
+          | grep --line-buffered -E "^(updated |Summary:)"
+        RC=''${PIPESTATUS[0]}
         echo ""
 
         # parse restic's summary line
@@ -70,14 +72,6 @@
         echo "  New files/dirs: $RESTORED"
         echo "  Updated:        $UPDATED"
         echo "  Unchanged:      $UNCHANGED"
-
-        # show updated files (the ones that actually changed on disk)
-        if [ "''${UPDATED:-0}" -gt 0 ]; then
-          echo ""
-          echo "=== Updated Files ==="
-          grep "^updated " "$LOG" | head -20
-          [ "$UPDATED" -gt 20 ] && echo "  ... and $((UPDATED - 20)) more (see full log)"
-        fi
 
         echo ""
         if [ -n "$ERRORS" ]; then
@@ -100,9 +94,11 @@
         echo "Restoring $2 from snapshot $SNAP..."
         LOG=$(mktemp /tmp/restic-restore-XXXXXX.log)
 
-        # verbose file list → log only, progress bar (stderr) → terminal
-        $RESTIC "''${RESTIC_ARGS[@]}" restore "$SNAP" --target / --verbose=2 --include "$2" > "$LOG"
-        RC=$?
+        # verbose=2 file list → log + filtered terminal, progress bar (stderr) → terminal
+        $RESTIC "''${RESTIC_ARGS[@]}" restore "$SNAP" --target / --verbose=2 --include "$2" \
+          | tee "$LOG" \
+          | grep --line-buffered -E "^(updated |Summary:)"
+        RC=''${PIPESTATUS[0]}
         echo ""
 
         # parse restic's summary line
@@ -122,14 +118,6 @@
         echo "  New files/dirs: $RESTORED"
         echo "  Updated:        $UPDATED"
         echo "  Unchanged:      $UNCHANGED"
-
-        # show updated files (the ones that actually changed on disk)
-        if [ "''${UPDATED:-0}" -gt 0 ]; then
-          echo ""
-          echo "=== Updated Files ==="
-          grep "^updated " "$LOG" | head -20
-          [ "$UPDATED" -gt 20 ] && echo "  ... and $((UPDATED - 20)) more (see full log)"
-        fi
 
         echo ""
         if [ -n "$ERRORS" ]; then
