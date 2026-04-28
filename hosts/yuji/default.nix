@@ -35,6 +35,11 @@
     impermanence.enable = true;
   };
 
+  host.backup = {
+    enable = true;
+    rclone-remote = "gdrive:backups/yuji";
+  };
+
   networking = {
     networkmanager.enable = true;
     hostName = "yuji";

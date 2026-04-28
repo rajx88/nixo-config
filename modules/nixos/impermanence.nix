@@ -99,7 +99,7 @@ in
               [
                 "/var/lib/systemd"
                 "/var/lib/nixos"
-                # "/var/log"
+                "/var/log"
                 "/srv"
               ]
               ++ cfg_impermanence.directories;

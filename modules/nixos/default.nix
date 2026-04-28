@@ -4,4 +4,5 @@
   # List your module files here
   encryption = import ./encryption.nix;
   impermanence = import ./impermanence.nix;
+  backup = import ./backup.nix;
 }
