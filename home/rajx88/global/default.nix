@@ -34,11 +34,11 @@
       enable = true;
       defaultApplications = {
         "text/plain" = ["code.desktop"];
-        "image/*" = ["brave.desktop"];
-        "text/html" = ["brave.desktop"];
-        "text/xml" = ["brave.desktop"];
-        "x-scheme-handler/http" = ["brave.desktop"];
-        "x-scheme-handler/https" = ["brave.desktop"];
+        "image/*" = ["zen-beta.desktop"];
+        "text/html" = ["zen-beta.desktop"];
+        "text/xml" = ["zen-beta.desktop"];
+        "x-scheme-handler/http" = ["zen-beta.desktop"];
+        "x-scheme-handler/https" = ["zen-beta.desktop"];
       };
     };
     userDirs = {
@@ -70,7 +70,7 @@
       FLAKE = "$HOME/code/nix/nixo-config";
       NH_FLAKE = "$HOME/code/nix/nixo-config";
       TERM = "ghostty";
-      BROWSER = "brave";
+      BROWSER = "zen-beta";
       VAULT_PATH = "${config.home.homeDirectory}/code/notes";
     };
 
