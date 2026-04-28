@@ -35,6 +35,14 @@
       logs)
         sudo journalctl -u restic-backups-persist.service -f -n 50
         ;;
+      forget)
+        if [ -z "$2" ]; then
+          echo "Usage: persist-backup forget <snapshot-id>"
+          exit 1
+        fi
+        echo "Forgetting snapshot $2..."
+        $RESTIC "''${RESTIC_ARGS[@]}" forget "$2" --prune
+        ;;
       restore)
         SNAP="''${2:-latest}"
         echo "Restoring home from snapshot $SNAP..."
@@ -84,6 +92,7 @@
         echo "  snapshots          List available snapshots"
         echo "  backup             Run a backup now (interactive)"
         echo "  logs               Follow hourly backup progress in journal"
+        echo "  forget <id>        Delete a specific snapshot and prune"
         echo "  restore [snap]     Restore home (default: latest)"
         echo "  restore-path <path> [snap]  Restore specific path"
         echo "  ls [snap]          List files in a snapshot"
