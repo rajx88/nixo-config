@@ -46,7 +46,7 @@
       restore)
         SNAP="''${2:-latest}"
         echo "Restoring home from snapshot $SNAP..."
-        $RESTIC "''${RESTIC_ARGS[@]}" restore "$SNAP" --target / --verbose
+        $RESTIC "''${RESTIC_ARGS[@]}" restore "$SNAP" --target / --verbose 2
         ;;
       restore-path)
         if [ -z "$2" ]; then
@@ -55,7 +55,7 @@
         fi
         SNAP="''${3:-latest}"
         echo "Restoring $2 from snapshot $SNAP..."
-        $RESTIC "''${RESTIC_ARGS[@]}" restore "$SNAP" --target / --verbose --include "$2"
+        $RESTIC "''${RESTIC_ARGS[@]}" restore "$SNAP" --target / --verbose 2 --include "$2"
         ;;
       ls)
         SNAP="''${2:-latest}"
