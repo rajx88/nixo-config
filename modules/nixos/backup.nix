@@ -50,7 +50,7 @@
 
         # verbose=2 file list → log + filtered terminal, progress bar (stderr) → terminal
         $RESTIC "''${RESTIC_ARGS[@]}" restore "$SNAP" --target / --verbose=2 \
-          | tee "$LOG" \
+          | ${pkgs.coreutils}/bin/stdbuf -oL tee "$LOG" \
           | grep --line-buffered -E "^(updated |Summary:)"
         RC=''${PIPESTATUS[0]}
         echo ""
@@ -96,7 +96,7 @@
 
         # verbose=2 file list → log + filtered terminal, progress bar (stderr) → terminal
         $RESTIC "''${RESTIC_ARGS[@]}" restore "$SNAP" --target / --verbose=2 --include "$2" \
-          | tee "$LOG" \
+          | ${pkgs.coreutils}/bin/stdbuf -oL tee "$LOG" \
           | grep --line-buffered -E "^(updated |Summary:)"
         RC=''${PIPESTATUS[0]}
         echo ""
