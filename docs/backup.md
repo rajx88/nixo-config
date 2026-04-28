@@ -16,6 +16,12 @@ hourly to Google Drive using **restic** (deduplication, encryption, compression)
 | Dedup      | Content-defined chunking (restic)        |
 | Credentials| `/var/lib/backup/` (persisted)           |
 
+### Default Exclusions
+
+Browser and Electron app caches under `.config/` are excluded by default (they are
+regenerated on app launch and waste backup bandwidth). See `modules/nixos/backup.nix`
+for the full list. Override via `host.backup.exclude` if needed.
+
 ## How It Works
 
 ```
@@ -61,7 +67,7 @@ Commands:
 ```nix
 host.backup = {
   enable = true;
-  rclone-remote = "gdrive:backups/<hostname>";
+  rclone-remote = "gdrive:<hostname>";
 };
 ```
 
@@ -96,8 +102,14 @@ Follow the prompts:
 1. `n` -- new remote
 2. Name: `gdrive`
 3. Storage type: `drive` (Google Drive)
-4. Follow the OAuth browser prompts
-5. Verify access:
+4. `client_id` / `client_secret` -- press Enter (use defaults)
+5. Scope: `3` (access files created by rclone only)
+6. `root_folder_id` -- paste the folder ID from your Google Drive URL to restrict
+   rclone to a specific folder (recommended)
+7. Follow the OAuth browser prompts
+8. Shared Drive: `n` (no)
+
+Verify access:
 
 ```bash
 sudo rclone lsd gdrive: --config /var/lib/backup/rclone.conf
@@ -106,12 +118,9 @@ sudo rclone lsd gdrive: --config /var/lib/backup/rclone.conf
 ### 5. Initialize the restic repository
 
 ```bash
-sudo persist-backup check 2>&1 | head -1
-# If "unable to open config file" -> repo needs init:
-
-sudo restic -r rclone:gdrive:backups/$(hostname) \
+sudo RCLONE_CONFIG=/var/lib/backup/rclone.conf \
+  restic -r rclone:gdrive:$(hostname) \
   --password-file /var/lib/backup/restic-password \
-  -o rclone.config=/var/lib/backup/rclone.conf \
   init
 ```
 
@@ -184,9 +193,9 @@ mkdir -p /mnt/persist
 mount -o subvol=persist,compress=zstd,noatime /dev/mapper/crypted /mnt/persist
 
 # Restore using credentials from the mounted volume
-restic -r rclone:gdrive:backups/<hostname> \
+RCLONE_CONFIG=/mnt/persist/var/lib/backup/rclone.conf \
+  restic -r rclone:gdrive:<hostname> \
   --password-file /mnt/persist/var/lib/backup/restic-password \
-  -o rclone.config=/mnt/persist/var/lib/backup/rclone.conf \
   restore latest --target /mnt
 ```
 
@@ -201,7 +210,7 @@ rclone config
 # Set up gdrive remote again (follow OAuth prompts)
 
 # Restore using passphrase from password manager
-restic -r rclone:gdrive:backups/<hostname> \
+restic -r rclone:gdrive:<hostname> \
   --password-file <(echo -n 'your-passphrase-from-password-manager') \
   restore latest --target /mnt
 ```
@@ -218,6 +227,12 @@ persist-backup status
 
 ```bash
 sudo persist-backup backup
+```
+
+### Follow backup progress in journal
+
+```bash
+sudo journalctl -u restic-backups-persist.service -f
 ```
 
 ### Verify backup integrity

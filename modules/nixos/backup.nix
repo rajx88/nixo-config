@@ -94,7 +94,19 @@ in
 
       exclude = mkOption {
         type = types.listOf types.str;
-        default = [];
+        default = [
+          "**/.cache"
+          "/persist/home/*/.config/**/Cache"
+          "/persist/home/*/.config/**/Cache_Data"
+          "/persist/home/*/.config/**/Code Cache"
+          "/persist/home/*/.config/**/GPUCache"
+          "/persist/home/*/.config/**/DawnWebGPUCache"
+          "/persist/home/*/.config/**/DawnGraphiteCache"
+          "/persist/home/*/.config/**/CacheStorage"
+          "/persist/home/*/.config/**/ScriptCache"
+          "/persist/home/*/.config/**/component_crx_cache"
+          "/persist/home/*/.mozilla/**/cache2"
+        ];
         description = "Paths to exclude from backup";
       };
 
@@ -136,6 +148,7 @@ in
       services.restic.backups.persist = {
         paths = ["/persist"];
         exclude = cfg.exclude;
+        extraBackupArgs = ["--verbose"];
         repository = "rclone:${cfg.rclone-remote}";
         passwordFile = "/var/lib/backup/restic-password";
         rcloneConfigFile = "/var/lib/backup/rclone.conf";
