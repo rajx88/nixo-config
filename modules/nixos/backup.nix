@@ -46,7 +46,19 @@
       restore)
         SNAP="''${2:-latest}"
         echo "Restoring home from snapshot $SNAP..."
-        $RESTIC "''${RESTIC_ARGS[@]}" restore "$SNAP" --target / --verbose=2
+        LOG=$(mktemp /tmp/restic-restore-XXXXXX.log)
+        $RESTIC "''${RESTIC_ARGS[@]}" restore "$SNAP" --target / --verbose=2 2>&1 | tee "$LOG"
+        echo ""
+        echo "=== Errors ==="
+        grep -i "error\|failed\|cannot" "$LOG" || echo "(none)"
+        echo ""
+        echo "=== Skipped ==="
+        grep -i "skip" "$LOG" || echo "(none)"
+        echo ""
+        echo "=== Summary ==="
+        grep -i "^restored\|^Files\|^Added\|^processed\|^restore" "$LOG" | tail -5 || echo "(none)"
+        echo ""
+        echo "Full log saved to: $LOG"
         ;;
       restore-path)
         if [ -z "$2" ]; then
@@ -55,7 +67,19 @@
         fi
         SNAP="''${3:-latest}"
         echo "Restoring $2 from snapshot $SNAP..."
-        $RESTIC "''${RESTIC_ARGS[@]}" restore "$SNAP" --target / --verbose=2 --include "$2"
+        LOG=$(mktemp /tmp/restic-restore-XXXXXX.log)
+        $RESTIC "''${RESTIC_ARGS[@]}" restore "$SNAP" --target / --verbose=2 --include "$2" 2>&1 | tee "$LOG"
+        echo ""
+        echo "=== Errors ==="
+        grep -i "error\|failed\|cannot" "$LOG" || echo "(none)"
+        echo ""
+        echo "=== Skipped ==="
+        grep -i "skip" "$LOG" || echo "(none)"
+        echo ""
+        echo "=== Summary ==="
+        grep -i "^restored\|^Files\|^Added\|^processed\|^restore" "$LOG" | tail -5 || echo "(none)"
+        echo ""
+        echo "Full log saved to: $LOG"
         ;;
       ls)
         SNAP="''${2:-latest}"
