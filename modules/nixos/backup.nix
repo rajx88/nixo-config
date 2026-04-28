@@ -17,7 +17,7 @@
         ${pkgs.restic}/bin/restic "''${RESTIC_ARGS[@]}" snapshots
         ;;
       backup)
-        systemctl start restic-backups-persist.service
+        systemctl start restic-backups-persist.service &
         echo "Backup started. Follow progress with: sudo persist-backup logs"
         ;;
       logs)
