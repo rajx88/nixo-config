@@ -47,18 +47,49 @@
         SNAP="''${2:-latest}"
         echo "Restoring home from snapshot $SNAP..."
         LOG=$(mktemp /tmp/restic-restore-XXXXXX.log)
-        $RESTIC "''${RESTIC_ARGS[@]}" restore "$SNAP" --target / --verbose=2 2>&1 | tee "$LOG"
+
+        # verbose file list → log only, progress bar (stderr) → terminal
+        $RESTIC "''${RESTIC_ARGS[@]}" restore "$SNAP" --target / --verbose=2 > "$LOG"
+        RC=$?
         echo ""
-        echo "=== Errors ==="
-        grep -i "error\|failed\|cannot" "$LOG" || echo "(none)"
+
+        # parse restic's summary line
+        SUMMARY_LINE=$(grep "^Summary:" "$LOG" || true)
+
+        # count by status
+        RESTORED=$(grep -c "^restored " "$LOG" || true)
+        UPDATED=$(grep -c "^updated " "$LOG" || true)
+        UNCHANGED=$(grep -c "^unchanged " "$LOG" || true)
+
+        # collect errors
+        ERRORS=$(grep -iE "^error|permission denied|access denied" "$LOG" || true)
+
+        echo "=== Restore Complete ==="
+        [ -n "$SUMMARY_LINE" ] && echo "  $SUMMARY_LINE"
         echo ""
-        echo "=== Skipped ==="
-        grep -i "skip" "$LOG" || echo "(none)"
+        echo "  New files/dirs: $RESTORED"
+        echo "  Updated:        $UPDATED"
+        echo "  Unchanged:      $UNCHANGED"
+
+        # show updated files (the ones that actually changed on disk)
+        if [ "''${UPDATED:-0}" -gt 0 ]; then
+          echo ""
+          echo "=== Updated Files ==="
+          grep "^updated " "$LOG" | head -20
+          [ "$UPDATED" -gt 20 ] && echo "  ... and $((UPDATED - 20)) more (see full log)"
+        fi
+
         echo ""
-        echo "=== Summary ==="
-        grep -i "^restored\|^Files\|^Added\|^processed\|^restore" "$LOG" | tail -5 || echo "(none)"
+        if [ -n "$ERRORS" ]; then
+          echo "=== Errors ==="
+          echo "$ERRORS"
+        else
+          echo "  No errors."
+        fi
+
         echo ""
-        echo "Full log saved to: $LOG"
+        echo "Full log: $LOG"
+        [ $RC -ne 0 ] && echo "WARNING: restic exited with code $RC" && exit $RC
         ;;
       restore-path)
         if [ -z "$2" ]; then
@@ -68,18 +99,49 @@
         SNAP="''${3:-latest}"
         echo "Restoring $2 from snapshot $SNAP..."
         LOG=$(mktemp /tmp/restic-restore-XXXXXX.log)
-        $RESTIC "''${RESTIC_ARGS[@]}" restore "$SNAP" --target / --verbose=2 --include "$2" 2>&1 | tee "$LOG"
+
+        # verbose file list → log only, progress bar (stderr) → terminal
+        $RESTIC "''${RESTIC_ARGS[@]}" restore "$SNAP" --target / --verbose=2 --include "$2" > "$LOG"
+        RC=$?
         echo ""
-        echo "=== Errors ==="
-        grep -i "error\|failed\|cannot" "$LOG" || echo "(none)"
+
+        # parse restic's summary line
+        SUMMARY_LINE=$(grep "^Summary:" "$LOG" || true)
+
+        # count by status
+        RESTORED=$(grep -c "^restored " "$LOG" || true)
+        UPDATED=$(grep -c "^updated " "$LOG" || true)
+        UNCHANGED=$(grep -c "^unchanged " "$LOG" || true)
+
+        # collect errors
+        ERRORS=$(grep -iE "^error|permission denied|access denied" "$LOG" || true)
+
+        echo "=== Restore Complete ==="
+        [ -n "$SUMMARY_LINE" ] && echo "  $SUMMARY_LINE"
         echo ""
-        echo "=== Skipped ==="
-        grep -i "skip" "$LOG" || echo "(none)"
+        echo "  New files/dirs: $RESTORED"
+        echo "  Updated:        $UPDATED"
+        echo "  Unchanged:      $UNCHANGED"
+
+        # show updated files (the ones that actually changed on disk)
+        if [ "''${UPDATED:-0}" -gt 0 ]; then
+          echo ""
+          echo "=== Updated Files ==="
+          grep "^updated " "$LOG" | head -20
+          [ "$UPDATED" -gt 20 ] && echo "  ... and $((UPDATED - 20)) more (see full log)"
+        fi
+
         echo ""
-        echo "=== Summary ==="
-        grep -i "^restored\|^Files\|^Added\|^processed\|^restore" "$LOG" | tail -5 || echo "(none)"
+        if [ -n "$ERRORS" ]; then
+          echo "=== Errors ==="
+          echo "$ERRORS"
+        else
+          echo "  No errors."
+        fi
+
         echo ""
-        echo "Full log saved to: $LOG"
+        echo "Full log: $LOG"
+        [ $RC -ne 0 ] && echo "WARNING: restic exited with code $RC" && exit $RC
         ;;
       ls)
         SNAP="''${2:-latest}"
