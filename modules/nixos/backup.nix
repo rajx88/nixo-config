@@ -7,10 +7,10 @@
   cfg = config.host.backup;
 
   persist-backup = pkgs.writeShellScriptBin "persist-backup" ''
+    export RCLONE_CONFIG="/var/lib/backup/rclone.conf"
     REPO="rclone:${cfg.rclone-remote}"
     PASSWORD_FILE="/var/lib/backup/restic-password"
-    RCLONE_CONF="/var/lib/backup/rclone.conf"
-    RESTIC_ARGS=(-r "$REPO" --password-file "$PASSWORD_FILE" -o "rclone.config=$RCLONE_CONF")
+    RESTIC_ARGS=(-r "$REPO" --password-file "$PASSWORD_FILE")
 
     case "''${1:-help}" in
       snapshots)
@@ -60,7 +60,7 @@
         ${pkgs.restic}/bin/restic "''${RESTIC_ARGS[@]}" check
         ;;
       size)
-        ${pkgs.rclone}/bin/rclone --config "$RCLONE_CONF" size "${cfg.rclone-remote}"
+        ${pkgs.rclone}/bin/rclone size "${cfg.rclone-remote}"
         ;;
       help|*)
         echo "Usage: persist-backup <command> [args]"
