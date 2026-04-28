@@ -5,6 +5,81 @@
   ...
 }: let
   cfg = config.host.backup;
+
+  persist-backup = pkgs.writeShellScriptBin "persist-backup" ''
+    REPO="rclone:${cfg.rclone-remote}"
+    PASSWORD_FILE="/var/lib/backup/restic-password"
+    RCLONE_CONF="/var/lib/backup/rclone.conf"
+    RESTIC_ARGS=(-r "$REPO" --password-file "$PASSWORD_FILE" -o "rclone.config=$RCLONE_CONF")
+
+    case "''${1:-help}" in
+      snapshots)
+        ${pkgs.restic}/bin/restic "''${RESTIC_ARGS[@]}" snapshots
+        ;;
+      backup)
+        sudo systemctl start restic-backups-persist.service
+        journalctl -u restic-backups-persist.service -f
+        ;;
+      restore)
+        SNAP="''${2:-latest}"
+        echo "Restoring /persist from snapshot $SNAP..."
+        ${pkgs.restic}/bin/restic "''${RESTIC_ARGS[@]}" restore "$SNAP" --target /
+        ;;
+      restore-path)
+        if [ -z "$2" ]; then
+          echo "Usage: persist-backup restore-path <path> [snapshot]"
+          exit 1
+        fi
+        SNAP="''${3:-latest}"
+        echo "Restoring $2 from snapshot $SNAP..."
+        ${pkgs.restic}/bin/restic "''${RESTIC_ARGS[@]}" restore "$SNAP" --target / --include "$2"
+        ;;
+      ls)
+        SNAP="''${2:-latest}"
+        ${pkgs.restic}/bin/restic "''${RESTIC_ARGS[@]}" ls "$SNAP"
+        ;;
+      mount)
+        if [ -z "$2" ]; then
+          echo "Usage: persist-backup mount <directory>"
+          exit 1
+        fi
+        mkdir -p "$2"
+        ${pkgs.restic}/bin/restic "''${RESTIC_ARGS[@]}" mount "$2"
+        ;;
+      diff)
+        if [ -z "$2" ] || [ -z "$3" ]; then
+          echo "Usage: persist-backup diff <snapshot-id-1> <snapshot-id-2>"
+          exit 1
+        fi
+        ${pkgs.restic}/bin/restic "''${RESTIC_ARGS[@]}" diff "$2" "$3"
+        ;;
+      status)
+        systemctl status restic-backups-persist.service
+        ;;
+      check)
+        ${pkgs.restic}/bin/restic "''${RESTIC_ARGS[@]}" check
+        ;;
+      size)
+        ${pkgs.rclone}/bin/rclone --config "$RCLONE_CONF" size "${cfg.rclone-remote}"
+        ;;
+      help|*)
+        echo "Usage: persist-backup <command> [args]"
+        echo ""
+        echo "Commands:"
+        echo "  snapshots          List available snapshots"
+        echo "  backup             Trigger a backup now"
+        echo "  restore [snap]     Restore /persist (default: latest)"
+        echo "  restore-path <path> [snap]  Restore specific path"
+        echo "  ls [snap]          List files in a snapshot"
+        echo "  mount <dir>        Mount snapshots as FUSE filesystem"
+        echo "  diff <id1> <id2>   Show diff between two snapshots"
+        echo "  status             Show backup service status"
+        echo "  check              Verify backup integrity"
+        echo "  size               Show backup size on remote"
+        echo "  help               Show this help"
+        ;;
+    esac
+  '';
 in
   with lib; {
     options.host.backup = {
@@ -19,18 +94,16 @@ in
 
       exclude = mkOption {
         type = types.listOf types.str;
-        default = [
-          "/persist/.snapshots"
-        ];
+        default = [];
         description = "Paths to exclude from backup";
       };
 
       timerConfig = mkOption {
         type = types.attrsOf types.str;
         default = {
-          OnCalendar = "daily";
+          OnCalendar = "hourly";
           Persistent = "true";
-          RandomizedDelaySec = "1h";
+          RandomizedDelaySec = "5m";
         };
         description = "Systemd timer configuration for backup schedule";
       };
@@ -47,6 +120,7 @@ in
       environment.systemPackages = with pkgs; [
         restic
         rclone
+        persist-backup
       ];
 
       # Persist backup credentials
@@ -67,6 +141,7 @@ in
         rcloneConfigFile = "/var/lib/backup/rclone.conf";
         inherit (cfg) timerConfig;
         pruneOpts = [
+          "--keep-hourly 24"
           "--keep-daily 7"
           "--keep-weekly 4"
           "--keep-monthly 6"
