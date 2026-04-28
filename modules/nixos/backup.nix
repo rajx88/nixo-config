@@ -17,8 +17,9 @@
         ${pkgs.restic}/bin/restic "''${RESTIC_ARGS[@]}" snapshots
         ;;
       backup)
-        sudo systemctl start restic-backups-persist.service
-        journalctl -u restic-backups-persist.service -f
+        sudo systemctl start restic-backups-persist.service &
+        sleep 1
+        sudo journalctl -u restic-backups-persist.service -f -n 0
         ;;
       restore)
         SNAP="''${2:-latest}"
