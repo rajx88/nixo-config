@@ -49,6 +49,7 @@ persist-backup <command> [args]
 Commands:
   snapshots          List available snapshots
   backup             Trigger a backup now
+  logs               Follow backup progress in journal
   restore [snap]     Restore /persist (default: latest)
   restore-path <path> [snap]  Restore specific path
   ls [snap]          List files in a snapshot
@@ -232,7 +233,7 @@ sudo persist-backup backup
 ### Follow backup progress in journal
 
 ```bash
-sudo journalctl -u restic-backups-persist.service -f
+sudo persist-backup logs
 ```
 
 ### Verify backup integrity

@@ -7,14 +7,6 @@
   cfg = config.host.backup;
 
   persist-backup = pkgs.writeShellScriptBin "persist-backup" ''
-    set -euo pipefail
-
-    # Most commands need root for credentials access
-    if [ "$(id -u)" -ne 0 ] && [ "''${1:-help}" != "help" ] && [ "''${1:-help}" != "status" ]; then
-      echo "Run with sudo: sudo persist-backup ''${1:-help}"
-      exit 1
-    fi
-
     export RCLONE_CONFIG="/var/lib/backup/rclone.conf"
     REPO="rclone:${cfg.rclone-remote}"
     PASSWORD_FILE="/var/lib/backup/restic-password"
@@ -25,9 +17,11 @@
         ${pkgs.restic}/bin/restic "''${RESTIC_ARGS[@]}" snapshots
         ;;
       backup)
-        systemctl start restic-backups-persist.service &
-        sleep 1
-        journalctl -u restic-backups-persist.service -f -n 0
+        systemctl start restic-backups-persist.service
+        echo "Backup started. Follow progress with: sudo persist-backup logs"
+        ;;
+      logs)
+        journalctl -u restic-backups-persist.service -f -n 20
         ;;
       restore)
         SNAP="''${2:-latest}"
@@ -77,6 +71,7 @@
         echo "Commands:"
         echo "  snapshots          List available snapshots"
         echo "  backup             Trigger a backup now"
+        echo "  logs               Follow backup progress in journal"
         echo "  restore [snap]     Restore /persist (default: latest)"
         echo "  restore-path <path> [snap]  Restore specific path"
         echo "  ls [snap]          List files in a snapshot"
