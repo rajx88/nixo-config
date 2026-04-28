@@ -5,11 +5,12 @@
   ...
 }: let
   cfg = config.host.backup;
-  credentialDir = "/persist/home/${cfg.user}/.config/backup";
+  credentialDir = "/persist/secrets/backup";
   backupPath = "/persist/home/${cfg.user}";
   excludeFile = pkgs.writeText "backup-exclude-patterns" (lib.concatStringsSep "\n" cfg.exclude);
 
   persist-backup = pkgs.writeShellScriptBin "persist-backup" ''
+    export RCLONE_CONFIG="${credentialDir}/rclone.conf"
     REPO="rclone:${cfg.rclone-remote}"
     PASSWORD_FILE="${credentialDir}/restic-password"
     RESTIC="${pkgs.restic}/bin/restic"
@@ -156,9 +157,13 @@ in
         persist-backup
       ];
 
-      environment.persistence."/persist".users.${cfg.user}.directories = [
-        {directory = ".config/backup"; mode = "0700";}
-        {directory = ".config/rclone"; mode = "0700";}
+      environment.persistence."/persist".directories = [
+        {
+          directory = "secrets/backup";
+          mode = "0700";
+          user = cfg.user;
+          group = "users";
+        }
       ];
 
       services.restic.backups.persist = {
@@ -167,6 +172,7 @@ in
         extraBackupArgs = ["--verbose" "--one-file-system"];
         repository = "rclone:${cfg.rclone-remote}";
         passwordFile = "${credentialDir}/restic-password";
+        rcloneConfigFile = "${credentialDir}/rclone.conf";
         user = cfg.user;
         inherit (cfg) timerConfig;
         pruneOpts = [
@@ -181,6 +187,11 @@ in
             echo "ERROR: ${credentialDir}/restic-password not found. Create it with:"
             echo "  echo -n 'your-passphrase' > ${credentialDir}/restic-password"
             echo "  chmod 600 ${credentialDir}/restic-password"
+            exit 1
+          fi
+          if [ ! -f ${credentialDir}/rclone.conf ]; then
+            echo "ERROR: ${credentialDir}/rclone.conf not found. Create it with:"
+            echo "  rclone config --config ${credentialDir}/rclone.conf"
             exit 1
           fi
         '';
