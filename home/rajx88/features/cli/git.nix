@@ -18,8 +18,8 @@ in {
     ".config/git"
   ];
 
-  home.file.".config/jj/conf.d/prvt.toml".text = ''
-    --when.repositories = ["~/code/prvt/"]
+  home.file.".config/jj/conf.d/prv.toml".text = ''
+    --when.repositories = ["~/code/prv/"]
       [user]
       name = "rajx88"
       email = "44810778+rajx88@users.noreply.github.com"
@@ -69,7 +69,7 @@ in {
     lfs.enable = true;
     includes = [
       {
-        condition = "gitdir:~/code/work/";
+        condition = "gitdir:~/code/wrk/";
         path = "${config.xdg.configHome}/git/work.inc";
       }
     ] ++ map (dir: prvtIdentity // {condition = "gitdir:${dir}";}) prvtDirs;
