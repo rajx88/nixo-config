@@ -14,7 +14,7 @@ transport). No root required for any operations.
 | Retention  | 24 hourly, 7 daily, 4 weekly, 6 monthly      |
 | Encryption | AES-256 (restic)                              |
 | Dedup      | Content-defined chunking (restic)             |
-| Credentials| `~/.config/backup/` (password), `~/.config/rclone/` (rclone config) |
+| Credentials| `/persist/secrets/backup/` (`restic-password`, `rclone.conf`) |
 
 ### Default Exclusions
 
@@ -50,8 +50,9 @@ persist-backup <command> [args]
 
 Commands:
   snapshots          List available snapshots
-  backup             Trigger a backup now
-  logs               Follow backup progress in journal
+  backup             Run a backup now (interactive)
+  logs               Follow hourly backup progress in journal
+  forget <id>        Delete a specific snapshot and prune
   restore [snap]     Restore home (default: latest)
   restore-path <path> [snap]  Restore specific path
   ls [snap]          List files in a snapshot
@@ -84,16 +85,14 @@ nh os switch
 ### 3. Create restic password
 
 ```bash
-mkdir -p ~/.config/backup
-chmod 700 ~/.config/backup
-echo -n "$(openssl rand -base64 32)" > ~/.config/backup/restic-password
-chmod 600 ~/.config/backup/restic-password
+echo -n "$(openssl rand -base64 32)" > /persist/secrets/backup/restic-password
+chmod 600 /persist/secrets/backup/restic-password
 ```
 
 **Save this passphrase in your password manager immediately:**
 
 ```bash
-cat ~/.config/backup/restic-password
+cat /persist/secrets/backup/restic-password
 ```
 
 Without this passphrase, backups cannot be restored. Ever.
@@ -101,7 +100,7 @@ Without this passphrase, backups cannot be restored. Ever.
 ### 4. Configure rclone for Google Drive
 
 ```bash
-rclone config
+rclone config --config /persist/secrets/backup/rclone.conf
 ```
 
 Follow the prompts:
@@ -118,15 +117,15 @@ Follow the prompts:
 Verify access:
 
 ```bash
-rclone lsd gdrive:
+rclone --config /persist/secrets/backup/rclone.conf lsd gdrive:
 ```
 
 ### 5. Initialize the restic repository
 
 ```bash
-RCLONE_CONFIG=~/.config/rclone/rclone.conf \
+RCLONE_CONFIG=/persist/secrets/backup/rclone.conf \
   restic -r rclone:gdrive:$(hostname) \
-  --password-file ~/.config/backup/restic-password \
+  --password-file /persist/secrets/backup/restic-password \
   init
 ```
 
@@ -200,9 +199,9 @@ mkdir -p /mnt/persist
 mount -o subvol=persist,compress=zstd,noatime /dev/mapper/crypted /mnt/persist
 
 # Restore using credentials from the mounted volume
-RCLONE_CONFIG=/mnt/persist/home/<user>/.config/rclone/rclone.conf \
+RCLONE_CONFIG=/mnt/persist/secrets/backup/rclone.conf \
   restic -r rclone:gdrive:<hostname> \
-  --password-file /mnt/persist/home/<user>/.config/backup/restic-password \
+  --password-file /mnt/persist/secrets/backup/restic-password \
   restore latest --target /mnt
 ```
 
@@ -213,11 +212,12 @@ passphrase from your password manager and must re-configure rclone:
 nix-shell -p restic rclone
 
 # Re-configure rclone
-rclone config
+rclone config --config /tmp/rclone.conf
 # Set up gdrive remote again (follow OAuth prompts)
 
 # Restore using passphrase from password manager
-restic -r rclone:gdrive:<hostname> \
+RCLONE_CONFIG=/tmp/rclone.conf \
+  restic -r rclone:gdrive:<hostname> \
   --password-file <(echo -n 'your-passphrase-from-password-manager') \
   restore latest --target /mnt
 ```
@@ -253,3 +253,12 @@ persist-backup check
 ```bash
 persist-backup size
 ```
+
+### Delete a specific snapshot
+
+```bash
+persist-backup forget <snapshot-id>
+```
+
+This removes the snapshot and prunes any data chunks that are no longer referenced.
+Use `persist-backup snapshots` first to find the snapshot ID.
