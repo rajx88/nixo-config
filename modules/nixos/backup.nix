@@ -5,28 +5,39 @@
   ...
 }: let
   cfg = config.host.backup;
+  credentialDir = "/persist/home/${cfg.user}/.config/backup";
+  backupPath = "/persist/home/${cfg.user}";
+  excludeFile = pkgs.writeText "backup-exclude-patterns" (lib.concatStringsSep "\n" cfg.exclude);
 
   persist-backup = pkgs.writeShellScriptBin "persist-backup" ''
-    export RCLONE_CONFIG="/var/lib/backup/rclone.conf"
     REPO="rclone:${cfg.rclone-remote}"
-    PASSWORD_FILE="/var/lib/backup/restic-password"
+    PASSWORD_FILE="${credentialDir}/restic-password"
+    RESTIC="${pkgs.restic}/bin/restic"
     RESTIC_ARGS=(-r "$REPO" --password-file "$PASSWORD_FILE")
 
     case "''${1:-help}" in
       snapshots)
-        ${pkgs.restic}/bin/restic "''${RESTIC_ARGS[@]}" snapshots
+        $RESTIC "''${RESTIC_ARGS[@]}" snapshots
         ;;
       backup)
-        systemctl start restic-backups-persist.service &
-        echo "Backup started. Follow progress with: sudo persist-backup logs"
+        echo "Backing up ${backupPath}..."
+        $RESTIC "''${RESTIC_ARGS[@]}" backup \
+          --verbose --one-file-system \
+          --exclude-file=${excludeFile} \
+          ${backupPath}
+        echo ""
+        echo "Pruning old snapshots..."
+        $RESTIC "''${RESTIC_ARGS[@]}" forget --prune \
+          --keep-hourly 24 --keep-daily 7 --keep-weekly 4 --keep-monthly 6
+        echo "Done."
         ;;
       logs)
-        journalctl -u restic-backups-persist.service -f -n 20
+        sudo journalctl -u restic-backups-persist.service -f -n 50
         ;;
       restore)
         SNAP="''${2:-latest}"
-        echo "Restoring /persist from snapshot $SNAP..."
-        ${pkgs.restic}/bin/restic "''${RESTIC_ARGS[@]}" restore "$SNAP" --target /
+        echo "Restoring home from snapshot $SNAP..."
+        $RESTIC "''${RESTIC_ARGS[@]}" restore "$SNAP" --target /
         ;;
       restore-path)
         if [ -z "$2" ]; then
@@ -35,11 +46,11 @@
         fi
         SNAP="''${3:-latest}"
         echo "Restoring $2 from snapshot $SNAP..."
-        ${pkgs.restic}/bin/restic "''${RESTIC_ARGS[@]}" restore "$SNAP" --target / --include "$2"
+        $RESTIC "''${RESTIC_ARGS[@]}" restore "$SNAP" --target / --include "$2"
         ;;
       ls)
         SNAP="''${2:-latest}"
-        ${pkgs.restic}/bin/restic "''${RESTIC_ARGS[@]}" ls "$SNAP"
+        $RESTIC "''${RESTIC_ARGS[@]}" ls "$SNAP"
         ;;
       mount)
         if [ -z "$2" ]; then
@@ -47,20 +58,20 @@
           exit 1
         fi
         mkdir -p "$2"
-        ${pkgs.restic}/bin/restic "''${RESTIC_ARGS[@]}" mount "$2"
+        $RESTIC "''${RESTIC_ARGS[@]}" mount "$2"
         ;;
       diff)
         if [ -z "$2" ] || [ -z "$3" ]; then
           echo "Usage: persist-backup diff <snapshot-id-1> <snapshot-id-2>"
           exit 1
         fi
-        ${pkgs.restic}/bin/restic "''${RESTIC_ARGS[@]}" diff "$2" "$3"
+        $RESTIC "''${RESTIC_ARGS[@]}" diff "$2" "$3"
         ;;
       status)
         systemctl status restic-backups-persist.service
         ;;
       check)
-        ${pkgs.restic}/bin/restic "''${RESTIC_ARGS[@]}" check
+        $RESTIC "''${RESTIC_ARGS[@]}" check
         ;;
       size)
         ${pkgs.rclone}/bin/rclone size "${cfg.rclone-remote}"
@@ -70,9 +81,9 @@
         echo ""
         echo "Commands:"
         echo "  snapshots          List available snapshots"
-        echo "  backup             Trigger a backup now"
-        echo "  logs               Follow backup progress in journal"
-        echo "  restore [snap]     Restore /persist (default: latest)"
+        echo "  backup             Run a backup now (interactive)"
+        echo "  logs               Follow hourly backup progress in journal"
+        echo "  restore [snap]     Restore home (default: latest)"
         echo "  restore-path <path> [snap]  Restore specific path"
         echo "  ls [snap]          List files in a snapshot"
         echo "  mount <dir>        Mount snapshots as FUSE filesystem"
@@ -89,6 +100,12 @@ in
     options.host.backup = {
       enable = mkEnableOption "Restic backup to cloud storage via rclone";
 
+      user = mkOption {
+        type = types.str;
+        default = "rajx88";
+        description = "User whose home directory to back up";
+      };
+
       rclone-remote = mkOption {
         type = types.str;
         default = "";
@@ -100,18 +117,18 @@ in
         type = types.listOf types.str;
         default = [
           "**/.cache"
-          "/persist/home/*/.config/**/Cache"
-          "/persist/home/*/.config/**/Cache_Data"
-          "/persist/home/*/.config/**/Code Cache"
-          "/persist/home/*/.config/**/GPUCache"
-          "/persist/home/*/.config/**/DawnWebGPUCache"
-          "/persist/home/*/.config/**/DawnGraphiteCache"
-          "/persist/home/*/.config/**/CacheStorage"
-          "/persist/home/*/.config/**/ScriptCache"
-          "/persist/home/*/.config/**/component_crx_cache"
-          "/persist/home/*/.mozilla/**/cache2"
+          ".config/**/Cache"
+          ".config/**/Cache_Data"
+          ".config/**/Code Cache"
+          ".config/**/GPUCache"
+          ".config/**/DawnWebGPUCache"
+          ".config/**/DawnGraphiteCache"
+          ".config/**/CacheStorage"
+          ".config/**/ScriptCache"
+          ".config/**/component_crx_cache"
+          ".mozilla/**/cache2"
         ];
-        description = "Paths to exclude from backup";
+        description = "Paths to exclude from backup (relative to backup root)";
       };
 
       timerConfig = mkOption {
@@ -139,23 +156,18 @@ in
         persist-backup
       ];
 
-      # Persist backup credentials
-      environment.persistence."/persist" = mkIf config.host.filesystem.impermanence.enable {
-        directories = [
-          {
-            directory = "/var/lib/backup";
-            mode = "0700";
-          }
-        ];
-      };
+      environment.persistence."/persist".users.${cfg.user}.directories = [
+        {directory = ".config/backup"; mode = "0700";}
+        {directory = ".config/rclone"; mode = "0700";}
+      ];
 
       services.restic.backups.persist = {
-        paths = ["/persist"];
+        paths = [backupPath];
         exclude = cfg.exclude;
-        extraBackupArgs = ["--verbose"];
+        extraBackupArgs = ["--verbose" "--one-file-system"];
         repository = "rclone:${cfg.rclone-remote}";
-        passwordFile = "/var/lib/backup/restic-password";
-        rcloneConfigFile = "/var/lib/backup/rclone.conf";
+        passwordFile = "${credentialDir}/restic-password";
+        user = cfg.user;
         inherit (cfg) timerConfig;
         pruneOpts = [
           "--keep-hourly 24"
@@ -165,15 +177,10 @@ in
         ];
         backupPrepareCommand = ''
           # Ensure backup credentials exist
-          if [ ! -f /var/lib/backup/restic-password ]; then
-            echo "ERROR: /var/lib/backup/restic-password not found. Create it with:"
-            echo "  echo -n 'your-passphrase' | sudo tee /var/lib/backup/restic-password"
-            echo "  sudo chmod 600 /var/lib/backup/restic-password"
-            exit 1
-          fi
-          if [ ! -f /var/lib/backup/rclone.conf ]; then
-            echo "ERROR: /var/lib/backup/rclone.conf not found. Create it with:"
-            echo "  sudo rclone config --config /var/lib/backup/rclone.conf"
+          if [ ! -f ${credentialDir}/restic-password ]; then
+            echo "ERROR: ${credentialDir}/restic-password not found. Create it with:"
+            echo "  echo -n 'your-passphrase' > ${credentialDir}/restic-password"
+            echo "  chmod 600 ${credentialDir}/restic-password"
             exit 1
           fi
         '';

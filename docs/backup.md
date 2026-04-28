@@ -2,19 +2,19 @@
 
 ## Overview
 
-All persistent state on impermanence hosts lives under `/persist`. This is backed up
-hourly to Google Drive using **restic** (deduplication, encryption, compression) and
-**rclone** (Google Drive transport).
+Your home directory under `/persist/home/<user>` is backed up hourly to Google Drive
+using **restic** (deduplication, encryption, compression) and **rclone** (Google Drive
+transport). No root required for any operations.
 
-| Setting    | Value                                    |
-| ---------- | ---------------------------------------- |
-| What       | `/persist` (all persistent state)        |
-| Where      | Google Drive via rclone                  |
-| Schedule   | Hourly                                   |
-| Retention  | 24 hourly, 7 daily, 4 weekly, 6 monthly |
-| Encryption | AES-256 (restic)                         |
-| Dedup      | Content-defined chunking (restic)        |
-| Credentials| `/var/lib/backup/` (persisted)           |
+| Setting    | Value                                         |
+| ---------- | --------------------------------------------- |
+| What       | `/persist/home/<user>` (home directory)       |
+| Where      | Google Drive via rclone                       |
+| Schedule   | Hourly                                        |
+| Retention  | 24 hourly, 7 daily, 4 weekly, 6 monthly      |
+| Encryption | AES-256 (restic)                              |
+| Dedup      | Content-defined chunking (restic)             |
+| Credentials| `~/.config/backup/` (password), `~/.config/rclone/` (rclone config) |
 
 ### Default Exclusions
 
@@ -25,7 +25,7 @@ for the full list. Override via `host.backup.exclude` if needed.
 ## How It Works
 
 ```
-/persist -> restic (dedup + encrypt + compress) -> rclone -> Google Drive
+/persist/home/<user> -> restic (dedup + encrypt + compress) -> rclone -> Google Drive
 ```
 
 - **restic** splits files into variable-length chunks, deduplicates them, encrypts
@@ -35,13 +35,15 @@ for the full list. Override via `host.backup.exclude` if needed.
   to rclone directly via its backend.
 - The systemd timer `restic-backups-persist.timer` triggers hourly. Missed runs are
   caught up on next boot (`Persistent=true`).
+- The service runs as your user (not root). `--one-file-system` prevents traversing
+  into unexpected btrfs subvolumes.
 
 Configuration lives in `modules/nixos/backup.nix` and is enabled per-host.
 
 ## The `persist-backup` CLI
 
-A wrapper script that handles all common operations. Available on any host with
-`host.backup.enable = true`.
+A wrapper script that handles all common operations. No sudo needed. Available on any
+host with `host.backup.enable = true`.
 
 ```
 persist-backup <command> [args]
@@ -50,7 +52,7 @@ Commands:
   snapshots          List available snapshots
   backup             Trigger a backup now
   logs               Follow backup progress in journal
-  restore [snap]     Restore /persist (default: latest)
+  restore [snap]     Restore home (default: latest)
   restore-path <path> [snap]  Restore specific path
   ls [snap]          List files in a snapshot
   mount <dir>        Mount snapshots as FUSE filesystem
@@ -68,6 +70,7 @@ Commands:
 ```nix
 host.backup = {
   enable = true;
+  user = "rajx88";  # user whose home to back up
   rclone-remote = "gdrive:<hostname>";
 };
 ```
@@ -81,14 +84,16 @@ nh os switch
 ### 3. Create restic password
 
 ```bash
-echo -n "$(openssl rand -base64 32)" | sudo tee /var/lib/backup/restic-password > /dev/null
-sudo chmod 600 /var/lib/backup/restic-password
+mkdir -p ~/.config/backup
+chmod 700 ~/.config/backup
+echo -n "$(openssl rand -base64 32)" > ~/.config/backup/restic-password
+chmod 600 ~/.config/backup/restic-password
 ```
 
 **Save this passphrase in your password manager immediately:**
 
 ```bash
-cat /var/lib/backup/restic-password
+cat ~/.config/backup/restic-password
 ```
 
 Without this passphrase, backups cannot be restored. Ever.
@@ -96,7 +101,7 @@ Without this passphrase, backups cannot be restored. Ever.
 ### 4. Configure rclone for Google Drive
 
 ```bash
-sudo rclone config --config /var/lib/backup/rclone.conf
+rclone config
 ```
 
 Follow the prompts:
@@ -113,22 +118,23 @@ Follow the prompts:
 Verify access:
 
 ```bash
-sudo rclone lsd gdrive: --config /var/lib/backup/rclone.conf
+rclone lsd gdrive:
 ```
 
 ### 5. Initialize the restic repository
 
 ```bash
-sudo RCLONE_CONFIG=/var/lib/backup/rclone.conf \
+RCLONE_CONFIG=~/.config/rclone/rclone.conf \
   restic -r rclone:gdrive:$(hostname) \
-  --password-file /var/lib/backup/restic-password \
+  --password-file ~/.config/backup/restic-password \
   init
 ```
 
 ### 6. Run the first backup
 
 ```bash
-sudo persist-backup backup
+persist-backup backup
+persist-backup logs  # follow progress
 ```
 
 ## Restore
@@ -136,13 +142,13 @@ sudo persist-backup backup
 ### List available snapshots
 
 ```bash
-sudo persist-backup snapshots
+persist-backup snapshots
 ```
 
 ### Restore everything
 
 ```bash
-sudo persist-backup restore
+persist-backup restore
 ```
 
 This restores all files to their original absolute paths (e.g., `/persist/home/...`).
@@ -151,31 +157,31 @@ Uses the latest snapshot by default.
 ### Restore a specific snapshot
 
 ```bash
-sudo persist-backup restore <snapshot-id>
+persist-backup restore <snapshot-id>
 ```
 
 ### Restore specific directories only
 
 ```bash
-sudo persist-backup restore-path /persist/home
+persist-backup restore-path /persist/home/rajx88/.ssh
 ```
 
 ### Browse snapshots before restoring
 
 ```bash
 # List files in the latest snapshot
-sudo persist-backup ls
+persist-backup ls
 
 # Mount all snapshots as a browsable FUSE filesystem
-sudo persist-backup mount /mnt/restic
-# Then browse: ls /mnt/restic/snapshots/latest/persist/home/
+persist-backup mount /tmp/restic
+# Then browse: ls /tmp/restic/snapshots/latest/persist/home/
 # Ctrl-C to unmount
 ```
 
 ### Compare two snapshots
 
 ```bash
-sudo persist-backup diff <snapshot-id-1> <snapshot-id-2>
+persist-backup diff <snapshot-id-1> <snapshot-id-2>
 ```
 
 ### Restore from a live USB
@@ -194,9 +200,9 @@ mkdir -p /mnt/persist
 mount -o subvol=persist,compress=zstd,noatime /dev/mapper/crypted /mnt/persist
 
 # Restore using credentials from the mounted volume
-RCLONE_CONFIG=/mnt/persist/var/lib/backup/rclone.conf \
+RCLONE_CONFIG=/mnt/persist/home/<user>/.config/rclone/rclone.conf \
   restic -r rclone:gdrive:<hostname> \
-  --password-file /mnt/persist/var/lib/backup/restic-password \
+  --password-file /mnt/persist/home/<user>/.config/backup/restic-password \
   restore latest --target /mnt
 ```
 
@@ -227,23 +233,23 @@ persist-backup status
 ### Trigger a manual backup
 
 ```bash
-sudo persist-backup backup
+persist-backup backup
 ```
 
 ### Follow backup progress in journal
 
 ```bash
-sudo persist-backup logs
+persist-backup logs
 ```
 
 ### Verify backup integrity
 
 ```bash
-sudo persist-backup check
+persist-backup check
 ```
 
 ### Check backup size on Google Drive
 
 ```bash
-sudo persist-backup size
+persist-backup size
 ```
