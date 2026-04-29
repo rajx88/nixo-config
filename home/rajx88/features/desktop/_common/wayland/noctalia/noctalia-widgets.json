@@ -80,10 +80,10 @@
       "emptyColor": "secondary",
       "enableScrollWheel": true,
       "focusedColor": "primary",
-      "followFocusedScreen": true,
+      "followFocusedScreen": false,
       "fontWeight": "bold",
       "groupedBorderOpacity": 1,
-      "hideUnoccupied": false,
+      "hideUnoccupied": true,
       "iconScale": 0.8,
       "id": "Workspace",
       "labelMode": "index",
@@ -139,6 +139,21 @@
         "showCloseButton": true
       },
       "id": "plugin:clipper"
+    },
+    {
+      "defaultSettings": {
+        "density": "comfortable",
+        "maxHistorySize": 100,
+        "showImagePreviews": true
+      },
+      "id": "plugin:clipboard"
+    },
+    {
+      "defaultSettings": {
+        "precision": 8,
+        "showBarValue": true
+      },
+      "id": "plugin:noctalia-calculator"
     }
   ],
   "right": [
