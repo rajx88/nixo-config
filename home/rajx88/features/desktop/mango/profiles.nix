@@ -107,7 +107,19 @@
 
   # Menu script
   monitorProfileMenuScript = pkgs.writeShellScriptBin "monitor-profile-menu" ''
-    choice=$(printf '%s\n' ${lib.escapeShellArgs profileNames} | ${pkgs.fuzzel}/bin/fuzzel --dmenu --prompt "Monitor Profile: ")
+    choice=$(printf '%s\n' ${lib.escapeShellArgs profileNames} | ${pkgs.fuzzel}/bin/fuzzel --dmenu \
+      --prompt "Monitor Profile: " \
+      --lines=${toString (builtins.length profileNames)} \
+      --width=20 \
+      --background=1a1b26d9 \
+      --text-color=c0caf5ff \
+      --match-color=7aa2f7ff \
+      --selection-color=283457d9 \
+      --selection-text-color=c0caf5ff \
+      --border-color=7aa2f7ff \
+      --border-width=2 \
+      --border-radius=8 \
+      --inner-pad=8)
     [ -n "$choice" ] && monitor-profile "$choice"
   '';
 
