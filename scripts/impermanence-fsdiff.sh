@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Small robust fs-diff helper for impermanence setups.
-# Usage: impermanence-fsdiff [DEVICE_OR_MOUNTPOINT]
+# Usage: fsdiff [DEVICE_OR_MOUNTPOINT]
 # If DEVICE_OR_MOUNTPOINT is a block device (e.g. /dev/nvme0n1p2) the script
 # will mount it (subvol=/) into a temporary directory. If it is a mountpoint
 # the script will use it directly. If omitted, the script attempts to auto-
@@ -20,7 +20,7 @@ trap cleanup EXIT
 
 usage() {
   cat >&2 <<'USAGE'
-Usage: impermanence-fsdiff [DEVICE_OR_MOUNTPOINT]
+Usage: fsdiff [DEVICE_OR_MOUNTPOINT]
 Lists files that changed in a btrfs root subvolume compared to a blank snapshot.
 
 If DEVICE_OR_MOUNTPOINT is a block device (e.g. /dev/sda2) it will be mounted
@@ -40,7 +40,7 @@ Options:
 Notes:
   - Exclude/filtering was removed from this tool. Pipe the output to ripgrep
     (rg -v) or grep -v if you want to filter results, e.g.:
-      ./scripts/impermanence-fsdiff.sh --targets | rg -v 'wallpapers'
+      fsdiff --targets | rg -v 'wallpapers'
 USAGE
   exit 2
 }

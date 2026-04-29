@@ -87,10 +87,28 @@ in
           systemPackages = let
             # Running this will show what changed during boot to potentially use for persisting
             # read the canonical script from the repository root
-            impermanence-fsdiff = pkgs.writeShellScriptBin "impermanence-fsdiff" (builtins.readFile ../../scripts/impermanence-fsdiff.sh);
+            impermanence-fsdiff = pkgs.writeShellScriptBin "fsdiff" (builtins.readFile ../../scripts/impermanence-fsdiff.sh);
+            fsdiff-completions = pkgs.runCommandLocal "fsdiff-completions" {} ''
+              mkdir -p $out/share/zsh/site-functions
+              cat > $out/share/zsh/site-functions/_fsdiff <<'ZSH'
+#compdef fsdiff
+
+_fsdiff() {
+  _arguments \
+    '(-h --help)'{-h,--help}'[Show usage information]' \
+    '(-v --verbose)'{-v,--verbose}'[Print debug SKIP/INCLUDE to stderr]' \
+    '(-t --targets)'{-t,--targets}'[Show resolved symlink targets]' \
+    '--show-store[Include nix/store symlinks in output]' \
+    '1::device or mountpoint:_files'
+}
+
+_fsdiff "$@"
+ZSH
+            '';
           in
             with pkgs; [
               impermanence-fsdiff
+              fsdiff-completions
             ];
 
           persistence."/persist" = {
