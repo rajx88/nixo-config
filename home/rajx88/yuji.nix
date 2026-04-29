@@ -48,83 +48,96 @@
 
   services.ssh-tunnels.enable = true;
 
-  monitors = [
-    # {
-    #   name = "DP-3";
-    #   width = 3840;
-    #   height = 2160;
-    #   preferredMode = true;
-    #   refreshRate = 60;
-    #   workspaces = [6 7 8 9 0];
-    #   position = "3840x-1620";
-    #   vertical = "3";
-    #   # primary = true;
-    # }
-    # {
-    #   name = "DP-5";
-    #   width = 3840;
-    #   height = 2160;
-    #   preferredMode = true;
-    #   refreshRate = 60;
-    #   position = "0x0";
-    #   workspaces = [1 2 3 4 5];
-    #   primary = true;
-    # }
-    {
-      name = "DP-1";
-      width = 3840;
-      height = 2160;
-      preferredMode = false;
-      refreshRate = 120;
-      bitdepth = 10;
-      position = "0x0";
-      workspaces = [1 2 3 4 5];
-      primary = true;
-    }
-    {
-      name = "DP-2";
-      width = 3840;
-      height = 2160;
-      preferredMode = false;
-      refreshRate = 120;
-      bitdepth = 10;
-      workspaces = [6 7 8 9 10];
-      position = "3840x0";
-      # position = "3840x-1620";
-      # vertical = "3";
-      # primary = true;
-    }
-    {
-      name = "eDP-1";
-      width = 1920;
-      height = 1200;
-      preferredMode = true;
-      isLaptop = true;
-      refreshRate = 60;
-      position = "auto-center-down";
-      workspaces = [];
-    }
-    # {
-    #   name = "DP-1";
-    #   width = 3440;
-    #   height = 1440;
-    #   preferredMode = true;
-    #   primary = true;
-    #   isLaptop = false;
-    #   refreshRate = 60;
-    #   position = "auto-center-up";
-    #   workspaces = [1 2 3 4 5];
-    # }
-    # {
-    #   name = "HDMI-A-1";
-    #   width = 1920;
-    #   height = 1200;
-    #   preferredMode = true;
-    #   primary = true;
-    #   isLaptop = false;
-    #   refreshRate = 60;
-    #   position = "auto-center-up";
-    #   workspaces = [1 2 3 4 5];
-    # }
-  ];
+  monitorProfiles = {
+    enable = true;
+    default = "home";
+
+    # Dual 4K 120Hz + laptop panel on the right
+    profiles.home = {
+      monitors = [
+        {
+          name = "DP-1";
+          width = 3840;
+          height = 2160;
+          preferredMode = false;
+          refreshRate = 120;
+          bitdepth = 10;
+          position = "0x0";
+          workspaces = [1 2 3 4 5];
+          layout = "scroller";
+          primary = true;
+        }
+        {
+          name = "DP-2";
+          width = 3840;
+          height = 2160;
+          preferredMode = false;
+          refreshRate = 120;
+          bitdepth = 10;
+          workspaces = [6 7 8 9 10];
+          layout = "tile";
+          position = "3840x0";
+        }
+        {
+          name = "eDP-1";
+          width = 1920;
+          height = 1200;
+          preferredMode = true;
+          isLaptop = true;
+          refreshRate = 60;
+          position = "7680x0";
+          workspaces = [];
+        }
+      ];
+      detect = { externalCount = 2; resolutions = ["3840x2160@120"]; };
+    };
+
+    # Ultrawide + laptop panel centered below
+    profiles.ultrawide = {
+      monitors = [
+        {
+          name = "DP-1";
+          width = 3440;
+          height = 1440;
+          preferredMode = true;
+          refreshRate = 60;
+          position = "0x0";
+          workspaces = [1 2 3 4 5];
+          layout = "scroller";
+          primary = true;
+        }
+        {
+          name = "eDP-1";
+          width = 1920;
+          height = 1200;
+          preferredMode = true;
+          isLaptop = true;
+          refreshRate = 60;
+          position = "760x1440";
+          workspaces = [6 7 8 9 10];
+          layout = "scroller";
+        }
+      ];
+      detect = { resolutions = ["3440x1440"]; };
+    };
+
+    # Laptop panel only
+    profiles.laptop = {
+      monitors = [
+        {
+          name = "eDP-1";
+          width = 1920;
+          height = 1200;
+          preferredMode = true;
+          isLaptop = true;
+          refreshRate = 60;
+          position = "0x0";
+          workspaces = [1 2 3 4 5 6 7 8 9 10];
+          layout = "scroller";
+          primary = true;
+        }
+      ];
+      detect = { externalCount = 0; };
+    };
+  };
 }
