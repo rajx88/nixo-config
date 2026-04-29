@@ -45,6 +45,9 @@ in {
         "SUPER,comma,setlayout,right_tile"
         "SUPER,period,setlayout,tgmix"
 
+        # ── Monitor profile switcher ──
+        "SUPER+SHIFT,d,spawn,mprofile-menu"
+
       ]
       ++ [
 

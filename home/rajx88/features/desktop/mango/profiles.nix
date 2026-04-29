@@ -44,6 +44,26 @@
     }
   ) cfg.profiles;
 
+  # Menu script (fuzzel dmenu picker)
+  mprofileMenuScript = pkgs.writeShellScriptBin "mprofile-menu" ''
+    set -euo pipefail
+    choice=$(mprofile list | ${pkgs.fuzzel}/bin/fuzzel --dmenu \
+      --prompt "Monitor Profile: " \
+      --lines=${toString (builtins.length profileNames)} \
+      --width=20 \
+      --inner-pad=12 \
+      --line-height=24 \
+      --background=1a1b26d9 \
+      --text-color=c0caf5ff \
+      --match-color=7aa2f7ff \
+      --selection-color=283457d9 \
+      --selection-text-color=c0caf5ff \
+      --border-color=7aa2f7ff \
+      --border-width=2 \
+      --border-radius=8)
+    [ -n "$choice" ] && mprofile set "$choice"
+  '';
+
   # Monitor profile switcher script
   monitorProfileScript = pkgs.writeShellScriptBin "mprofile" ''
     set -euo pipefail
@@ -127,6 +147,7 @@ in lib.mkIf (cfg.enable or false) {
 
   home.packages = [
     monitorProfileScript
+    mprofileMenuScript
     pkgs.fuzzel
     pkgs.jq
     pkgs.wlr-randr
