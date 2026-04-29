@@ -8,7 +8,7 @@
   credentialDir = "/persist/secrets/backup";
   backupPath = "/persist/home/${cfg.user}";
   excludeFile = pkgs.writeText "backup-exclude-patterns" (lib.concatStringsSep "\n" cfg.exclude);
-  retentionArgs = "--keep-hourly 24 --keep-daily 7 --keep-weekly 4 --keep-monthly 6";
+  retentionArgs = "--keep-last 12 --keep-daily 7";
 
   rback-completions = pkgs.runCommandLocal "rback-completions" {} ''
     mkdir -p $out/share/zsh/site-functions
@@ -245,7 +245,7 @@ in
       timerConfig = mkOption {
         type = types.attrsOf types.str;
         default = {
-          OnCalendar = "hourly";
+          OnCalendar = "*-*-* 00/4:00:00";
           Persistent = "true";
           RandomizedDelaySec = "5m";
         };
