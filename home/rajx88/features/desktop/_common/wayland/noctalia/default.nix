@@ -11,6 +11,18 @@ in {
     settings = {
       settingsVersion = 59;
 
+      general.avatarImage = "${home}/.face";
+
+      ui = {
+        fontDefault = "Atkinson Hyperlegible Mono";
+        fontFixed = "monospace";
+      };
+
+      appLauncher = {
+        enableClipboardHistory = true;
+        terminalCommand = "ghostty -e";
+      };
+
       bar = {
         barType = "floating";
         capsuleOpacity = 0;
