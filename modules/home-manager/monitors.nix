@@ -57,6 +57,11 @@ in {
             type = types.listOf types.int;
             default = [];
           };
+          layout = mkOption {
+            type = types.str;
+            default = "scroller";
+            description = "Default layout for all workspaces on this monitor.";
+          };
         };
       }
     );
