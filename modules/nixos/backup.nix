@@ -126,6 +126,7 @@ in
       exclude = mkOption {
         type = types.listOf types.str;
         default = [
+          # General caches
           "**/.cache"
           ".config/**/Cache"
           ".config/**/Cache_Data"
@@ -137,6 +138,25 @@ in
           ".config/**/ScriptCache"
           ".config/**/component_crx_cache"
           ".mozilla/**/cache2"
+
+          # JetBrains Toolbox IDE binaries (~10GB, re-downloaded by Toolbox)
+          ".local/share/JetBrains"
+
+          # Gradle caches and wrapper downloads
+          ".gradle"
+
+          # Neovim plugins and LSP servers (re-downloaded by lazy.nvim/mason)
+          ".local/share/nvim"
+
+          # mise tool version installs (re-downloaded by mise)
+          ".local/share/mise"
+
+          # Ferdium Electron app partition data (web storage, caches, etc.)
+          ".config/Ferdium/Partitions"
+
+          # Browser data (profiles are large and not critical config)
+          ".config/BraveSoftware"
+          ".config/zen"
         ];
         description = "Paths to exclude from backup (relative to backup root)";
       };
