@@ -4,6 +4,6 @@
   security.pam.services.ly.enableGnomeKeyring = true;
 
   environment.persistence."/persist".files = [
-    "/etc/ly/save"
+    "/etc/ly/save.txt"
   ];
 }
