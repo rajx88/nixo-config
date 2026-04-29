@@ -8,9 +8,6 @@
   vaultPath = config.home.sessionVariables.VAULT_PATH;
   files = "${pkgs.thunar}/bin/thunar";
 
-  monitors = config.monitors;
-  wsToKey = ws: if ws == 10 then "0" else toString ws;
-
   grim = "${pkgs.grim}/bin/grim";
   slurp = "${pkgs.slurp}/bin/slurp";
   wl-copy = "${pkgs.wl-clipboard}/bin/wl-copy";
@@ -48,12 +45,9 @@ in {
         "SUPER,comma,setlayout,right_tile"
         "SUPER,period,setlayout,tgmix"
 
+        # ── Monitor profile switcher ──
+        "SUPER+SHIFT,d,spawn,monitor-profile-menu"
       ]
-      # ── Per-monitor tag binds (from config.monitors) ──
-      ++ lib.concatMap (m:
-        map (ws: "SUPER,${wsToKey ws},viewcrossmon,${toString ws},${m.name}") m.workspaces
-        ++ map (ws: "SUPER+SHIFT,${wsToKey ws},tagcrossmon,${toString ws},${m.name}") m.workspaces
-      ) (lib.filter (m: m.workspaces != []) monitors)
       ++ [
 
         # ── Focus direction ──

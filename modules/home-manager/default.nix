@@ -3,6 +3,7 @@
 {
   # List your module files here
   fonts = import ./fonts.nix;
+  monitor-profiles = import ./monitor-profiles.nix;
   monitors = import ./monitors.nix;
   worktrunk = import ./worktrunk.nix;
 }

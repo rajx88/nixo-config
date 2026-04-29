@@ -10,6 +10,7 @@
   notesWidth = primaryMon.width / 2;
   todoWidth = primaryMon.width / 10 * 4;
   fullHeight = primaryMon.height;
+  home = config.home.homeDirectory;
 in {
   imports = [
     inputs.mango.hmModules.mango
@@ -19,6 +20,7 @@ in {
 
     ./binds.nix
     ./monitor.nix
+    ./profiles.nix
     ./lid.nix
   ];
 
@@ -47,19 +49,8 @@ in {
       scroller_ignore_proportion_single = 0;
       scroller_proportion_preset = "0.33,0.5,0.67,1.0";
 
-      # Default layouts per tag: scroller on DP-1 (1-5), tile on DP-2 (6-10)
-      tagrule = [
-        "id:1,layout_name:scroller"
-        "id:2,layout_name:scroller"
-        "id:3,layout_name:scroller"
-        "id:4,layout_name:scroller"
-        "id:5,layout_name:scroller"
-        "id:6,layout_name:tile"
-        "id:7,layout_name:tile"
-        "id:8,layout_name:tile"
-        "id:9,layout_name:tile"
-        "id:10,layout_name:tile"
-      ];
+      # Source the active monitor profile snippet (provides monitorrule, tagrule, workspace binds)
+      source = "${home}/.config/mango/active-profile.conf";
 
       # Window rules — explicit size; isnosizehint bypasses ghostty size constraints
       windowrule = [
@@ -70,7 +61,10 @@ in {
 
     autostart_sh = ''
       noctalia-shell &
+      monitor-profile auto &
     '';
+
+    bottomPrefixes = ["source"];
 
     systemd.enable = true;
   };
