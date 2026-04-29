@@ -13,7 +13,7 @@
   isDischarging = "grep -q Discharging /sys/class/power_supply/BAT*/status 2>/dev/null";
 
   isLocked = "${pgrep} -x swaylock";
-  lockTime = 10 * 60;
+  lockTime = 5 * 60;
 
   afterLockTimeout = {
     timeout,
@@ -105,8 +105,8 @@ in {
       # Mute mic (after lock)
       (afterLockTimeout {
         timeout = 10;
-        command = "${pactl} set-source-mute @DEFAULT_SOURCE@ yes";
-        resumeCommand = "${pactl} set-source-mute @DEFAULT_SOURCE@ no";
+        command = "${pactl} list sources short | awk '{print $2}' | xargs -I{} ${pactl} set-source-mute {} yes";
+        resumeCommand = "${pactl} list sources short | awk '{print $2}' | xargs -I{} ${pactl} set-source-mute {} no";
       })
       ++
       # DPMS off (after lock)
