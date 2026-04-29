@@ -23,7 +23,7 @@ in {
     bind =
       [
         # ── Terminal ──
-        "SUPER,Return,spawn,${terminal}"
+        "SUPER+SHIFT,t,spawn,${terminal}"
 
         # ── App speed dial ──
         "SUPER+SHIFT,b,spawn_shell,$BROWSER"
