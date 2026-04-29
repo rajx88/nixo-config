@@ -100,8 +100,24 @@
     case "''${1:-}" in
       list) list_profiles ;;
       auto) auto_detect ;;
-      "") echo "Usage: mprofile <auto|list|PROFILE>" >&2; exit 1 ;;
-      *) apply_profile "$1" ;;
+      set)
+        if [ -z "''${2:-}" ]; then
+          echo "Usage: mprofile set <PROFILE>" >&2
+          echo "Available: $(list_profiles | tr '\n' ' ')" >&2
+          exit 1
+        fi
+        apply_profile "$2"
+        ;;
+      "")
+        echo "Usage: mprofile <command>" >&2
+        echo "" >&2
+        echo "Commands:" >&2
+        echo "  list          List available profile names" >&2
+        echo "  auto          Auto-detect and apply profile" >&2
+        echo "  set <PROFILE> Apply a named profile" >&2
+        exit 1
+        ;;
+      *) echo "Unknown command: $1" >&2; exit 1 ;;
     esac
   '';
 
@@ -124,12 +140,14 @@ in lib.mkIf (cfg.enable or false) {
       commands=(
         'list:List available profile names'
         'auto:Auto-detect and apply profile'
+        'set:Apply a named profile'
       )
 
       if (( CURRENT == 2 )); then
+        _describe -t commands 'mprofile command' commands
+      elif (( CURRENT == 3 )) && [[ "$words[2]" == "set" ]]; then
         local -a profiles
         profiles=(''${(f)"$(mprofile list 2>/dev/null)"})
-        _describe -t commands 'mprofile command' commands
         _describe -t profiles 'profile name' profiles
       fi
     }
