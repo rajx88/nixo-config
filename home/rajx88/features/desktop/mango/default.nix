@@ -61,7 +61,7 @@ in {
 
     autostart_sh = ''
       noctalia-shell &
-      monitor-profile auto &
+      mprofile auto &
     '';
 
     bottomPrefixes = ["source-optional"];
