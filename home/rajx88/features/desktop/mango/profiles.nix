@@ -45,7 +45,7 @@
   ) cfg.profiles;
 
   # Monitor profile switcher script
-  monitorProfileScript = pkgs.writeShellScriptBin "monitor-profile" ''
+  monitorProfileScript = pkgs.writeShellScriptBin "mprofile" ''
     set -euo pipefail
     CONF_DIR="''${XDG_CONFIG_HOME:-$HOME/.config}/mango"
     PROFILES_DIR="$CONF_DIR/profiles"
@@ -100,39 +100,42 @@
     case "''${1:-}" in
       list) list_profiles ;;
       auto) auto_detect ;;
-      "") echo "Usage: monitor-profile <auto|list|PROFILE>" >&2; exit 1 ;;
+      "") echo "Usage: mprofile <auto|list|PROFILE>" >&2; exit 1 ;;
       *) apply_profile "$1" ;;
     esac
   '';
 
-  # Menu script
-  monitorProfileMenuScript = pkgs.writeShellScriptBin "monitor-profile-menu" ''
-    choice=$(printf '%s\n' ${lib.escapeShellArgs profileNames} | ${pkgs.fuzzel}/bin/fuzzel --dmenu \
-      --prompt "Monitor Profile: " \
-      --lines=${toString (builtins.length profileNames)} \
-      --width=20 \
-      --background=1a1b26d9 \
-      --text-color=c0caf5ff \
-      --match-color=7aa2f7ff \
-      --selection-color=283457d9 \
-      --selection-text-color=c0caf5ff \
-      --border-color=7aa2f7ff \
-      --border-width=2 \
-      --border-radius=8 \
-      --inner-pad=8)
-    [ -n "$choice" ] && monitor-profile "$choice"
-  '';
 
 in lib.mkIf (cfg.enable or false) {
   xdg.configFile = snippetFiles;
 
   home.packages = [
     monitorProfileScript
-    monitorProfileMenuScript
     pkgs.fuzzel
     pkgs.jq
     pkgs.wlr-randr
   ];
+
+  home.file.".local/completions/_mprofile".text = ''
+    #compdef mprofile
+
+    _mprofile() {
+      local -a commands
+      commands=(
+        'list:List available profile names'
+        'auto:Auto-detect and apply profile'
+      )
+
+      if (( CURRENT == 2 )); then
+        local -a profiles
+        profiles=(''${(f)"$(mprofile list 2>/dev/null)"})
+        _describe -t commands 'mprofile command' commands
+        _describe -t profiles 'profile name' profiles
+      fi
+    }
+
+    _mprofile "$@"
+  '';
 
   home.activation.monitorProfileDefault = lib.hm.dag.entryAfter ["writeBoundary"] ''
     ln -sf profiles/${cfg.default}.conf "''${XDG_CONFIG_HOME:-$HOME/.config}/mango/active-profile.conf"
