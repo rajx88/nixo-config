@@ -8,6 +8,7 @@
   credentialDir = "/persist/secrets/backup";
   backupPath = "/persist/home/${cfg.user}";
   excludeFile = pkgs.writeText "backup-exclude-patterns" (lib.concatStringsSep "\n" cfg.exclude);
+  retentionArgs = "--keep-hourly 24 --keep-daily 7 --keep-weekly 4 --keep-monthly 6";
 
   persist-backup = pkgs.writeShellScriptBin "persist-backup" ''
     export RCLONE_CONFIG="${credentialDir}/rclone.conf"
@@ -29,7 +30,7 @@
         echo ""
         echo "Pruning old snapshots..."
         $RESTIC "''${RESTIC_ARGS[@]}" forget --prune \
-          --keep-hourly 24 --keep-daily 7 --keep-weekly 4 --keep-monthly 6
+          ${retentionArgs}
         echo "Done."
         ;;
       logs)
@@ -85,6 +86,9 @@
       size)
         ${pkgs.rclone}/bin/rclone size "${cfg.rclone-remote}"
         ;;
+      overview)
+        $RESTIC "''${RESTIC_ARGS[@]}" forget ${retentionArgs} --dry-run
+        ;;
       help|*)
         echo "Usage: persist-backup <command> [args]"
         echo ""
@@ -101,6 +105,7 @@
         echo "  status             Show backup service status"
         echo "  check              Verify backup integrity"
         echo "  size               Show backup size on remote"
+        echo "  overview            Show snapshot retention policy overview"
         echo "  help               Show this help"
         ;;
     esac
@@ -204,12 +209,7 @@ in
         rcloneConfigFile = "${credentialDir}/rclone.conf";
         user = cfg.user;
         inherit (cfg) timerConfig;
-        pruneOpts = [
-          "--keep-hourly 24"
-          "--keep-daily 7"
-          "--keep-weekly 4"
-          "--keep-monthly 6"
-        ];
+        pruneOpts = [retentionArgs];
         backupPrepareCommand = ''
           # Ensure backup credentials exist
           if [ ! -f ${credentialDir}/restic-password ]; then
