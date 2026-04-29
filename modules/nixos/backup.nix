@@ -10,7 +10,65 @@
   excludeFile = pkgs.writeText "backup-exclude-patterns" (lib.concatStringsSep "\n" cfg.exclude);
   retentionArgs = "--keep-hourly 24 --keep-daily 7 --keep-weekly 4 --keep-monthly 6";
 
-  persist-backup = pkgs.writeShellScriptBin "persist-backup" ''
+  rback-completions = pkgs.runCommandLocal "rback-completions" {} ''
+    mkdir -p $out/share/zsh/site-functions
+    cat > $out/share/zsh/site-functions/_rback <<'ZSH'
+#compdef rback
+
+_rback() {
+  local -a commands
+  commands=(
+    'snapshots:List available snapshots'
+    'backup:Run a backup now (interactive)'
+    'logs:Follow hourly backup progress in journal'
+    'forget:Delete a specific snapshot and prune'
+    'restore:Restore home (default\: latest)'
+    'restore-path:Restore specific path'
+    'ls:List files in a snapshot'
+    'mount:Mount snapshots as FUSE filesystem'
+    'diff:Show diff between two snapshots'
+    'status:Show backup service status'
+    'check:Verify backup integrity'
+    'size:Show backup size on remote'
+    'overview:Show snapshot retention policy overview'
+    'help:Show this help'
+  )
+
+  if (( CURRENT == 2 )); then
+    _describe -t commands 'rback command' commands
+  else
+    case "$words[2]" in
+      forget)
+        _message 'snapshot ID'
+        ;;
+      restore)
+        _message 'snapshot ID (optional, default: latest)'
+        ;;
+      restore-path)
+        if (( CURRENT == 3 )); then
+          _files
+        else
+          _message 'snapshot ID (optional, default: latest)'
+        fi
+        ;;
+      ls)
+        _message 'snapshot ID (optional, default: latest)'
+        ;;
+      mount)
+        _directories
+        ;;
+      diff)
+        _message 'snapshot ID'
+        ;;
+    esac
+  fi
+}
+
+_rback "$@"
+ZSH
+  '';
+
+  persist-backup = pkgs.writeShellScriptBin "rback" ''
     export RCLONE_CONFIG="${credentialDir}/rclone.conf"
     REPO="rclone:${cfg.rclone-remote}"
     PASSWORD_FILE="${credentialDir}/restic-password"
@@ -38,7 +96,7 @@
         ;;
       forget)
         if [ -z "$2" ]; then
-          echo "Usage: persist-backup forget <snapshot-id>"
+          echo "Usage: rback forget <snapshot-id>"
           exit 1
         fi
         echo "Forgetting snapshot $2..."
@@ -51,7 +109,7 @@
         ;;
       restore-path)
         if [ -z "$2" ]; then
-          echo "Usage: persist-backup restore-path <path> [snapshot]"
+          echo "Usage: rback restore-path <path> [snapshot]"
           exit 1
         fi
         SNAP="''${3:-latest}"
@@ -64,7 +122,7 @@
         ;;
       mount)
         if [ -z "$2" ]; then
-          echo "Usage: persist-backup mount <directory>"
+          echo "Usage: rback mount <directory>"
           exit 1
         fi
         mkdir -p "$2"
@@ -72,7 +130,7 @@
         ;;
       diff)
         if [ -z "$2" ] || [ -z "$3" ]; then
-          echo "Usage: persist-backup diff <snapshot-id-1> <snapshot-id-2>"
+          echo "Usage: rback diff <snapshot-id-1> <snapshot-id-2>"
           exit 1
         fi
         $RESTIC "''${RESTIC_ARGS[@]}" diff "$2" "$3"
@@ -90,7 +148,7 @@
         $RESTIC "''${RESTIC_ARGS[@]}" forget ${retentionArgs} --dry-run
         ;;
       help|*)
-        echo "Usage: persist-backup <command> [args]"
+        echo "Usage: rback <command> [args]"
         echo ""
         echo "Commands:"
         echo "  snapshots          List available snapshots"
@@ -189,6 +247,7 @@ in
         restic
         rclone
         persist-backup
+        rback-completions
       ];
 
       environment.persistence."/persist".directories = [
