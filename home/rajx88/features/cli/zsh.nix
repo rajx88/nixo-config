@@ -59,9 +59,11 @@ in {
 
     '';
 
-    initContent = ''
+    initExtraFirst = ''
       fpath=($HOME/.local/completions $fpath ${config.xdg.cacheHome}/completions)
+    '';
 
+    initContent = ''
       # Enable bash completion compatibility for tools like AWS CLI
       autoload -Uz bashcompinit && bashcompinit
 
