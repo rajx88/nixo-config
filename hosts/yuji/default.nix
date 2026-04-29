@@ -37,7 +37,7 @@
 
   host.backup = {
     enable = true;
-    rclone-remote = "gdrive:backups/yuji";
+    rclone-remote = "gdrive:yuji";
   };
 
   networking = {
