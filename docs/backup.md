@@ -40,13 +40,13 @@ for the full list. Override via `host.backup.exclude` if needed.
 
 Configuration lives in `modules/nixos/backup.nix` and is enabled per-host.
 
-## The `persist-backup` CLI
+## The `rback` CLI
 
 A wrapper script that handles all common operations. No sudo needed. Available on any
 host with `host.backup.enable = true`.
 
 ```
-persist-backup <command> [args]
+rback <command> [args]
 
 Commands:
   snapshots          List available snapshots
@@ -132,8 +132,8 @@ RCLONE_CONFIG=/persist/secrets/backup/rclone.conf \
 ### 6. Run the first backup
 
 ```bash
-persist-backup backup
-persist-backup logs  # follow progress
+rback backup
+rback logs  # follow progress
 ```
 
 ## Restore
@@ -141,13 +141,13 @@ persist-backup logs  # follow progress
 ### List available snapshots
 
 ```bash
-persist-backup snapshots
+rback snapshots
 ```
 
 ### Restore everything
 
 ```bash
-persist-backup restore
+rback restore
 ```
 
 This restores all files to their original absolute paths (e.g., `/persist/home/...`).
@@ -156,23 +156,23 @@ Uses the latest snapshot by default.
 ### Restore a specific snapshot
 
 ```bash
-persist-backup restore <snapshot-id>
+rback restore <snapshot-id>
 ```
 
 ### Restore specific directories only
 
 ```bash
-persist-backup restore-path /persist/home/rajx88/.ssh
+rback restore-path /persist/home/rajx88/.ssh
 ```
 
 ### Browse snapshots before restoring
 
 ```bash
 # List files in the latest snapshot
-persist-backup ls
+rback ls
 
 # Mount all snapshots as a browsable FUSE filesystem
-persist-backup mount /tmp/restic
+rback mount /tmp/restic
 # Then browse: ls /tmp/restic/snapshots/latest/persist/home/
 # Ctrl-C to unmount
 ```
@@ -180,7 +180,7 @@ persist-backup mount /tmp/restic
 ### Compare two snapshots
 
 ```bash
-persist-backup diff <snapshot-id-1> <snapshot-id-2>
+rback diff <snapshot-id-1> <snapshot-id-2>
 ```
 
 ### Restore from a live USB
@@ -227,38 +227,38 @@ RCLONE_CONFIG=/tmp/rclone.conf \
 ### Check backup status
 
 ```bash
-persist-backup status
+rback status
 ```
 
 ### Trigger a manual backup
 
 ```bash
-persist-backup backup
+rback backup
 ```
 
 ### Follow backup progress in journal
 
 ```bash
-persist-backup logs
+rback logs
 ```
 
 ### Verify backup integrity
 
 ```bash
-persist-backup check
+rback check
 ```
 
 ### Check backup size on Google Drive
 
 ```bash
-persist-backup size
+rback size
 ```
 
 ### Delete a specific snapshot
 
 ```bash
-persist-backup forget <snapshot-id>
+rback forget <snapshot-id>
 ```
 
 This removes the snapshot and prunes any data chunks that are no longer referenced.
-Use `persist-backup snapshots` first to find the snapshot ID.
+Use `rback snapshots` first to find the snapshot ID.
