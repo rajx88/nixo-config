@@ -50,7 +50,7 @@ in {
       scroller_proportion_preset = "0.33,0.5,0.67,1.0";
 
       # Source the active monitor profile snippet (provides monitorrule, tagrule, workspace binds)
-      source = "${home}/.config/mango/active-profile.conf";
+      source-optional = "${home}/.config/mango/active-profile.conf";
 
       # Window rules — explicit size; isnosizehint bypasses ghostty size constraints
       windowrule = [
@@ -64,7 +64,7 @@ in {
       monitor-profile auto &
     '';
 
-    bottomPrefixes = ["source"];
+    bottomPrefixes = ["source-optional"];
 
     systemd.enable = true;
   };
