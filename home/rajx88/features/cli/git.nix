@@ -12,7 +12,11 @@
       };
     };
   };
-  prvtDirs = ["~/code/prvt/" "~/code/nix/"];
+  prvtDirs = [
+    "~/code/prvt/"
+    "~/code/nix/"
+    "~/code/notes"
+  ];
 in {
   home.persistence."/persist".directories = [
     ".config/git"
@@ -67,11 +71,13 @@ in {
       maintenance.strategy = "incremental";
     };
     lfs.enable = true;
-    includes = [
-      {
-        condition = "gitdir:~/code/wrk/";
-        path = "${config.xdg.configHome}/git/work.inc";
-      }
-    ] ++ map (dir: prvtIdentity // {condition = "gitdir:${dir}";}) prvtDirs;
+    includes =
+      [
+        {
+          condition = "gitdir:~/code/wrk/";
+          path = "${config.xdg.configHome}/git/work.inc";
+        }
+      ]
+      ++ map (dir: prvtIdentity // {condition = "gitdir:${dir}";}) prvtDirs;
   };
 }
