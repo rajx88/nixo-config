@@ -15,7 +15,7 @@
   prvtDirs = [
     "~/code/prvt/"
     "~/code/nix/"
-    "~/code/notes"
+    "~/code/notes/"
   ];
 in {
   home.persistence."/persist".directories = [
