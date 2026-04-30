@@ -4,23 +4,6 @@
     tmux.enableShellIntegration = true;
   };
 
-  programs.sesh = {
-    enable = true;
-    enableAlias = false;
-    tmuxKey = "C-f";
-    enableTmuxIntegration = false;
-  };
-
-  programs.zsh = {
-    zsh-abbr.abbreviations = {
-      s = "sesh";
-    };
-  };
-
-  home.packages = with pkgs; [
-    gum
-  ];
-
   programs.tmux = {
     enable = true;
     clock24 = false;
@@ -33,6 +16,17 @@
     escapeTime = 0;
     # keyMode = "vi";
     mouse = true;
+
+    plugins = with pkgs.tmuxPlugins; [
+      {
+        plugin = tmux-sessionx;
+        extraConfig = ''
+          set -g @sessionx-bind 'C-f'
+          set -g @sessionx-zoxide-mode 'on'
+          set -g @sessionx-fzf-builtin-tmux 'on'
+        '';
+      }
+    ];
 
     extraConfig = ''
       set -ga terminal-overrides ",screen-256color*:Tc"
@@ -50,7 +44,11 @@
       bind-key C-a send-prefix
       set -g status-style 'bg=#333333 fg=#5eacd3'
 
-      bind r source-file ~/.config/tmux/tmux.conf \; display-message "Config reloaded"
+      bind R source-file ~/.config/tmux/tmux.conf \; display-message "Config reloaded"
+
+      # Session management
+      bind n new-session
+      bind r command-prompt -I "#S" "rename-session '%%'"
       set -g base-index 1
 
       set-window-option -g mode-keys vi
@@ -77,29 +75,8 @@
       bind C-p previous-window
       bind C-n next-window
 
-      # adding sesh options
-
       bind-key x kill-pane # skip "kill-pane 1? (y/n)" prompt
       set -g detach-on-destroy off  # don't exit from tmux when closing a session
-
-      bind-key "K" display-popup -E -w 40% "sesh connect \"$(
-      sesh list -i | gum filter --limit 1 --no-sort --fuzzy --placeholder 'Pick a sesh' --height 50 --prompt='⚡ '
-      )\""
-
-      bind-key "C-f" run-shell "sesh connect \"$(
-      sesh list --icons | fzf-tmux -p 81%,70% \
-      --no-sort --ansi --border-label ' sesh ' --prompt '⚡  ' \
-      --header '  ^a all ^t tmux ^g configs ^x zoxide ^d tmux kill ^f find' \
-      --bind 'tab:down,btab:up' \
-      --bind 'ctrl-a:change-prompt(⚡  )+reload(sesh list --icons)' \
-      --bind 'ctrl-t:change-prompt(🪟  )+reload(sesh list -t --icons)' \
-      --bind 'ctrl-g:change-prompt(⚙️  )+reload(sesh list -c --icons)' \
-      --bind 'ctrl-x:change-prompt(📁  )+reload(sesh list -z --icons)' \
-      --bind 'ctrl-f:change-prompt(🔎  )+reload(fd -H -d 2 -t d -E .Trash . ~)' \
-      --bind 'ctrl-d:execute(tmux kill-session -t {2..})+change-prompt(⚡  )+reload(sesh list --icons)' \
-      --preview-window 'right:55%' \
-      --preview 'sesh preview {}'
-      )\""
 
 
       # TokyoNight colors for Tmux
