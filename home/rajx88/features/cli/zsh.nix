@@ -59,11 +59,6 @@ in {
     initContent = lib.mkBefore ''
       ZSH_INCLUDES="$ZDOTDIR/includes"
 
-      # Auto-attach to tmux on terminal open
-      if [[ -z "$TMUX" ]] && [[ -n "$PS1" ]]; then
-        tmux attach 2>/dev/null || tmux new-session
-      fi
-
       fpath=($HOME/.local/completions $fpath ${config.xdg.cacheHome}/completions)
 
       # Enable bash completion compatibility for tools like AWS CLI

@@ -13,7 +13,7 @@ in {
     prefix = "C-a";
 
     baseIndex = 1;
-    newSession = false;
+    newSession = true;
     # Stop tmux+escape craziness.
     escapeTime = 0;
     # keyMode = "vi";
