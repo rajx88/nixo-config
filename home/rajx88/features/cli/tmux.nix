@@ -1,4 +1,6 @@
-{pkgs, ...}: {
+{pkgs, ...}: let
+  aiCommand = "opencode run -m github-copilot/claude-sonnet-4.6 --variant fast";
+in {
   programs.fzf = {
     enable = true;
     tmux.enableShellIntegration = true;
@@ -49,6 +51,7 @@
       # Session management
       bind n new-session
       bind r command-prompt -I "#S" "rename-session '%%'"
+      bind a run-shell '${aiCommand} "You are inside a tmux session. Inspect the session context using tmux commands (list-panes, current paths, running commands, git repos). Then rename the current tmux session using tmux rename-session with a short kebab-case name (1-3 words) that describes the WORK being done. Do not explain, just do it." || tmux display-message "AI rename failed"'
       set -g base-index 1
 
       set-window-option -g mode-keys vi
