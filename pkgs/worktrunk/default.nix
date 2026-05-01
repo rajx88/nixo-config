@@ -7,16 +7,16 @@
 }:
 rustPlatform.buildRustPackage {
   pname = "worktrunk";
-  version = "0.44.0";
+  version = "0.46.1";
 
   src = fetchFromGitHub {
     owner = "max-sixty";
     repo = "worktrunk";
-    rev = "v0.44.0";
-    hash = "sha256-YNqPjpMndm9W1mmBQzuXDDENgwnv39P6eUiQ++jmvZU=";
+    rev = "v0.46.1";
+    hash = "sha256-G8nRU6DtvGEBBn106OZsmxOVaJpFiVAv/h1AMJzqfnA=";
   };
 
-  cargoHash = "sha256-tpVjjbZ2p/0yDaPhTeyYi0VScASiK5XIOwAGfPP9248=";
+  cargoHash = "sha256-0RFkuwR+/GinQszv3ZmzNteYNAH71AlsEuY44AZL0/M=";
 
   nativeBuildInputs = [pkg-config];
 
@@ -24,7 +24,7 @@ rustPlatform.buildRustPackage {
 
   env = {
     VERGEN_IDEMPOTENT = "1";
-    VERGEN_GIT_DESCRIBE = "v0.44.0";
+    VERGEN_GIT_DESCRIBE = "v0.46.1";
   };
 
   # Tests require snapshot files (insta) not included in release
