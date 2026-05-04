@@ -40,6 +40,9 @@ in {
       sloppyfocus = true;
       warpcursor = true;
 
+      # Disable bottom-left hot corner
+      enable_hotarea = 0;
+
       # Master-stack: new windows spawn in stack, not master
       new_is_master = 0;
 
