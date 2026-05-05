@@ -27,6 +27,7 @@ _rback() {
     'ls:List files in a snapshot'
     'mount:Mount snapshots as FUSE filesystem'
     'diff:Show diff between two snapshots'
+    'unlock:Remove stale repository locks'
     'status:Show backup service status'
     'check:Verify backup integrity'
     'size:Show backup size on remote'
@@ -135,6 +136,10 @@ ZSH
         fi
         $RESTIC "''${RESTIC_ARGS[@]}" diff "$2" "$3"
         ;;
+      unlock)
+        echo "Removing stale locks..."
+        $RESTIC "''${RESTIC_ARGS[@]}" unlock
+        ;;
       status)
         systemctl status restic-backups-persist.service
         ;;
@@ -160,6 +165,7 @@ ZSH
         echo "  ls [snap]          List files in a snapshot"
         echo "  mount <dir>        Mount snapshots as FUSE filesystem"
         echo "  diff <id1> <id2>   Show diff between two snapshots"
+        echo "  unlock             Remove stale repository locks"
         echo "  status             Show backup service status"
         echo "  check              Verify backup integrity"
         echo "  size               Show backup size on remote"
@@ -288,6 +294,13 @@ in
         inherit (cfg) timerConfig;
         pruneOpts = [retentionArgs];
         backupPrepareCommand = ''
+          # Remove stale locks left by crashed previous runs (safe: only removes locks where PID is dead)
+          ${pkgs.restic}/bin/restic \
+            -r "rclone:${cfg.rclone-remote}" \
+            --password-file "${credentialDir}/restic-password" \
+            -o rclone.config="${credentialDir}/rclone.conf" \
+            unlock || true
+
           # Ensure backup credentials exist
           if [ ! -f ${credentialDir}/restic-password ]; then
             echo "ERROR: ${credentialDir}/restic-password not found. Create it with:"

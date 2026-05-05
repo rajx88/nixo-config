@@ -56,7 +56,7 @@
     profiles.home = {
       monitors = [
         {
-          name = "DP-1";
+          name = "DP-2";
           width = 3840;
           height = 2160;
           preferredMode = false;
@@ -68,7 +68,7 @@
           primary = true;
         }
         {
-          name = "DP-2";
+          name = "DP-1";
           width = 3840;
           height = 2160;
           preferredMode = false;
