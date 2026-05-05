@@ -34,7 +34,8 @@ in {
       xkb_rules_layout = "us";
       tap_to_click = true;
       trackpad_natural_scrolling = false;
-      accel_profile = 0;
+      mouse_accel_profile = 0;
+      trackpad_accel_profile = 0;
 
       # Focus
       sloppyfocus = true;
