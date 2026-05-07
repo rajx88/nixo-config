@@ -56,6 +56,7 @@ in {
     ignores = [
       ".claude"
       ".opencode"
+      ".pi"
       # jdtls generated files
       ".project"
       ".classpath"
