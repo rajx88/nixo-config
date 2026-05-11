@@ -20,6 +20,7 @@
     ++ (builtins.attrValues outputs.nixosModules);
 
   home-manager.useGlobalPkgs = true;
+  home-manager.backupFileExtension = "hm-bak";
   home-manager.extraSpecialArgs = {
     inherit inputs outputs;
   };
