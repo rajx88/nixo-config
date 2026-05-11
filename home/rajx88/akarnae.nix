@@ -35,28 +35,34 @@
   #  ------   -----   ------
   # | HDMI | | DP-1| | DP-2 |
   #  ------   -----   ------
-  monitors = [
-    {
-      name = "DP-1";
-      width = 3840;
-      height = 2160;
-      preferredMode = true;
-      refreshRate = 60;
-      scale = 1.25;
-      workspaces = [6 7 8 9 10];
-      position = "auto-right";
-      # primary = true;
-    }
-    {
-      name = "DP-2";
-      width = 3840;
-      height = 2160;
-      preferredMode = true;
-      refreshRate = 60;
-      scale = 1.25;
-      position = "auto-left";
-      workspaces = [1 2 3 4 5];
-      primary = true;
-    }
-  ];
+  monitorProfiles = {
+    enable = true;
+    default = "desktop";
+
+    profiles.desktop = {
+      monitors = [
+        {
+          name = "DP-2";
+          width = 3840;
+          height = 2160;
+          preferredMode = true;
+          refreshRate = 60;
+          scale = 1.25;
+          position = "auto";
+          workspaces = [1 2 3 4 5];
+          primary = true;
+        }
+        {
+          name = "DP-1";
+          width = 3840;
+          height = 2160;
+          preferredMode = true;
+          refreshRate = 60;
+          scale = 1.25;
+          position = "auto";
+          workspaces = [6 7 8 9 10];
+        }
+      ];
+    };
+  };
 }

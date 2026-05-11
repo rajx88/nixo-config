@@ -19,7 +19,6 @@ in {
     ../_common/wayland
 
     ./binds.nix
-    ./monitor.nix
     ./profiles.nix
     ./lid.nix
   ];
