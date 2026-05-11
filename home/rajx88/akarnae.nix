@@ -42,6 +42,7 @@
       height = 2160;
       preferredMode = true;
       refreshRate = 60;
+      scale = 1.25;
       workspaces = [6 7 8 9 10];
       position = "auto-right";
       # primary = true;
@@ -52,6 +53,7 @@
       height = 2160;
       preferredMode = true;
       refreshRate = 60;
+      scale = 1.25;
       position = "auto-left";
       workspaces = [1 2 3 4 5];
       primary = true;

@@ -17,6 +17,7 @@
       position = mkOption { type = types.str; default = "auto"; };
       vertical = mkOption { type = types.str; default = "0"; };
       enabled = mkOption { type = types.bool; default = true; };
+      scale = mkOption { type = types.float; default = 1.0; description = "Scale factor for the monitor (e.g. 1.5 for 150%)."; };
       bitdepth = mkOption { type = types.nullOr (types.enum [8 10]); default = null; };
       workspaces = mkOption { type = types.listOf types.int; default = []; };
       layout = mkOption { type = types.str; default = "scroller"; description = "Default layout for all workspaces on this monitor."; };

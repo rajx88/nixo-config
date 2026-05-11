@@ -62,7 +62,8 @@
           preferredMode = false;
           refreshRate = 120;
           bitdepth = 10;
-          position = "0x0";
+          scale = 1.25;
+          position = "auto";
           workspaces = [1 2 3 4 5];
           layout = "scroller";
           primary = true;
@@ -74,9 +75,10 @@
           preferredMode = false;
           refreshRate = 120;
           bitdepth = 10;
+          scale = 1.25;
           workspaces = [6 7 8 9 10];
           layout = "tile";
-          position = "3840x0";
+          position = "auto";
         }
         {
           name = "eDP-1";
@@ -85,7 +87,7 @@
           preferredMode = true;
           isLaptop = true;
           refreshRate = 60;
-          position = "7680x0";
+          position = "auto";
           workspaces = [];
         }
       ];
@@ -101,7 +103,7 @@
           height = 1440;
           preferredMode = true;
           refreshRate = 60;
-          position = "0x0";
+          position = "auto";
           workspaces = [1 2 3 4 5];
           layout = "scroller";
           primary = true;
@@ -113,7 +115,7 @@
           preferredMode = true;
           isLaptop = true;
           refreshRate = 60;
-          position = "760x1440";
+          position = "center-below";
           workspaces = [6 7 8 9 10];
           layout = "scroller";
         }
