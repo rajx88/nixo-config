@@ -49,6 +49,11 @@ in {
             type = types.bool;
             default = true;
           };
+          scale = mkOption {
+            type = types.float;
+            default = 1.0;
+            description = "Scale factor for the monitor (e.g. 1.5 for 150%).";
+          };
           bitdepth = mkOption {
             type = types.nullOr (types.enum [8 10]);
             default = null;

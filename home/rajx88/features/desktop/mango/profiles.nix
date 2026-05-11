@@ -14,14 +14,52 @@
   mkProfileSnippet = name: profile: let
     enabledMonitors = lib.filter (m: m.enabled) profile.monitors;
 
+    # Compute logical dimensions for a monitor
+    logicalW = m: m.width / m.scale;
+    logicalH = m: m.height / m.scale;
+
+    # Compute positions for all monitors.
+    # First monitor is always at 0,0.
+    # Subsequent monitors use directional placement relative to previous:
+    #   "auto" / "auto-right" → right of previous
+    #   "auto-left"           → left of previous
+    #   "auto-above"          → above previous
+    #   "auto-below"          → below previous
+    #   "center-below"        → centered below previous
+    #   "center-above"        → centered above previous
+    #   "NxN"                 → explicit logical coordinates
+    computePositions = let
+      step = acc: m: let
+        prev = if acc == [] then { x = 0; y = 0; w = 0; h = 0; } else lib.last acc;
+        thisW = logicalW m;
+        thisH = logicalH m;
+        pos =
+          if acc == [] then { x = 0; y = 0; }  # first monitor always 0,0
+          else if m.position == "auto" || m.position == "auto-right" then
+            { x = prev.x + prev.w; y = prev.y; }
+          else if m.position == "auto-left" then
+            { x = prev.x - thisW; y = prev.y; }
+          else if m.position == "auto-above" then
+            { x = prev.x; y = prev.y - thisH; }
+          else if m.position == "auto-below" then
+            { x = prev.x; y = prev.y + prev.h; }
+          else if m.position == "center-below" then
+            { x = prev.x + (prev.w - thisW) / 2.0; y = prev.y + prev.h; }
+          else if m.position == "center-above" then
+            { x = prev.x + (prev.w - thisW) / 2.0; y = prev.y - thisH; }
+          else let
+            parts = lib.splitString "x" m.position;
+          in { x = lib.toInt (builtins.elemAt parts 0); y = lib.toInt (builtins.elemAt parts 1); };
+      in acc ++ [{ inherit (pos) x y; w = thisW; h = thisH; }];
+    in lib.foldl' step [] enabledMonitors;
+
+    positions = computePositions;
+
     # monitorrule lines
-    monitorrules = map (m: let
-      parts = lib.splitString "x" m.position;
-      hasExplicitPos = builtins.length parts == 2 && builtins.match "[0-9]+" (builtins.elemAt parts 0) != null;
-      px = builtins.elemAt parts 0;
-      py = builtins.elemAt parts 1;
-      posStr = lib.optionalString hasExplicitPos ",x:${px},y:${py}";
-    in "monitorrule = name:^${m.name}$,width:${toString m.width},height:${toString m.height},refresh:${toString m.refreshRate}${posStr},scale:1"
+    monitorrules = lib.imap0 (idx: m: let
+      pos = builtins.elemAt positions idx;
+      posStr = ",x:${toString (builtins.floor pos.x)},y:${toString (builtins.floor pos.y)}";
+    in "monitorrule = name:^${m.name}$,width:${toString m.width},height:${toString m.height},refresh:${toString m.refreshRate}${posStr},scale:${toString m.scale}"
     ) enabledMonitors;
 
     # workspace bind lines

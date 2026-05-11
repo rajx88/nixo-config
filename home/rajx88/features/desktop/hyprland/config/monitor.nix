@@ -53,8 +53,8 @@ in {
           if m.enabled
           then
             (if m.preferredMode
-            then "preferred,${toString m.position},1,transform,${toString m.vertical}"
-            else "${toString m.width}x${toString m.height}@${toString m.refreshRate},${toString m.position},1,transform,${toString m.vertical}")
+            then "preferred,${toString m.position},${toString m.scale},transform,${toString m.vertical}"
+            else "${toString m.width}x${toString m.height}@${toString m.refreshRate},${toString m.position},${toString m.scale},transform,${toString m.vertical}")
             + (lib.optionalString (m.bitdepth != null) ",bitdepth,${toString m.bitdepth}")
           else "disable"
         }"
