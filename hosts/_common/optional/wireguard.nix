@@ -2,13 +2,14 @@
   resolvectl = "${pkgs.systemd}/bin/resolvectl";
   systemctl  = "${pkgs.systemd}/bin/systemctl";
   ping       = "${pkgs.iputils}/bin/ping";
+  logger     = "${pkgs.util-linux}/bin/logger";
+  sleep      = "${pkgs.coreutils}/bin/sleep";
 
   # Pure TCP probe to pihole on the local link. No DNS, no public name.
   # 192.168.1.0/24 is not in wg0's allowedIPs, so the packet always takes
   # the local link — success means we're physically on the home LAN.
   homeProbe = pkgs.writeShellScript "wg-home-away-dispatcher" ''
     set -u
-    export PATH=/run/current-system/sw/bin:/run/wrappers/bin:$PATH
     iface="$1"
     status="$2"
 
@@ -22,19 +23,19 @@
     at_home() {
       for _ in 1 2 3 4 5; do
         ${ping} -c1 -W1 -n 192.168.1.100 >/dev/null 2>&1 && return 0
-        sleep 0.5
+        ${sleep} 0.5
       done
       return 1
     }
 
     enter_home() {
       ${systemctl} stop --quiet wg-quick-wg0 || true
-      logger -t wg-home-away "home ($iface $status) — wg0 stopped"
+      ${logger} -t wg-home-away "home ($iface $status) — wg0 stopped"
     }
 
     enter_away() {
       ${systemctl} start --quiet wg-quick-wg0 || true
-      logger -t wg-home-away "away ($iface $status) — wg0 started"
+      ${logger} -t wg-home-away "away ($iface $status) — wg0 started"
     }
 
     if at_home; then enter_home; else enter_away; fi
