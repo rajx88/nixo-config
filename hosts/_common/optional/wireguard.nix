@@ -1,64 +1,61 @@
 { pkgs, ... }: let
   resolvectl = "${pkgs.systemd}/bin/resolvectl";
   systemctl  = "${pkgs.systemd}/bin/systemctl";
-  dig        = "${pkgs.bind.dnsutils}/bin/dig";
+  ping       = "${pkgs.iputils}/bin/ping";
 
-  # Home-detect: query pihole directly with dig (bypasses systemd-resolved,
-  # so per-link DNS / IPv6 / cache races can't interfere). 192.168.1.0/24 is
-  # not in wg0's allowedIPs, so the packet always takes the local link — a
-  # successful query proves we're physically on the home LAN.
+  # Pure TCP probe to pihole on the local link. No DNS, no public name.
+  # 192.168.1.0/24 is not in wg0's allowedIPs, so the packet always takes
+  # the local link — success means we're physically on the home LAN.
   homeProbe = pkgs.writeShellScript "wg-home-away-dispatcher" ''
     set -u
     export PATH=/run/current-system/sw/bin:/run/wrappers/bin:$PATH
-    iface="$1"; status="$2"
+    iface="$1"
+    status="$2"
 
-    case "$status" in
-      up|dhcp4-change|connectivity-change) ;;
-      down) ;;
-      *) exit 0 ;;
+    # Only react to relevant NM events on real physical interfaces.
+    case "$status" in up|dhcp4-change|connectivity-change|down) ;; *) exit 0 ;; esac
+    case "$iface"  in
+      wg0|wg-full|lo|docker*|veth*|br-*|virbr*|tailscale*) exit 0 ;;
+      "")                                                  exit 0 ;;
     esac
 
-    # Don't trigger on wg interfaces themselves.
-    case "$iface" in wg0|wg-full|lo) exit 0 ;; esac
+    at_home() {
+      for _ in 1 2 3 4 5; do
+        ${ping} -c1 -W1 -n 192.168.1.100 >/dev/null 2>&1 && return 0
+        sleep 0.5
+      done
+      return 1
+    }
 
-    # Ask pihole directly for vpn.rx88.ws. This bypasses systemd-resolved
-    # entirely, so per-link DNS / IPv6 / cache races can't interfere.
-    # The packet to 192.168.1.100 always takes the local link (this subnet
-    # is not in wg0's allowedIPs), so a successful query = we're on home LAN.
-    # Ask pihole directly for vpn.rx88.ws. dig +short writes timeout errors
-    # to stdout too, so grep down to IPv4-shaped strings only.
-    ip=""
-    for _ in 1 2 3 4 5 6 7 8; do
-      ip=$(${dig} @192.168.1.100 +time=1 +tries=1 +short vpn.rx88.ws 2>/dev/null \
-            | grep -Eo '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' | head -1)
-      [ -n "$ip" ] && break
-      sleep 0.5
-    done
+    enter_home() {
+      ${systemctl} stop --quiet wg-quick-wg0 || true
+      logger -t wg-home-away "home ($iface $status) — wg0 stopped"
+    }
 
-    if [ -n "$ip" ]; then
-      # pihole answered → we're on home LAN.
-      if ${systemctl} is-active --quiet wg-quick-wg0; then
-        ${systemctl} stop wg-quick-wg0
-        logger -t wg-home-away "home ($iface $status, pihole=$ip) — stopped wg0"
-      fi
-    else
-      # pihole unreachable → we're away.
-      if ! ${systemctl} is-active --quiet wg-quick-wg0; then
-        ${systemctl} start wg-quick-wg0
-        logger -t wg-home-away "away ($iface $status, pihole unreachable) — started wg0"
-      fi
-    fi
+    enter_away() {
+      ${systemctl} start --quiet wg-quick-wg0 || true
+      logger -t wg-home-away "away ($iface $status) — wg0 started"
+    }
+
+    if at_home; then enter_home; else enter_away; fi
   '';
 in {
   services.resolved.enable = true;
   networking.networkmanager.dns = "systemd-resolved";
 
-  # No IPv6 yet (no pihole on IPv6, RA RDNSS keeps leaking ISP DNS into
-  # resolved). Globally disable IPv6 on all NM connections; revisit when we
-  # deploy a v6 DNS backend.
+  # Global routing domain: every *.lan query goes to pihole regardless of
+  # per-link DNS or IPv6 RA RDNSS leaks. When wg0 is up, its more-specific
+  # per-link `~lan` overrides this and routes via CoreDNS through the tunnel.
+  services.resolved.settings.Resolve = {
+    DNS = "192.168.1.100";
+    Domains = "~lan";
+  };
+
+  # Re-enable IPv6 globally. The dispatcher pins .lan→pihole on the active
+  # home link, so IPv6 RA RDNSS leaks no longer break .lan resolution.
   networking.networkmanager.settings = {
     connection = {
-      "ipv6.method" = "disabled";
+      "ipv6.method" = "auto";
     };
   };
 
