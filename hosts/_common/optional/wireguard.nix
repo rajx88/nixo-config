@@ -53,11 +53,13 @@ in {
   services.resolved.enable = true;
   networking.networkmanager.dns = "systemd-resolved";
 
-  # IPv6 RA/DHCPv6 DNS leaks ISP servers into resolved, bypassing pihole and
-  # breaking *.lan + the split-horizon home-detect. Disable IPv6 auto-DNS for
-  # all NM connections until we have a pihole-equivalent on IPv6.
-  networking.networkmanager.connectionConfig = {
-    "ipv6.ignore-auto-dns" = true;
+  # No IPv6 yet (no pihole on IPv6, RA RDNSS keeps leaking ISP DNS into
+  # resolved). Globally disable IPv6 on all NM connections; revisit when we
+  # deploy a v6 DNS backend.
+  networking.networkmanager.settings = {
+    connection = {
+      "ipv6.method" = "disabled";
+    };
   };
 
   networking.networkmanager.dispatcherScripts = [{
