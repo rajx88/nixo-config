@@ -31,6 +31,7 @@ in {
     ];
 
     extraConfig = ''
+      set -g extended-keys on
       set -ga terminal-overrides ",screen-256color*:Tc"
       set-option -g default-terminal "screen-256color"
       set -s escape-time 0
