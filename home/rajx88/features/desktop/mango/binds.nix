@@ -20,22 +20,17 @@
   playerctl = "${config.services.playerctld.package}/bin/playerctl";
 
   notify = "${pkgs.libnotify}/bin/notify-send";
-  wgSwitch = pkgs.writeShellScript "wg-switch" ''
-    # runs as root via pkexec — stop $1, start $2
-    [ -n "$1" ] && systemctl stop "$1" 2>/dev/null
-    [ -n "$2" ] && systemctl start "$2"
-  '';
   wgToggle = name: other: urgency: pkgs.writeShellScript "wg-toggle-${name}" ''
     svc=wg-quick-${name}
     if systemctl is-active --quiet $svc; then
-      pkexec ${wgSwitch} "" $svc
+      pkexec /etc/wg-switch "$svc" "" || exit 1
       ${notify} -u normal "VPN" "${name} stopped 🔓"
     else
       stop=""
       if systemctl is-active --quiet wg-quick-${other}; then
         stop=wg-quick-${other}
       fi
-      pkexec ${wgSwitch} "$stop" $svc
+      pkexec /etc/wg-switch "$stop" $svc || exit 1
       if [ -n "$stop" ] && systemctl is-active --quiet wg-quick-${other}; then
         ${notify} -u critical "VPN" "Failed to stop ${other}, aborting"
         exit 1

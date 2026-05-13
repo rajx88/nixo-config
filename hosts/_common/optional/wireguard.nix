@@ -5,6 +5,12 @@
   logger     = "${pkgs.util-linux}/bin/logger";
   sleep      = "${pkgs.coreutils}/bin/sleep";
 
+  wgSwitch = pkgs.writeShellScript "wg-switch" ''
+    # runs as root via pkexec — stop $1, start $2
+    [ -n "$1" ] && ${systemctl} stop "$1" 2>/dev/null
+    [ -n "$2" ] && ${systemctl} start "$2"
+  '';
+
   # Pure TCP probe to pihole on the local link. No DNS, no public name.
   # 192.168.1.0/24 is not in wg0's allowedIPs, so the packet always takes
   # the local link — success means we're physically on the home LAN.
@@ -41,6 +47,8 @@
     if at_home; then enter_home; else enter_away; fi
   '';
 in {
+  # Stable path for wg-switch so polkit policy can reference it
+  environment.etc."wg-switch" = { source = wgSwitch; mode = "0755"; };
   services.resolved.enable = true;
   networking.networkmanager.dns = "systemd-resolved";
 
