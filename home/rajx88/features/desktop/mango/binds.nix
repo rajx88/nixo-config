@@ -23,8 +23,10 @@
   wgToggle = name: other: urgency: pkgs.writeShellScript "wg-toggle-${name}" ''
     svc=wg-quick-${name}
     if systemctl is-active --quiet $svc; then
-      pkexec /etc/wg-switch "$svc" "" || exit 1
-      ${notify} -u normal "VPN" "${name} stopped 🔓"
+      pkexec /etc/wg-switch "$svc" ""
+      if ! systemctl is-active --quiet $svc; then
+        ${notify} -u normal "VPN" "${name} stopped 🔓"
+      fi
     else
       stop=""
       if systemctl is-active --quiet wg-quick-${other}; then
