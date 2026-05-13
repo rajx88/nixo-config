@@ -23,6 +23,7 @@
       libdrm
       mesa
       stdenv.cc.cc.lib # libstdc++
+      ncurses # Gradle native-platform terminal detection
       # JCEF (embedded Chromium for task descriptions, etc.)
       glib
       nss
