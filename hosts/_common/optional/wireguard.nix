@@ -60,8 +60,9 @@ in {
     Domains = "~lan";
   };
 
-  # Re-enable IPv6 globally. The dispatcher pins .lan→pihole on the active
-  # home link, so IPv6 RA RDNSS leaks no longer break .lan resolution.
+  # IPv6 enabled. With dhcpcd gone (useDHCP=false), NM is sole DHCP client
+  # and gets pihole DNS from DHCPv4. RA RDNSS may add extra IPv6 DNS but
+  # pihole stays on per-link, and Global ~lan routing covers .lan regardless.
   networking.networkmanager.settings = {
     connection = {
       "ipv6.method" = "auto";
