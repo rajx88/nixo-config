@@ -44,7 +44,7 @@
   networking = {
     networkmanager.enable = true;
     hostName = "yuji";
-    useDHCP = lib.mkForce true;
+    useDHCP = lib.mkForce false; # NM handles DHCP; dhcpcd conflicts w/ resolved DNS
   };
 
   boot = {
