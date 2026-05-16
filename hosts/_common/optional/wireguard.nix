@@ -22,8 +22,8 @@
     # Only react to relevant NM events on real physical interfaces.
     case "$status" in up|dhcp4-change|connectivity-change|down) ;; *) exit 0 ;; esac
     case "$iface"  in
-      wg0|wg-full|lo|docker*|veth*|br-*|virbr*|tailscale*) exit 0 ;;
-      "")                                                  exit 0 ;;
+      wg0|lo|docker*|veth*|br-*|virbr*|tailscale*) exit 0 ;;
+      "")                                           exit 0 ;;
     esac
 
     at_home() {
@@ -53,8 +53,8 @@ in {
   networking.networkmanager.dns = "systemd-resolved";
 
   # Global routing domain: every *.lan query goes to pihole regardless of
-  # per-link DNS or IPv6 RA RDNSS leaks. When wg0 is up, its more-specific
-  # per-link `~lan` overrides this and routes via CoreDNS through the tunnel.
+  # per-link DNS. When wg0 is up, its per-link `~.` overrides and routes
+  # ALL DNS through the tunnel's CoreDNS.
   services.resolved.settings.Resolve = {
     DNS = "192.168.1.100";
     Domains = "~lan";
@@ -75,24 +75,10 @@ in {
   }];
 
   networking.wg-quick.interfaces = {
-    # Away-from-home split-tunnel. At home, leave this DOWN — pihole + LAN
-    # handle *.lan natively; the tunnel would only hijack DNS through a
-    # broken hairpin path.
+    # Full-tunnel: ALL traffic and ALL DNS through home.
+    # At home the dispatcher keeps this DOWN — pihole + LAN handle
+    # everything natively.
     wg0 = {
-      address = [ "10.69.43.2/24" ];
-      privateKeyFile = "/persist/secrets/wireguard/private.key";
-      autostart = false;
-
-      peers = [{
-        publicKey = "7QagNiSoCbm5Yjr6oX9I86yJJOCQF+2LR1WQAQ/wozs=";
-        endpoint = "vpn.rx88.ws:51820";
-        allowedIPs = [ "10.69.43.0/24" ];
-        persistentKeepalive = 25;
-      }];
-    };
-
-    # Full-tunnel "DEFCON" mode: ALL traffic and ALL DNS through home.
-    wg-full = {
       address = [ "10.69.43.2/24" ];
       privateKeyFile = "/persist/secrets/wireguard/private.key";
       autostart = false;
@@ -111,16 +97,8 @@ in {
   systemd.services.wg-quick-wg0.serviceConfig = {
     ExecStartPost = [
       "${resolvectl} dns    wg0 10.69.43.1"
-      "${resolvectl} domain wg0 '~lan'"
+      "${resolvectl} domain wg0 '~.'"
     ];
     ExecStopPost = "-${resolvectl} revert wg0";
-  };
-
-  systemd.services.wg-quick-wg-full.serviceConfig = {
-    ExecStartPost = [
-      "${resolvectl} dns    wg-full 10.69.43.1"
-      "${resolvectl} domain wg-full '~.'"
-    ];
-    ExecStopPost = "-${resolvectl} revert wg-full";
   };
 }

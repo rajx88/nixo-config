@@ -20,29 +20,18 @@
   playerctl = "${config.services.playerctld.package}/bin/playerctl";
 
   notify = "${pkgs.libnotify}/bin/notify-send";
-  wgToggle = name: other: urgency: pkgs.writeShellScript "wg-toggle-${name}" ''
-    svc=wg-quick-${name}
+  wgToggle = pkgs.writeShellScript "wg-toggle" ''
+    svc=wg-quick-wg0
     if systemctl is-active --quiet $svc; then
       pkexec /etc/wg-switch "$svc" ""
       if ! systemctl is-active --quiet $svc; then
-        ${notify} -u normal "VPN" "${name} stopped 🔓"
+        ${notify} -u normal "VPN" "wg0 stopped 🔓"
       fi
     else
-      stop=""
-      if systemctl is-active --quiet wg-quick-${other}; then
-        stop=wg-quick-${other}
-      fi
-      pkexec /etc/wg-switch "$stop" $svc || exit 1
-      if [ -n "$stop" ] && systemctl is-active --quiet wg-quick-${other}; then
-        ${notify} -u critical "VPN" "Failed to stop ${other}, aborting"
-        exit 1
-      fi
-      [ -n "$stop" ] && ${notify} -u normal "VPN" "${other} stopped 🔓"
-      ${notify} -u ${urgency} "VPN" "${name} started 🔒"
+      pkexec /etc/wg-switch "" $svc || exit 1
+      ${notify} -u critical "VPN" "wg0 started 🔒"
     fi
   '';
-  wgToggleSplit = wgToggle "wg0" "wg-full" "normal";
-  wgToggleFull = wgToggle "wg-full" "wg0" "critical";
 in {
   wayland.windowManager.mango.settings = {
     bind =
@@ -135,8 +124,7 @@ in {
         "SUPER+SHIFT,p,spawn_shell,${screenshot}"
 
         # ── WireGuard VPN ──
-        "SUPER+SHIFT,v,spawn_shell,${wgToggleSplit}"
-        "SUPER+SHIFT,g,spawn_shell,${wgToggleFull}"
+        "SUPER+SHIFT,v,spawn_shell,${wgToggle}"
       ]
       ++ (lib.optionals config.services.playerctld.enable [
         "NONE,XF86AudioNext,spawn,${playerctl} next"
