@@ -6,24 +6,21 @@
 }: let
   pacEnabled = config.programs.proxy.pac.enable or false;
   pacUrl = config.programs.proxy.pac.url or "";
-  braveExec =
+  braveWrapped =
     if pacEnabled
-    then "${pkgs.brave}/bin/brave --proxy-pac-url=${pacUrl} %U"
-    else "${pkgs.brave}/bin/brave %U";
-in {
-  home.packages = [
-    (pkgs.brave.overrideAttrs (old: {
-      postInstall =
-        (old.postInstall or "")
-        + ''
-          for entry in $out/share/applications/brave*.desktop; do
-            if [ -f "$entry" ]; then
-              sed -i "s|^Exec=.*|Exec=${braveExec}|" "$entry"
-            fi
-          done
+    then
+      pkgs.symlinkJoin {
+        name = "brave-with-pac";
+        paths = [pkgs.brave];
+        buildInputs = [pkgs.makeWrapper];
+        postBuild = ''
+          wrapProgram $out/bin/brave \
+            --add-flags "--proxy-pac-url=${pacUrl}"
         '';
-    }))
-  ];
+      }
+    else pkgs.brave;
+in {
+  home.packages = [braveWrapped];
 
   # xdg.mimeApps.defaultApplications = {
   #   "image/*" = ["brave.desktop"];
