@@ -67,6 +67,18 @@ in {
     connection = {
       "ipv6.method" = "auto";
     };
+    # Prefer ethernet over WiFi when both are connected.
+    # Lower metric = higher priority default route.
+    # Prevents systemd-resolved from sending DNS queries over both interfaces
+    # simultaneously, which caused Pi-hole rate-limit storms (.107 + .110).
+    "connection-ethernet" = {
+      "ipv4.route-metric" = 10;
+      "ipv6.route-metric" = 10;
+    };
+    "connection-wifi" = {
+      "ipv4.route-metric" = 100;
+      "ipv6.route-metric" = 100;
+    };
   };
 
   networking.networkmanager.dispatcherScripts = [{
