@@ -11,9 +11,10 @@
     [ -n "$2" ] && ${systemctl} start "$2"
   '';
 
-  # Pure TCP probe to pihole on the local link. No DNS, no public name.
-  # 192.168.1.0/24 is not in wg0's allowedIPs, so the packet always takes
-  # the local link — success means we're physically on the home LAN.
+  # Probe pihole on the physical interface to detect home LAN.
+  # MUST bind ping to $iface — otherwise once wg0 is up, 0.0.0.0/0 routes
+  # the probe through the tunnel, pihole answers, and the script falsely
+  # thinks we're at home and tears down the tunnel.
   homeProbe = pkgs.writeShellScript "wg-home-away-dispatcher" ''
     set -u
     iface="$1"
@@ -26,10 +27,15 @@
       "")                                           exit 0 ;;
     esac
 
+    # Serialize: avoid two dispatcher instances racing each other.
+    exec 9>/run/wg-home-away.lock
+    ${pkgs.util-linux}/bin/flock -w 10 9 || exit 0
+
     at_home() {
-      for _ in 1 2 3 4 5; do
-        ${ping} -c1 -W1 -n 192.168.1.100 >/dev/null 2>&1 && return 0
-        ${sleep} 0.5
+      for _ in 1 2 3; do
+        # -I $iface: force probe out the physical NIC, never through wg0
+        ${ping} -c1 -W1 -I "$iface" -n 192.168.1.100 >/dev/null 2>&1 && return 0
+        ${sleep} 0.3
       done
       return 1
     }
@@ -40,6 +46,8 @@
     }
 
     enter_away() {
+      # Don't start if already running
+      ${systemctl} is-active --quiet wg-quick-wg0 && return 0
       ${systemctl} start --quiet wg-quick-wg0 || true
       ${logger} -t wg-home-away "away ($iface $status) — wg0 started"
     }
