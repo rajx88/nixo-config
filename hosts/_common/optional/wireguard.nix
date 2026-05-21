@@ -11,10 +11,11 @@
     [ -n "$2" ] && ${systemctl} start "$2"
   '';
 
-  # Probe pihole on the physical interface to detect home LAN.
-  # MUST bind ping to $iface — otherwise once wg0 is up, 0.0.0.0/0 routes
-  # the probe through the tunnel, pihole answers, and the script falsely
-  # thinks we're at home and tears down the tunnel.
+  # Probe pihole on ALL up physical interfaces to detect home LAN.
+  # We exclude wg0/virtual interfaces so the probe never goes through the
+  # tunnel (which would falsely confirm "home"). Probing all physical NICs
+  # avoids the race where WiFi triggers an event before it can route, even
+  # though ethernet is already proving we're home.
   homeProbe = pkgs.writeShellScript "wg-home-away-dispatcher" ''
     set -u
     iface="$1"
@@ -32,10 +33,15 @@
     ${pkgs.util-linux}/bin/flock -w 10 9 || exit 0
 
     at_home() {
-      for _ in 1 2 3; do
-        # -I $iface: force probe out the physical NIC, never through wg0
-        ${ping} -c1 -W1 -I "$iface" -n 192.168.1.100 >/dev/null 2>&1 && return 0
-        ${sleep} 0.3
+      # Probe pihole on ALL up physical interfaces, not just the trigger.
+      # Prevents race where WiFi event fires before WiFi can route, even
+      # though ethernet is already connected and proving we're home.
+      # wg0/lo/virtual interfaces are excluded so we never probe through the tunnel.
+      for ifc in $(${pkgs.iproute2}/bin/ip -o link show up | ${pkgs.gawk}/bin/awk -F': ' '{print $2}' | ${pkgs.gnugrep}/bin/grep -v -E '^(wg|lo|docker|veth|br-|virbr|tailscale)'); do
+        for _ in 1 2 3; do
+          ${ping} -c1 -W1 -I "$ifc" -n 192.168.1.100 >/dev/null 2>&1 && return 0
+          ${sleep} 0.3
+        done
       done
       return 1
     }
