@@ -5,4 +5,5 @@
   worktrunk = pkgs.callPackage ./worktrunk {};
   opencode = pkgs.callPackage ./opencode {};
   pi-coding-agent = pkgs.callPackage ./pi-coding-agent {};
+  brave-origin-nightly = pkgs.callPackage ./brave-origin-nightly {};
 }
