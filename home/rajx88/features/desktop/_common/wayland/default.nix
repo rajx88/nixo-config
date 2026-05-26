@@ -4,6 +4,7 @@
     ./swaylock.nix
     ./noctalia
     ./thunar.nix
+    ./fuzzel.nix
   ];
 
   xdg.mimeApps.enable = true;
