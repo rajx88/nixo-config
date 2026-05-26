@@ -133,7 +133,6 @@ in {
     zsh-abbr = {
       enable = true;
       abbreviations = {
-        asdfup = "asdf plugin update --all";
 
         jqless = "jq -C | less -r";
 
