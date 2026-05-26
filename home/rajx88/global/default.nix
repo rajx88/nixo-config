@@ -34,11 +34,11 @@
       enable = true;
       defaultApplications = {
         "text/plain" = ["code.desktop"];
-        "image/*" = ["brave-browser.desktop"];
-        "text/html" = ["brave-browser.desktop"];
-        "text/xml" = ["brave-browser.desktop"];
-        "x-scheme-handler/http" = ["brave-browser.desktop"];
-        "x-scheme-handler/https" = ["brave-browser.desktop"];
+        "image/*" = ["brave-origin-nightly.desktop"];
+        "text/html" = ["brave-origin-nightly.desktop"];
+        "text/xml" = ["brave-origin-nightly.desktop"];
+        "x-scheme-handler/http" = ["brave-origin-nightly.desktop"];
+        "x-scheme-handler/https" = ["brave-origin-nightly.desktop"];
       };
     };
     userDirs = {
@@ -70,7 +70,7 @@
       FLAKE = "$HOME/code/nix/nixo-config";
       NH_FLAKE = "$HOME/code/nix/nixo-config";
       TERM = "ghostty";
-      BROWSER = "brave";
+      BROWSER = "brave-origin-nightly";
       VAULT_PATH = "${config.home.homeDirectory}/code/notes";
     };
 
