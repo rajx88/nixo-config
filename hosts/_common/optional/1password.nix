@@ -16,7 +16,8 @@
       text = ''
         zen
         zen-beta
-      ''; # include both names to support either the unwrapped/stable binary or the beta package
+        brave-origin-nightly
+      '';
       mode = "0755";
     };
   };
