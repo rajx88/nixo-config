@@ -17,5 +17,13 @@
 in {
   home.packages = [braveOriginWrapped];
 
+  xdg.mimeApps.defaultApplications = {
+    "text/html" = ["brave-origin-nightly.desktop"];
+    "text/xml" = ["brave-origin-nightly.desktop"];
+    "x-scheme-handler/http" = ["brave-origin-nightly.desktop"];
+    "x-scheme-handler/https" = ["brave-origin-nightly.desktop"];
+    "x-scheme-handler/chromium" = ["brave-origin-nightly.desktop"];
+  };
+
   home.persistence."/persist".directories = [".config/BraveSoftware/Brave-Origin-Nightly"];
 }
