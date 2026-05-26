@@ -108,7 +108,7 @@ in {
         "SUPER+SHIFT,m,toggle_named_scratchpad,scratchpad.todo,none,ghostty --class=scratchpad.todo -e zsh -ic 'nvim ${vaultPath}/scratchpad.md'"
 
         # ── Noctalia ──
-        "SUPER,space,spawn,noctalia-shell ipc call launcher toggle"
+        "SUPER,space,spawn,fuzzel"
         "SUPER+SHIFT,w,spawn,noctalia-shell ipc call controlCenter toggle"
         "SUPER,Escape,spawn,noctalia-shell ipc call sessionMenu toggle"
         "SUPER,backspace,spawn,swaylock-lock"
