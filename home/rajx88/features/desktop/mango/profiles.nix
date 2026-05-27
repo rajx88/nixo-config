@@ -64,8 +64,8 @@
 
     # workspace bind lines
     wsBinds = lib.concatMap (m:
-      map (ws: "bind = SUPER,${wsToKey ws},viewcrossmon,${toString ws},${m.name}") m.workspaces
-      ++ map (ws: "bind = SUPER+SHIFT,${wsToKey ws},tagcrossmon,${toString ws},${m.name}") m.workspaces
+      map (ws: "bind = SUPER,${wsToKey ws},viewcrossmon,${toString ws},^${m.name}$") m.workspaces
+      ++ map (ws: "bind = SUPER+SHIFT,${wsToKey ws},tagcrossmon,${toString ws},^${m.name}$") m.workspaces
     ) (lib.filter (m: m.workspaces != []) enabledMonitors);
 
     # tagrule lines
