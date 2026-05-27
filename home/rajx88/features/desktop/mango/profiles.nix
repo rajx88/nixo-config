@@ -214,6 +214,14 @@ in lib.mkIf (cfg.enable or false) {
     _mprofile "$@"
   '';
 
+  programs.fish.completions.mprofile = ''
+    complete -c mprofile -f
+    complete -c mprofile -n "__fish_use_subcommand" -a list -d "List available profile names"
+    complete -c mprofile -n "__fish_use_subcommand" -a auto -d "Auto-detect and apply profile"
+    complete -c mprofile -n "__fish_use_subcommand" -a set -d "Apply a named profile"
+    complete -c mprofile -n "__fish_seen_subcommand_from set" -a "(mprofile list 2>/dev/null)" -d "Profile"
+  '';
+
   home.activation.monitorProfileDefault = lib.hm.dag.entryAfter ["writeBoundary"] ''
     ln -sf profiles/${cfg.default}.conf "''${XDG_CONFIG_HOME:-$HOME/.config}/mango/active-profile.conf"
   '';

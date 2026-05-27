@@ -67,6 +67,29 @@ _rback() {
 
 _rback "$@"
 ZSH
+
+    mkdir -p $out/share/fish/vendor_completions.d
+    cat > $out/share/fish/vendor_completions.d/rback.fish <<'FISH'
+# Fish completions for rback
+complete -c rback -f
+complete -c rback -n "__fish_use_subcommand" -a snapshots -d "List available snapshots"
+complete -c rback -n "__fish_use_subcommand" -a backup -d "Run a backup now (interactive)"
+complete -c rback -n "__fish_use_subcommand" -a logs -d "Follow hourly backup progress in journal"
+complete -c rback -n "__fish_use_subcommand" -a forget -d "Delete a specific snapshot and prune"
+complete -c rback -n "__fish_use_subcommand" -a restore -d "Restore home (default: latest)"
+complete -c rback -n "__fish_use_subcommand" -a restore-path -d "Restore specific path"
+complete -c rback -n "__fish_use_subcommand" -a ls -d "List files in a snapshot"
+complete -c rback -n "__fish_use_subcommand" -a mount -d "Mount snapshots as FUSE filesystem"
+complete -c rback -n "__fish_use_subcommand" -a diff -d "Show diff between two snapshots"
+complete -c rback -n "__fish_use_subcommand" -a unlock -d "Remove stale repository locks"
+complete -c rback -n "__fish_use_subcommand" -a status -d "Show backup service status"
+complete -c rback -n "__fish_use_subcommand" -a check -d "Verify backup integrity"
+complete -c rback -n "__fish_use_subcommand" -a size -d "Show backup size on remote"
+complete -c rback -n "__fish_use_subcommand" -a overview -d "Show snapshot retention policy overview"
+complete -c rback -n "__fish_use_subcommand" -a help -d "Show this help"
+complete -c rback -n "__fish_seen_subcommand_from mount" -F
+complete -c rback -n "__fish_seen_subcommand_from restore-path" -F
+FISH
   '';
 
   persist-backup = pkgs.writeShellScriptBin "rback" ''

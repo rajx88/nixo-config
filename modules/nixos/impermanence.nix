@@ -104,6 +104,14 @@ _fsdiff() {
 
 _fsdiff "$@"
 ZSH
+
+              mkdir -p $out/share/fish/vendor_completions.d
+              cat > $out/share/fish/vendor_completions.d/fsdiff.fish <<'FISH'
+complete -c fsdiff -s v -l verbose -d "Print debug SKIP/INCLUDE to stderr"
+complete -c fsdiff -s t -l targets -d "Show resolved symlink targets"
+complete -c fsdiff -l show-store -d "Include nix/store symlinks in output"
+complete -c fsdiff -F
+FISH
             '';
           in
             with pkgs; [
