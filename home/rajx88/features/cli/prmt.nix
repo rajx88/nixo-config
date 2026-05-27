@@ -29,7 +29,7 @@
       typeset -ga precmd_functions
       precmd_functions+=(_prmt_git_sync)
 
-      PROMPT='$(prmt --shell zsh --code $? " {path:#89dceb} {git:#f9e2af:f: } {env:#f38ba8:PRMT_GIT_SYNC} {time:dim:24hs} \n{ok:#a6e3a1}{fail:#f38ba8} ")'
+      PROMPT='$(prmt --shell zsh --code $? " {path:#a277ff} {git:#ffca85:f: } {env:#ff6767:PRMT_GIT_SYNC} {time:#82e2ff:24hs} \n{ok:#61ffca}{fail:#ff6767} ")'
     '';
   };
 
@@ -59,7 +59,7 @@
       body = ''
         set -l last_status $status
         _prmt_git_sync
-        prmt --shell none --code $last_status "{path:#89dceb} {git:#f9e2af:f: } {env:#f38ba8:PRMT_GIT_SYNC} {time:dim:24hs} {ok:#a6e3a1:>}{fail:#f38ba8:>} "
+        prmt --shell none --code $last_status "{path:#a277ff} {git:#ffca85:f: } {env:#ff6767:PRMT_GIT_SYNC} {time:#82e2ff:24hs} {ok:#61ffca:>}{fail:#ff6767:>} "
       '';
     };
   };
