@@ -124,7 +124,7 @@
       fi
 
       ln -sf "profiles/$profile.conf" "$ACTIVE"
-      mmsg -s -d reload_config
+      mmsg dispatch reload_config
     }
 
     auto_detect() {
