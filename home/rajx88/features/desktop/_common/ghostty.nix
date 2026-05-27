@@ -5,12 +5,11 @@
     enableFishIntegration = true;
     settings = {
       term = "xterm-256color";
-      theme = "TokyoNight";
-      # theme = "rose-pine";
       # theme = "Fairyfloss";
+      # theme = "rose-pine";
       # theme = "heeler";
       # theme = "catppuccin-macchiato";
-      # theme = "Aura";
+      theme = "Aura";
       # theme = "flow-pink";
       # theme = "Builtin Pastel Dark";
 
