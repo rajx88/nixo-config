@@ -2,6 +2,7 @@
   programs.ghostty = {
     enable = true;
     enableZshIntegration = true;
+    enableFishIntegration = true;
     settings = {
       term = "xterm-256color";
       theme = "TokyoNight";

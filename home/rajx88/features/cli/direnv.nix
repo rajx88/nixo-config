@@ -9,6 +9,7 @@
     mise.enable = true;
     enableZshIntegration = true;
     enableBashIntegration = true;
+    enableFishIntegration = true;
 
     config = builtins.fromTOML ''
       [global]

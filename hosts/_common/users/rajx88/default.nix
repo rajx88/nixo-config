@@ -12,7 +12,7 @@ in {
   users.mutableUsers = false;
   users.users.rajx88 = {
     isNormalUser = true;
-    shell = pkgs.zsh;
+    shell = pkgs.fish;
 
     hashedPasswordFile = "/persist/passwords/user";
 
