@@ -2,6 +2,7 @@
   programs.atuin = {
     enable = true;
     enableZshIntegration = true;
+    enableFishIntegration = true;
     settings = {
       sync_address = "http://atuin.lan";
       auto_sync = true;

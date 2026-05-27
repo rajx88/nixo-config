@@ -16,6 +16,7 @@
       ./systemd-initrd.nix
       ./systemd.nix
       ./zsh.nix
+      ./fish.nix
     ]
     ++ (builtins.attrValues outputs.nixosModules);
 
