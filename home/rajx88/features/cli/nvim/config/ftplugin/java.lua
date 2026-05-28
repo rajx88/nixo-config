@@ -117,7 +117,7 @@ local config = {
         },
       },
       saveActions = {
-        organizeImports = true,
+        organizeImports = false,
       },
 
       -- References + decompiler
