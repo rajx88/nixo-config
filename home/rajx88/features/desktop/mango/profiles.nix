@@ -34,7 +34,10 @@
         thisW = logicalW m;
         thisH = logicalH m;
         pos =
-          if acc == [] then { x = 0; y = 0; }  # first monitor always 0,0
+          if acc == [] then
+            (if m.position != "auto" && !lib.hasPrefix "auto-" m.position && !lib.hasPrefix "center-" m.position
+            then let parts = lib.splitString "x" m.position; in { x = lib.toInt (builtins.elemAt parts 0); y = lib.toInt (builtins.elemAt parts 1); }
+            else { x = 0; y = 0; })  # first monitor defaults to 0,0 unless explicit
           else if m.position == "auto" || m.position == "auto-right" then
             { x = prev.x + prev.w; y = prev.y; }
           else if m.position == "auto-left" then
@@ -59,7 +62,7 @@
     monitorrules = lib.imap0 (idx: m: let
       pos = builtins.elemAt positions idx;
       posStr = ",x:${toString (builtins.floor pos.x)},y:${toString (builtins.floor pos.y)}";
-    in "monitorrule = name:^${m.name}$,width:${toString m.width},height:${toString m.height},refresh:${toString m.refreshRate}${posStr},scale:${toString m.scale}"
+    in "monitorrule = name:^${m.name}$,width:${toString m.width},height:${toString m.height},refresh:${toString m.refreshRate}${posStr},scale:${toString m.scale}" + (lib.optionalString (m.vertical != "0") ",rr:${m.vertical}")
     ) enabledMonitors;
 
     # workspace bind lines
