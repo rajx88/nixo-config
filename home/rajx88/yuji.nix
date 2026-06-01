@@ -63,7 +63,7 @@
           preferredMode = false;
           refreshRate = 120;
           bitdepth = 10;
-          scale = 1.25;
+          # scale = 1.25;
           position = "0x0";
           workspaces = [1 2 3 4 5];
           layout = "scroller";
@@ -76,10 +76,10 @@
           preferredMode = false;
           refreshRate = 120;
           bitdepth = 10;
-          scale = 1.25;
+          # scale = 1.25;
           workspaces = [6 7 8 9 10];
           layout = "scroller";
-          position = "3072x0";
+          position = "3840x0";
         }
         {
           name = "eDP-1";
