@@ -109,8 +109,8 @@ in {
 
         # ── Noctalia ──
         "SUPER,space,spawn,fuzzel"
-        "SUPER+SHIFT,w,spawn,noctalia-shell ipc call controlCenter toggle"
-        "SUPER,Escape,spawn,noctalia-shell ipc call sessionMenu toggle"
+        "SUPER+SHIFT,w,spawn,noctalia msg panel-toggle control-center"
+        "SUPER,Escape,spawn,noctalia msg panel-toggle session"
         "SUPER,backspace,spawn,swaylock-lock"
 
         # ── Volume ──

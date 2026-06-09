@@ -69,14 +69,14 @@ in {
       ++
       # Launcher — noctalia built-in
       [
-        "$mod,space,exec,noctalia-shell ipc call launcher toggle"
+        "$mod,space,exec,noctalia msg panel-toggle launcher"
       ]
       ++ [
         # noctalia control center
-        "$mod SHIFT,w,exec,noctalia-shell ipc call controlCenter toggle"
+        "$mod SHIFT,w,exec,noctalia msg panel-toggle control-center"
 
         # Noctalia session menu (power options)
-        "$mod,Escape,exec,noctalia-shell ipc call sessionMenu toggle"
+        "$mod,Escape,exec,noctalia msg panel-toggle session"
 
         # Scratchpad toggles
         "$mod,n,togglespecialworkspace,notes"

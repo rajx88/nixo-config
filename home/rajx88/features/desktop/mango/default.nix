@@ -63,7 +63,7 @@ in {
     };
 
     autostart_sh = ''
-      noctalia-shell &
+      noctalia &
       mprofile auto &
     '';
 
