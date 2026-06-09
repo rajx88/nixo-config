@@ -42,11 +42,8 @@ in {
           position = "top";
           background_opacity = 0.69;
           capsule = false;
-          widget_spacing = 10;
-          padding = 10;
-          margin_h = 0;
-          margin_v = 0;
-          shadow = true;
+          # margin_ends = 10;
+          # margin_edge = 10;
 
           start = ["launcher" "cpu" "ram" "temp" "wallpaper" "media"];
           center = ["workspaces" "clipboard"];
