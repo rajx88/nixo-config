@@ -10,6 +10,16 @@ in {
     settings = {
       shell = {
         font_family = "Atkinson Hyperlegible Mono";
+        panel = {
+          control_center_placement = "floating";
+          launcher_placement = "centered";
+          session_placement = "centered";
+          wallpaper_placement = "centered";
+          open_near_click_control_center = true;
+          open_near_click_clipboard = true;
+          open_near_click_session = true;
+          open_near_click_wallpaper = true;
+        };
       };
 
       wallpaper = {
@@ -28,12 +38,13 @@ in {
       dock.enabled = false;
 
       widget = {
-        clock.format = "{:%H:%M:%S}";
+        clock.format = "{:%d/%m/%Y %H:%M:%S}";
         control-center.glyph = "north-star";
         network.show_label = false;
         sysmon.stat = "ram_pct";
         workspaces.hide_when_empty = true;
         ram.stat = "ram_pct";
+        battery.display_mode = "graphic";
       };
 
       bar = {
