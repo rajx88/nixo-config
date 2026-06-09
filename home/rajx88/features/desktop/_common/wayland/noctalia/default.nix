@@ -1,62 +1,74 @@
 {inputs, config, ...}: let
-  widgets = builtins.fromJSON (builtins.readFile ./noctalia-widgets.json);
   home = config.home.homeDirectory;
 in {
   imports = [
     inputs.noctalia.homeModules.default
   ];
 
-  programs.noctalia-shell = {
+  programs.noctalia = {
     enable = true;
     settings = {
-      settingsVersion = 59;
-
-      general.avatarImage = "${home}/.face";
-
-      ui = {
-        fontDefault = "Atkinson Hyperlegible Mono";
-        fontFixed = "monospace";
+      shell = {
+        font_family = "Atkinson Hyperlegible Mono";
       };
 
-      appLauncher = {
-        enableClipboardHistory = true;
-        terminalCommand = "ghostty -e";
+      wallpaper = {
+        enabled = true;
+        directory = "${home}/.local/share/wallpapers";
+        default.path = "${home}/.local/share/wallpapers/wall-01.jpg";
       };
 
-      bar = {
-        barType = "floating";
-        capsuleOpacity = 0;
-        widgetSpacing = 10;
-        contentPadding = 10;
-        backgroundOpacity = 0.69;
-        useSeparateOpacity = true;
-        mouseWheelAction = "volume";
-        middleClickAction = "settings";
-        inherit widgets;
+      theme = {
+        mode = "dark";
+        source = "wallpaper";
       };
 
-      location = {
-        weatherEnabled = false;
-        showWeekNumberInCalendar = true;
-        autoLocate = false;
-      };
-
-      calendar.cards = [
-        { enabled = true; id = "calendar-header-card"; }
-        { enabled = true; id = "calendar-month-card"; }
-        { enabled = false; id = "weather-card"; }
-      ];
-
-      wallpaper.directory = "${home}/.local/share/wallpapers";
+      weather.enabled = true;
 
       dock.enabled = false;
 
-      colorSchemes.useWallpaperColors = true;
+      widget = {
+        clock.format = "{:%H:%M:%S}";
+        control-center.glyph = "north-star";
+        network.show_label = false;
+        sysmon.stat = "ram_pct";
+        workspaces.hide_when_empty = true;
+        ram.stat = "ram_pct";
+      };
+
+      bar = {
+        order = ["default"];
+        default = {
+          position = "top";
+          background_opacity = 0.69;
+          capsule = false;
+          widget_spacing = 10;
+          padding = 10;
+          margin_h = 0;
+          margin_v = 0;
+          shadow = true;
+
+          start = ["launcher" "cpu" "ram" "temp" "wallpaper" "media"];
+          center = ["workspaces" "clipboard"];
+          end = [
+            "tray"
+            "notifications"
+            "network"
+            "bluetooth"
+            "volume"
+            "brightness"
+            "battery"
+            "clock"
+            "control-center"
+            "session"
+          ];
+        };
+      };
     };
   };
 
   home.persistence."/persist".directories = [
-    ".config/noctalia"
     ".cache/noctalia"
+    ".local/state/noctalia"
   ];
 }

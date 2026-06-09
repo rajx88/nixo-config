@@ -49,7 +49,7 @@
 
     settings = {
       exec-once = [
-        "noctalia-shell"
+        "noctalia"
       ];
 
       general = {
