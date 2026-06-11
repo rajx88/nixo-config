@@ -171,7 +171,8 @@ stdenv.mkDerivation {
     # Fix path to bash in wrapper
     substituteInPlace $BINARYWRAPPER \
         --replace-fail /bin/bash ${stdenv.shell} \
-        --replace-fail 'CHROME_WRAPPER' 'WRAPPER'
+        --replace-fail 'CHROME_WRAPPER' 'WRAPPER' \
+        --replace-fail 'CHROME_VERSION_EXTRA="stable"' 'CHROME_VERSION_EXTRA=""'
 
     ln -sf $BINARYWRAPPER $out/bin/${pname}
 
@@ -183,9 +184,9 @@ stdenv.mkDerivation {
 
     # Fix paths in desktop files
     substituteInPlace $out/share/applications/brave-origin.desktop \
-        --replace-fail /usr/bin/brave-origin $out/bin/${pname}
+        --replace-fail /usr/bin/brave-origin-stable $out/bin/${pname}
     substituteInPlace $out/share/applications/com.brave.Origin.desktop \
-        --replace-fail /usr/bin/brave-origin $out/bin/${pname}
+        --replace-fail /usr/bin/brave-origin-stable $out/bin/${pname}
     substituteInPlace $out/share/gnome-control-center/default-apps/brave-origin.xml \
         --replace-fail /opt/brave.com $out/opt/brave.com
     substituteInPlace $out/opt/brave.com/brave-origin/default-app-block \
