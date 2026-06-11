@@ -19,6 +19,13 @@ in {
         "@franlol/opencode-md-table-formatter@latest"
         "opencode-mermaid-renderer@latest"
       ];
+      mcp = {
+        codegraph = {
+          type = "local";
+          command = ["codegraph" "serve" "--mcp"];
+          enabled = true;
+        };
+      };
       permission = {
         bash = {
           "rm *" = "ask";
@@ -31,21 +38,6 @@ in {
       };
     };
   };
-
-  home.packages = [ocd];
-
-  home.file.".local/completions/_ocd".text = ''
-    #compdef ocd
-
-    _ocd() {
-      _arguments \
-        '*-d[Mount directory into container]:directory:_directories' \
-        '-h[Show help]' \
-        '*::opencode args:_default'
-    }
-
-    _ocd "$@"
-  '';
 
   home.sessionVariables.OPENCODE_CONFIG = "$HOME/.config/opencode/overrides.json";
 
