@@ -41,6 +41,7 @@
     ./features/dev/aws.nix
     ./features/dev/python.nix
     ./features/dev/worktrunk.nix
+    ./features/dev/codegraph.nix
 
     ./features/dev/bruno.nix
   ];
