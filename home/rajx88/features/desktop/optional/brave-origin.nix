@@ -5,17 +5,17 @@
     if pacEnabled
     then
       pkgs.symlinkJoin {
-        name = "brave-origin-nightly-with-pac";
-        paths = [pkgs.brave-origin-nightly];
+        name = "brave-origin-with-pac";
+        paths = [pkgs.brave-origin];
         buildInputs = [pkgs.makeWrapper];
         postBuild = ''
-          wrapProgram $out/bin/brave-origin-nightly \
+          wrapProgram $out/bin/brave-origin \
             --add-flags "--proxy-pac-url=${pacUrl}"
         '';
       }
-    else pkgs.brave-origin-nightly;
+    else pkgs.brave-origin;
 in {
   home.packages = [braveOriginWrapped];
 
-  home.persistence."/persist".directories = [".config/BraveSoftware/Brave-Origin-Nightly"];
+  home.persistence."/persist".directories = [".config/BraveSoftware/Brave-Origin"];
 }

@@ -6,5 +6,5 @@
   opencode = pkgs.callPackage ./opencode {};
   pi-coding-agent = pkgs.callPackage ./pi-coding-agent {};
   codegraph = pkgs.callPackage ./codegraph {};
-  brave-origin-nightly = pkgs.callPackage ./brave-origin-nightly {};
+  brave-origin = pkgs.callPackage ./brave-origin {};
 }

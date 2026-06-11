@@ -22,7 +22,7 @@
     ./features/games/steam.nix
 
     ./features/desktop/optional/keymapp.nix
-    ./features/desktop/optional/brave-origin-nightly.nix
+    ./features/desktop/optional/brave-origin.nix
 
     # dev
     ./features/dev/jetbrains.nix
