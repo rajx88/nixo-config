@@ -62,6 +62,7 @@ in {
       ".classpath"
       ".factorypath"
       ".settings/"
+      ".codegraph"
     ];
     settings = {
       init.defaultBranch = "main";
