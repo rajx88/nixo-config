@@ -62,12 +62,12 @@
 }:
 
 let
-  pname = "brave-origin-nightly";
-  version = "1.93.49";
+  pname = "brave-origin";
+  version = "1.91.168";
 
   src = fetchurl {
-    url = "https://github.com/brave/brave-browser/releases/download/v${version}/brave-origin-nightly_${version}_amd64.deb";
-    hash = "sha256-/lhLGWtdYwBfXQM4jRd9f5mGE2C++GSBebLtsMaqLsw=";
+    url = "https://github.com/brave/brave-browser/releases/download/v${version}/brave-origin_${version}_amd64.deb";
+    hash = "sha256-C+bclH7ai1ZnConMSZQ8Ecccm1unTDZRw9trZV7gZvM=";
   };
 
   deps = [
@@ -166,7 +166,7 @@ stdenv.mkDerivation {
     cp -R usr/share $out
     cp -R opt/ $out/opt
 
-    export BINARYWRAPPER=$out/opt/brave.com/brave-origin-nightly/brave-origin-nightly
+    export BINARYWRAPPER=$out/opt/brave.com/brave-origin/brave-origin
 
     # Fix path to bash in wrapper
     substituteInPlace $BINARYWRAPPER \
@@ -175,20 +175,20 @@ stdenv.mkDerivation {
 
     ln -sf $BINARYWRAPPER $out/bin/${pname}
 
-    for exe in $out/opt/brave.com/brave-origin-nightly/{brave,chrome_crashpad_handler}; do
+    for exe in $out/opt/brave.com/brave-origin/{brave,chrome_crashpad_handler}; do
         patchelf \
             --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
             --set-rpath "${rpath}" $exe
     done
 
     # Fix paths in desktop files
-    substituteInPlace $out/share/applications/brave-origin-nightly.desktop \
-        --replace-fail /usr/bin/brave-origin-nightly $out/bin/${pname}
-    substituteInPlace $out/share/applications/com.brave.Origin.nightly.desktop \
-        --replace-fail /usr/bin/brave-origin-nightly $out/bin/${pname}
-    substituteInPlace $out/share/gnome-control-center/default-apps/brave-origin-nightly.xml \
+    substituteInPlace $out/share/applications/brave-origin.desktop \
+        --replace-fail /usr/bin/brave-origin $out/bin/${pname}
+    substituteInPlace $out/share/applications/com.brave.Origin.desktop \
+        --replace-fail /usr/bin/brave-origin $out/bin/${pname}
+    substituteInPlace $out/share/gnome-control-center/default-apps/brave-origin.xml \
         --replace-fail /opt/brave.com $out/opt/brave.com
-    substituteInPlace $out/opt/brave.com/brave-origin-nightly/default-app-block \
+    substituteInPlace $out/opt/brave.com/brave-origin/default-app-block \
         --replace-fail /opt/brave.com $out/opt/brave.com
 
     # Correct icons location
@@ -197,13 +197,13 @@ stdenv.mkDerivation {
     for icon in ''${icon_sizes[*]}
     do
         mkdir -p $out/share/icons/hicolor/''${icon}x''${icon}/apps
-        ln -s $out/opt/brave.com/brave-origin-nightly/product_logo_''${icon}_nightly.png \
-          $out/share/icons/hicolor/''${icon}x''${icon}/apps/brave-origin-nightly.png
+        ln -s $out/opt/brave.com/brave-origin/product_logo_''${icon}.png \
+          $out/share/icons/hicolor/''${icon}x''${icon}/apps/brave-origin.png
     done
 
     # Replace xdg-settings and xdg-mime
-    ln -sf ${xdg-utils}/bin/xdg-settings $out/opt/brave.com/brave-origin-nightly/xdg-settings
-    ln -sf ${xdg-utils}/bin/xdg-mime $out/opt/brave.com/brave-origin-nightly/xdg-mime
+    ln -sf ${xdg-utils}/bin/xdg-settings $out/opt/brave.com/brave-origin/xdg-settings
+    ln -sf ${xdg-utils}/bin/xdg-mime $out/opt/brave.com/brave-origin/xdg-mime
 
     runHook postInstall
   '';
@@ -231,15 +231,15 @@ stdenv.mkDerivation {
   '';
 
   installCheckPhase = ''
-    $out/opt/brave.com/brave-origin-nightly/brave --version
+    $out/opt/brave.com/brave-origin/brave --version
   '';
 
   meta = {
-    homepage = "https://brave.com/";
-    description = "Brave Origin (nightly) - Brave without crypto/web3 features";
+    homepage = "https://brave.com/origin/";
+    description = "Brave Origin - Brave without crypto/web3 features (stable)";
     changelog = "https://github.com/brave/brave-browser/blob/master/CHANGELOG_DESKTOP_ORIGIN.md";
     license = lib.licenses.mpl20;
     platforms = ["x86_64-linux"];
-    mainProgram = "brave-origin-nightly";
+    mainProgram = "brave-origin";
   };
 }

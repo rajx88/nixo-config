@@ -16,7 +16,7 @@
       text = ''
         zen
         zen-beta
-        brave-origin-nightly
+        brave-origin
       '';
       mode = "0755";
     };
