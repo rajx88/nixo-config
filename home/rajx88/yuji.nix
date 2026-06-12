@@ -23,6 +23,7 @@
 
     ./features/desktop/optional/keymapp.nix
     ./features/desktop/optional/brave-origin.nix
+    ./features/desktop/optional/qutebrowser.nix
 
     # dev
     ./features/dev/jetbrains.nix
