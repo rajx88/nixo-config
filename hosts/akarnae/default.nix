@@ -18,9 +18,11 @@
 
     ../_common/optional/zsa.nix
     ../_common/optional/systemd-boot.nix
-    ../_common/optional/greetd.nix
+    ../_common/optional/ly.nix
+    ../_common/optional/mango.nix
 
     ../_common/optional/pipewire.nix
+    ../_common/optional/net-debug.nix
   ];
 
   host.filesystem = {
@@ -35,20 +37,15 @@
   };
 
   boot = {
-    kernelPackages = pkgs.linuxKernel.packages.linux_zen;
-    # kernelParams = ["nvidia.NVreg_PreserveVideoMemoryAllocations=1"];
+    kernelPackages = pkgs.linuxPackages_latest;
+    kernelModules = [ "nvidia" "nvidia_modeset" "nvidia_drm" "nvidia_uvm" ];
+    kernelParams = [ "nvidia.NVreg_PreserveVideoMemoryAllocations=1" ];
   };
 
-  # boot.loader.systemd-boot = {
-  #   extraEntries = {
-  #     "nvidia-drm.modeset=1"
-  #   }
-  # };
+  nixpkgs.config.nvidia.acceptLicense = true;
 
   programs = {
-    # adb.enable = true;
     dconf.enable = true;
-    # kdeconnect.enable = true;
   };
 
   services.hardware.openrgb.enable = true;
@@ -83,9 +80,18 @@
       # accessible via `nvidia-settings`.
       nvidiaSettings = true;
 
-      # Optionally, you may need to select the appropriate driver version for your specific GPU.
-      package = config.boot.kernelPackages.nvidiaPackages.stable;
+      # legacy_580 (580.159.04) required for GTX 1080 Ti (Pascal) — 595+ dropped support
+      package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
     };
+  };
+
+  environment.sessionVariables = {
+    WLR_NO_HARDWARE_CURSORS = "1";
+    WLR_DRM_NO_ATOMIC = "1";
+    LIBVA_DRIVER_NAME = "nvidia";
+    GBM_BACKEND = "nvidia-drm";
+    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+    __GL_VRR_ALLOWED = "1";
   };
 
   # DO NOT TOUCH BEFORE GOOGLING IT.

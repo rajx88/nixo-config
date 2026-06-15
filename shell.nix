@@ -24,6 +24,7 @@
       python3
 
       just
+      nh
     ];
   };
 }

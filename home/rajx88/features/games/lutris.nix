@@ -10,7 +10,7 @@
       ];
       extraPkgs = pkgs: [
         # List package dependencies here
-        pkgs.wineWowPackages.staging
+        pkgs.wineWow64Packages.staging
       ];
     })
   ];
