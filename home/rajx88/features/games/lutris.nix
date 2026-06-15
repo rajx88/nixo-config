@@ -4,6 +4,8 @@
   ...
 }: {
   home.packages = with pkgs; [
+    protonup-qt
+    winetricks
     (lutris.override {
       extraLibraries = pkgs: [
         # List library dependencies here
