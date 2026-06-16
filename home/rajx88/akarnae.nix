@@ -54,9 +54,8 @@
           name = "DP-2";
           width = 3840;
           height = 2160;
-          preferredMode = true;
-          refreshRate = 60;
-          # bitdepth = 10;
+          refreshRate = 120;
+          bitdepth = 10;
           # scale = 1.25;
           position = "0x0";
           workspaces = [1 2 3 4 5];
@@ -67,9 +66,8 @@
           name = "DP-1";
           width = 3840;
           height = 2160;
-          preferredMode = true;
-          refreshRate = 60;
-          # bitdepth = 10;
+          refreshRate = 120;
+          bitdepth = 10;
           # scale = 1.25;
           workspaces = [6 7 8 9 10];
           layout = "scroller";
