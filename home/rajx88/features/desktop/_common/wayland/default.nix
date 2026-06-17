@@ -17,6 +17,8 @@
     slurp
     # waypipe
     # wf-recorder
+    wl-clip-persist
+    cliphist
     wl-clipboard
     # wl-mirror
     # wl-mirror-pick
