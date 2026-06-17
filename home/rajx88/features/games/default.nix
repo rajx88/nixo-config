@@ -5,7 +5,6 @@
   ];
 
   home = {
-    packages = with pkgs; [gamescope];
     persistence."/persist".directories = [
       "games"
     ];
