@@ -61,7 +61,7 @@
           LLAMA_ARG_PORT         = "8080";
           LLAMA_ARG_HF_REPO      = "bartowski/google_gemma-4-E2B-it-GGUF";
           LLAMA_ARG_HF_FILE      = "google_gemma-4-E2B-it-Q4_K_M.gguf";
-          LLAMA_ARG_CTX_SIZE     = "16384";  # total pool; per-slot = 16384/2 = 8192 tokens
+          LLAMA_ARG_CTX_SIZE     = "40960";  # total pool; per-slot = 40960/2 = 20480 tokens (reflect prompts reach 18k)
           LLAMA_ARG_N_GPU_LAYERS = "999";
           LLAMA_ARG_N_PARALLEL   = "2";      # batched decode: weights read once → 2 tokens
           LLAMA_ARG_FLASH_ATTN   = "on";     # fused attention: stable multi-slot perf
