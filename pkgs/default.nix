@@ -7,4 +7,5 @@
   pi-coding-agent = pkgs.callPackage ./pi-coding-agent {};
   codegraph = pkgs.callPackage ./codegraph {};
   brave-origin = pkgs.callPackage ./brave-origin {};
+  omp = pkgs.callPackage ./omp {};
 }
