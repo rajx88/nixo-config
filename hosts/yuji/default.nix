@@ -7,7 +7,7 @@
 }: {
   imports = [
     inputs.hardware.nixosModules.common-cpu-intel
-    # inputs.hardware.nixosModules.common-gpu-nvidia  # commented out — using Intel iGPU only
+    inputs.hardware.nixosModules.common-gpu-nvidia
     inputs.hardware.nixosModules.common-pc-ssd
 
     inputs.nix-barracudavpn.nixosModules.barracudavpn
@@ -32,6 +32,8 @@
     ../_common/optional/hindsight.nix
   ];
 
+  nixpkgs.config.nvidia.acceptLicense = true;
+
   host.filesystem = {
     encryption.enable = true;
     impermanence.enable = true;
@@ -50,11 +52,8 @@
 
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;
-    # kernelPackages = pkgs.linuxPackages;
-    # kernelPackages = pkgs.linuxKernel.packages.linux_zen;
-    # kernelPackages = pkgs.linuxPackages_6_17;
-    # kernelParams = ["nvidia.NVreg_PreserveVideoMemoryAllocations=1"];
-    # kernelParams = ["nvidia-drm.modeset=1"];
+    kernelModules = [ "nvidia" "nvidia_modeset" "nvidia_drm" "nvidia_uvm" ];
+    kernelParams  = [ "nvidia.NVreg_PreserveVideoMemoryAllocations=1" ];
     blacklistedKernelModules = [ "nouveau" ];
   };
 
@@ -91,23 +90,20 @@
       enable32Bit = true;
     };
 
-    # nvidia — commented out, using Intel iGPU only. Uncomment to re-enable.
-    # nvidia = {
-    #   modesetting.enable = true;
-    #   powerManagement.enable = true;
-    #   powerManagement.finegrained = false;
-    #   open = true; # required for Blackwell (50xx series)
-    #   nvidiaSettings = true;
-    #   prime = {
-    #     offload.enable = false;
-    #     # offload.enableOffloadCmd = true;
-    #     sync.enable = true;
-    #     intelBusId = "PCI:0:2:0";
-    #     nvidiaBusId = "PCI:1:0:0";
-    #   };
-    #   package = config.boot.kernelPackages.nvidiaPackages.latest;
-    # };
+    nvidia = {
+      prime.offload.enable = false;   # no PRIME offload — Intel drives all displays
+      modesetting.enable        = true;
+      powerManagement.enable    = false;
+      powerManagement.finegrained = false;
+      open            = true;         # required for Blackwell (GB207 / sm_120)
+      nvidiaSettings  = true;
+      package = config.boot.kernelPackages.nvidiaPackages.latest;
+    };
+
+    nvidia-container-toolkit.enable = true;
   };
+
+  virtualisation.docker.enableNvidia = true;
 
   # DO NOT TOUCH BEFORE GOOGLING IT.
   system.stateVersion = "23.11"; # Did you read the comment?
