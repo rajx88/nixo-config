@@ -36,8 +36,6 @@ stdenv.mkDerivation rec {
     runHook postInstall
   '';
 
-  passthru.updateScript = ./update.sh;
-
   meta = {
     description = "The open source coding agent";
     homepage = "https://opencode.ai/";
