@@ -10,7 +10,7 @@
       # worktree-path = ".worktrees/{{ branch | sanitize }}";
       worktree-path = "~/code/worktrees/{{ repo }}/{{ branch | sanitize }}";
       merge.commit = true;
-      commit.generation.command = "pi --model github-copilot/claude-haiku-4.5 --no-tools --print";
+      commit.generation.command = "pi --model github-copilot/claude-haiku-4.5 --no-tools --no-session --print";
       list.summary = true;
       pre-start = [
         {
