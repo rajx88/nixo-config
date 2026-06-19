@@ -11,7 +11,6 @@ in {
     "$mod" = "SUPER";
 
     bind = let
-      swaylock = "${config.programs.swaylock.package}/bin/swaylock";
       hyprlock = "${config.programs.hyprlock.package}/bin/hyprlock";
 
 

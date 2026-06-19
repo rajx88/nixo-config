@@ -4,12 +4,6 @@
   ...
 }: {
   # Enable the unfree 1Password packages
-  # TODO: check if this can be removed
-  # nixpkgs.config.allowUnfreePredicate = pkg:
-  #   builtins.elem (lib.getName pkg) [
-  #     "1password-gui"
-  #     "1password"
-  #   ];
 
   environment.etc = {
     "1password/custom_allowed_browsers" = {

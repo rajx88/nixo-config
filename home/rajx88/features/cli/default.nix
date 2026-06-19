@@ -15,8 +15,7 @@
     # ./starship
     ./tmux.nix
     ./zoxide.nix
-    # ./zellij.nix
-    # ./sheldon.nix
+
     ./yazi.nix
     ./atuin.nix
     ./antidote.nix
