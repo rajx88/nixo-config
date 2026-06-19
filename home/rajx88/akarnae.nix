@@ -70,7 +70,7 @@
           bitdepth = 10;
           # scale = 1.25;
           workspaces = [6 7 8 9 10];
-          layout = "scroller";
+          layout = "tile";
           position = "3840x0";
         }
       ];
