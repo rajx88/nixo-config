@@ -35,8 +35,6 @@ in {
       set -g extended-keys-format csi-u
       set -ga terminal-overrides ",screen-256color*:Tc"
       set-option -g default-terminal "screen-256color"
-      set -s escape-time 0
-
       # Undercurl
       set -as terminal-overrides ',*:Smulx=\E[4::%p1%dm'  # undercurl support
       set -as terminal-overrides ',*:Setulc=\E[58::2::::%p1%{65536}%/%d::%p1%{256}%/%{255}%&%d::%p1%{255}%&%d%;m'  # underscore colours - needs tmux-3.0
@@ -44,8 +42,6 @@ in {
 
 
       unbind C-b
-      set-option -g prefix C-a
-      bind-key C-a send-prefix
       set -g status-style 'bg=#333333 fg=#5eacd3'
 
       bind R source-file ~/.config/tmux/tmux.conf \; display-message "Config reloaded"
