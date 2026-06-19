@@ -13,10 +13,10 @@ rustPlatform.buildRustPackage {
     owner = "max-sixty";
     repo = "worktrunk";
     rev = "v0.60.0";
-    hash = "sha256-rHKdN8KtGVzvOu4Fa8ONn4JQ6z7JU+JJPLawkdQaeT0=";
+    hash = "sha256-8GmyAx6+sItB/QMZ2GIafavwPVfTldrupJuMMXYSigg=";
   };
 
-  cargoHash = "sha256-8GmyAx6+sItB/QMZ2GIafavwPVfTldrupJuMMXYSigg=";
+  cargoHash = "sha256-DrNKBN9DJ3DgXxwAMDofqZTTJArjjAzagv2VVU0oDmo=";
 
   nativeBuildInputs = [pkg-config];
 
