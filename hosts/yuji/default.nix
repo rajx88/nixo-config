@@ -102,8 +102,6 @@
     nvidia-container-toolkit.enable = true;
   };
 
-  virtualisation.docker.enableNvidia = true;
-
   # DO NOT TOUCH BEFORE GOOGLING IT.
   system.stateVersion = "23.11"; # Did you read the comment?
 }
