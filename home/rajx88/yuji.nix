@@ -15,7 +15,6 @@
     ./features/desktop/optional/discord
     ./features/desktop/optional/spotify.nix
     ./features/desktop/optional/signal.nix
-    ./features/desktop/optional/cider.nix
     ./features/desktop/optional/ferdium.nix
 
     ./features/desktop/optional/plexdesktop.nix
