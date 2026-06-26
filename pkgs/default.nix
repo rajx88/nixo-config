@@ -8,4 +8,5 @@
   codegraph = pkgs.callPackage ./codegraph {};
   brave-origin = pkgs.callPackage ./brave-origin {};
   omp = pkgs.callPackage ./omp {};
+  herdr = pkgs.callPackage ./herdr {};
 }

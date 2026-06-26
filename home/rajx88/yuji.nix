@@ -34,6 +34,7 @@
     ./features/dev/kubectl.nix
     ./features/dev/gh.nix
     ./features/dev/glab.nix
+    ./features/dev/herdr.nix
     ./features/dev/postman.nix
     ./features/dev/zed.nix
     ./features/dev/opencode.nix
