@@ -10,7 +10,7 @@ in {
     enable = true;
     clock24 = false;
 
-    prefix = "C-a";
+    prefix = "C-b";
 
     baseIndex = 1;
     newSession = true;
