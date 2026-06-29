@@ -63,11 +63,11 @@
 
 let
   pname = "brave-origin";
-  version = "1.91.178";
+  version = "1.91.180";
 
   src = fetchurl {
     url = "https://github.com/brave/brave-browser/releases/download/v${version}/brave-origin_${version}_amd64.deb";
-    hash = "sha256-XqX/9GMiiflITSh8zdtUPXIVGFEB8pkt29Z+bNVnkj8=";
+    hash = "sha256-8GaAh1otBb8Qbr05qZ4yuv/7R0sH2vgSytv1ok7u+VY=";
   };
 
   deps = [
