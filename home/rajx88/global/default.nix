@@ -34,11 +34,11 @@
       enable = true;
       defaultApplications = {
         "text/plain" = ["code.desktop"];
-        "image/*" = ["zen-browser.desktop"];
-        "text/html" = ["zen-browser.desktop"];
-        "text/xml" = ["zen-browser.desktop"];
-        "x-scheme-handler/http" = ["zen-browser.desktop"];
-        "x-scheme-handler/https" = ["zen-browser.desktop"];
+        "image/*" = ["zen-beta.desktop"];
+        "text/html" = ["zen-beta.desktop"];
+        "text/xml" = ["zen-beta.desktop"];
+        "x-scheme-handler/http" = ["zen-beta.desktop"];
+        "x-scheme-handler/https" = ["zen-beta.desktop"];
       };
     };
     userDirs = {
@@ -71,7 +71,7 @@
       FLAKE = "$HOME/code/nix/nixo-config";
       NH_FLAKE = "$HOME/code/nix/nixo-config";
       TERM = "ghostty";
-      BROWSER = "zen-browser";
+      BROWSER = "zen-beta";
       VAULT_PATH = "${config.home.homeDirectory}/code/notes";
     };
 
