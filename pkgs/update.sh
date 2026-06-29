@@ -24,6 +24,7 @@ PKG_DIRS=(
   "omp"
   "codegraph"
   "brave-origin"
+  "herdr"
 )
 PKG_REPOS=(
   "earendil-works/pi"
@@ -31,6 +32,7 @@ PKG_REPOS=(
   "can1357/oh-my-pi"
   "colbymchenry/codegraph"
   "brave/brave-browser"
+  "ogulcancelik/herdr"
 )
 PKG_URLS=(
   "https://github.com/earendil-works/pi/releases/download/v{VERSION}/pi-linux-x64.tar.gz"
@@ -38,6 +40,7 @@ PKG_URLS=(
   "https://github.com/can1357/oh-my-pi/releases/download/v{VERSION}/omp-linux-x64"
   "https://github.com/colbymchenry/codegraph/releases/download/v{VERSION}/codegraph-linux-x64.tar.gz"
   "https://github.com/brave/brave-browser/releases/download/v{VERSION}/brave-origin_{VERSION}_amd64.deb"
+  "https://github.com/ogulcancelik/herdr/releases/download/v{VERSION}/herdr-linux-x86_64"
 )
 
 # ── Argument parsing ──────────────────────────────────────────────────────────
