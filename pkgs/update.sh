@@ -181,11 +181,49 @@ if in_filter "worktrunk"; then
   fi
 fi
 
+# ── Cursor (non-GitHub: version from cursor.com/download) ─────────────────────
+if in_filter "cursor"; then
+  pkg="cursor"
+  PKG_FILE="$PKGS_DIR/$pkg/default.nix"
+
+  CURRENT=$(grep 'version = ' "$PKG_FILE" | head -1 | sed 's/.*"\(.*\)".*/\1/')
+  LATEST=$(curl -sL "https://cursor.com/download" | grep -oP 'cursor/K[0-9]+(\.[0-9]+)+' | head -1 | sed 's|cursor/||') || LATEST=""
+  if [[ -z "$LATEST" ]]; then
+    LATEST=$(curl -sL "https://cursor.com/download" | grep -oP 'cursor/[0-9]+\.[0-9]+' | head -1 | sed 's|cursor/||') || {
+      log_err "$pkg" "failed to fetch latest version"
+      (( FAILED++ )) || true; LATEST=""
+    }
+  fi
+
+  if [[ -n "$LATEST" ]]; then
+    if [[ "$CURRENT" == "$LATEST" ]]; then
+      log_ok "$pkg" "up-to-date ($CURRENT)"
+      (( SKIPPED++ )) || true
+    else
+      log_warn "$pkg" "$CURRENT → $LATEST"
+      if ! $CHECK_ONLY; then
+        URL="https://api2.cursor.sh/updates/download/golden/linux-x64-deb/cursor/${LATEST}"
+        log_info "$pkg" "fetching hash..."
+        SRI=$(nix_sri "$URL") || {
+          log_err "$pkg" "failed to hash $URL"
+          (( FAILED++ )) || true; SRI=""
+        }
+        if [[ -n "$SRI" ]]; then
+          sed -i "s/version = \"$CURRENT\"/version = \"$LATEST\"/" "$PKG_FILE"
+          sed -i "s|hash = \"sha256-.*\"|hash = \"$SRI\"|" "$PKG_FILE"
+          log_ok "$pkg" "updated to $LATEST"
+          (( UPDATED++ )) || true
+        fi
+      fi
+    fi
+  fi
+fi
+
 # ── Summary ───────────────────────────────────────────────────────────────────
 echo ""
 echo -e "  ${GREEN}${UPDATED} updated${RESET}  ${CYAN}${SKIPPED} up-to-date${RESET}  ${RED}${FAILED} failed${RESET}"
 
-ALL_PKGS=("${PKG_DIRS[@]}" "worktrunk")
+ALL_PKGS=("${PKG_DIRS[@]}" "worktrunk" "cursor")
 if [[ $UPDATED -gt 0 ]]; then
   echo -e "\nVerify: ${CYAN}nix build $(printf '.#%s ' "${ALL_PKGS[@]}")${RESET}"
 fi
