@@ -6,14 +6,27 @@
 }: let
   swaylockPkg = pkgs.swaylock-effects;
   swaylock = "${swaylockPkg}/bin/swaylock";
-  pgrep = "${pkgs.procps}/bin/pgrep";
   pactl = "${pkgs.pulseaudio}/bin/pactl";
   brightnessctl = "${pkgs.brightnessctl}/bin/brightnessctl";
   wlopm = "${pkgs.wlopm}/bin/wlopm";
   isDischarging = "grep -q Discharging /sys/class/power_supply/BAT*/status 2>/dev/null";
 
-  isLocked = "${pgrep} -x swaylock";
   lockTime = 5 * 60;
+
+  # Retry wrapper for wlopm — the Nvidia legacy driver sometimes drops
+  # the wlr-output-power-management request; a second attempt 2s later
+  # significantly reduces the failure window.
+  wlopmOff = pkgs.writeShellScript "wlopm-off" ''
+    logger -t swayidle-dpms "Turning DPMS off"
+    ${wlopm} --off '*' 2>&1 | logger -t swayidle-dpms || true
+    sleep 2
+    ${wlopm} --off '*' 2>&1 | logger -t swayidle-dpms || true
+  '';
+
+  wlopmOn = pkgs.writeShellScript "wlopm-on" ''
+    logger -t swayidle-dpms "Turning DPMS on"
+    ${wlopm} --on '*' 2>&1 | logger -t swayidle-dpms || true
+  '';
 
   afterLockTimeout = {
     timeout,
@@ -24,13 +37,9 @@
       timeout = lockTime + timeout;
       inherit command resumeCommand;
     }
-    {
-      command = "${isLocked} && ${command}";
-      inherit resumeCommand timeout;
-    }
   ];
 
-  commonArgs = "--clock --indicator --timestr '%k:%M' --datestr '%a %e.%m.%Y' --daemonize";
+  commonArgs = "--dpms 100 --clock --indicator --timestr '%k:%M' --datestr '%a %e.%m.%Y' --daemonize";
 
   lockscreenWp = config.home.sessionVariables.LOCKSCREEN_WP or "";
 
@@ -112,8 +121,8 @@ in {
       # DPMS off (after lock)
       (afterLockTimeout {
         timeout = 100;
-        command = "${wlopm} --off '*'";
-        resumeCommand = "${wlopm} --on '*'";
+        command = "${wlopmOff}/bin/wlopm-off";
+        resumeCommand = "${wlopmOn}/bin/wlopm-on";
       })
       ++
       # If discharging: suspend
