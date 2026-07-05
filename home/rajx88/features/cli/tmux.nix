@@ -1,10 +1,11 @@
 {pkgs, ...}: let
   aiCommand = "opencode run -m github-copilot/claude-sonnet-4.6 --variant fast";
 in {
-  programs.fzf = {
-    enable = true;
-    tmux.enableShellIntegration = true;
-  };
+programs.fzf = {
+  enable = true;
+  tmux.enableShellIntegration = true;
+  historyWidget.command = "";
+};
 
   programs.tmux = {
     enable = true;
