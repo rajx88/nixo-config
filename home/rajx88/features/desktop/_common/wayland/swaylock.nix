@@ -39,7 +39,7 @@
     }
   ];
 
-  commonArgs = "--dpms 100 --clock --indicator --timestr '%k:%M' --datestr '%a %e.%m.%Y' --daemonize";
+  commonArgs = "--clock --indicator --timestr '%k:%M' --datestr '%a %e.%m.%Y' --daemonize";
 
   lockscreenWp = config.home.sessionVariables.LOCKSCREEN_WP or "";
 
