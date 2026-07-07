@@ -130,6 +130,46 @@
       detect = { resolutions = ["3440x1440"]; };
     };
 
+    # Dual 4K 120Hz + laptop centered below left screen
+    profiles.office = {
+      monitors = [
+        {
+          name = "DP-2";
+          width = 3840;
+          height = 2160;
+          preferredMode = false;
+          refreshRate = 120;
+          bitdepth = 10;
+          position = "0x0";
+          workspaces = [1 2 3 4 5];
+          layout = "scroller";
+          primary = true;
+        }
+        {
+          name = "eDP-1";
+          width = 1920;
+          height = 1200;
+          preferredMode = true;
+          isLaptop = true;
+          refreshRate = 60;
+          position = "center-below";
+          workspaces = [];
+        }
+        {
+          name = "DP-1";
+          width = 3840;
+          height = 2160;
+          preferredMode = false;
+          refreshRate = 120;
+          bitdepth = 10;
+          workspaces = [6 7 8 9 10];
+          layout = "scroller";
+          position = "3840x0";
+        }
+      ];
+      detect = { externalCount = 2; resolutions = ["3840x2160@120"]; };
+    };
+
     # Laptop panel only
     profiles.laptop = {
       monitors = [
