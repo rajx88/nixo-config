@@ -10,4 +10,5 @@
   omp = pkgs.callPackage ./omp {};
   herdr = pkgs.callPackage ./herdr {};
   cursor = pkgs.callPackage ./cursor {};
+  icm = pkgs.callPackage ./icm {};
 }

@@ -181,6 +181,53 @@ if in_filter "worktrunk"; then
   fi
 fi
 
+# ── ICM (fetchFromGitHub + cargoHash, tag icm-v*) ─────────────────────────
+if in_filter "icm"; then
+  pkg="icm"
+  repo="rtk-ai/icm"
+  PKG_FILE="$PKGS_DIR/$pkg/default.nix"
+
+  CURRENT=$(grep 'version = ' "$PKG_FILE" | head -1 | sed 's/.*"\(.*\)".*/\1/')
+  LATEST=$(github_latest "$repo") || { log_err "$pkg" "failed to fetch latest"; (( FAILED++ )) || true; LATEST=""; }
+
+  if [[ -z "$LATEST" ]]; then
+    : # error already counted
+  elif [[ "$CURRENT" == "$LATEST" ]]; then
+    log_ok "$pkg" "up-to-date ($CURRENT)"
+    (( SKIPPED++ )) || true
+  else
+    log_warn "$pkg" "$CURRENT → $LATEST"
+    if ! $CHECK_ONLY; then
+      log_info "$pkg" "fetching source hash..."
+      SRC_SRI=$(nix_sri_unpack \
+        "https://github.com/${repo}/archive/refs/tags/icm-v${LATEST}.tar.gz") || {
+        log_err "$pkg" "failed to fetch source hash"
+        (( FAILED++ )) || true; SRC_SRI=""
+      }
+      if [[ -n "$SRC_SRI" ]]; then
+        BOGUS="sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+        sed -i "s/version = \"$CURRENT\"/version = \"$LATEST\"/g"   "$PKG_FILE"
+        sed -i "s|rev = \"icm-v$CURRENT\"|rev = \"icm-v$LATEST\"|" "$PKG_FILE"
+        sed -i "s|hash = \"sha256-.*\"|hash = \"$SRC_SRI\"|"       "$PKG_FILE"
+        sed -i "s|cargoHash = \"sha256-.*\"|cargoHash = \"$BOGUS\"|" "$PKG_FILE"
+
+        log_info "$pkg" "resolving cargoHash (downloads dependencies)..."
+        BUILD_OUT=$(cd "$REPO_ROOT" && nix build .#icm 2>&1 || true)
+        CARGO_SRI=$(printf '%s' "$BUILD_OUT" | sed -n 's/.*got:[[:space:]]*\(sha256-[^[:space:]]*\).*/\1/p' | head -1)
+
+        if [[ -z "$CARGO_SRI" ]]; then
+          log_err "$pkg" "could not determine cargoHash — fix manually"
+          (( FAILED++ )) || true
+        else
+          sed -i "s|cargoHash = \"$BOGUS\"|cargoHash = \"$CARGO_SRI\"|" "$PKG_FILE"
+          log_ok "$pkg" "updated to $LATEST"
+          (( UPDATED++ )) || true
+        fi
+      fi
+    fi
+  fi
+fi
+
 # ── Cursor (non-GitHub: version from cursor.com/download) ─────────────────────
 if in_filter "cursor"; then
   pkg="cursor"
