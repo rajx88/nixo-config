@@ -65,19 +65,33 @@ log_warn() { echo -e "${YELLOW}[${1}]${RESET} ${2}"; }
 log_err()  { echo -e "${RED}[${1}]${RESET} ${2}" >&2; }
 
 github_latest() {
-  curl -sf "https://api.github.com/repos/${1}/releases/latest" \
-    | jq -r '.tag_name' | sed 's/^v//'
+  local tag
+  tag=$(curl -sf "https://api.github.com/repos/${1}/releases/latest" | jq -r '.tag_name') || return 1
+  [[ -n "$tag" && "$tag" != "null" ]] || return 1
+  printf '%s\n' "${tag#v}"
+}
+
+github_latest_strip() {
+  local repo="$1"
+  local prefix="$2"
+  local tag
+  tag=$(curl -sf "https://api.github.com/repos/${repo}/releases/latest" | jq -r '.tag_name') || return 1
+  [[ -n "$tag" && "$tag" != "null" ]] || return 1
+  tag="${tag#${prefix}}"
+  printf '%s\n' "${tag#v}"
 }
 
 nix_sri() {
   local raw
-  raw=$(nix-prefetch-url "$1" 2>/dev/null)
+  raw=$(nix-prefetch-url "$1" 2>/dev/null) || return 1
+  [[ -n "$raw" ]] || return 1
   nix hash convert --hash-algo sha256 --to sri "$raw"
 }
 
 nix_sri_unpack() {
   local raw
-  raw=$(nix-prefetch-url --unpack "$1" 2>/dev/null)
+  raw=$(nix-prefetch-url --unpack "$1" 2>/dev/null) || return 1
+  [[ -n "$raw" ]] || return 1
   nix hash convert --hash-algo sha256 --to sri "$raw"
 }
 
@@ -188,7 +202,7 @@ if in_filter "icm"; then
   PKG_FILE="$PKGS_DIR/$pkg/default.nix"
 
   CURRENT=$(grep 'version = ' "$PKG_FILE" | head -1 | sed 's/.*"\(.*\)".*/\1/')
-  LATEST=$(github_latest "$repo") || { log_err "$pkg" "failed to fetch latest"; (( FAILED++ )) || true; LATEST=""; }
+  LATEST=$(github_latest_strip "$repo" "icm-") || { log_err "$pkg" "failed to fetch latest"; (( FAILED++ )) || true; LATEST=""; }
 
   if [[ -z "$LATEST" ]]; then
     : # error already counted
@@ -270,7 +284,7 @@ fi
 echo ""
 echo -e "  ${GREEN}${UPDATED} updated${RESET}  ${CYAN}${SKIPPED} up-to-date${RESET}  ${RED}${FAILED} failed${RESET}"
 
-ALL_PKGS=("${PKG_DIRS[@]}" "worktrunk" "cursor")
+ALL_PKGS=("${PKG_DIRS[@]}" "worktrunk" "icm" "cursor")
 if [[ $UPDATED -gt 0 ]]; then
   echo -e "\nVerify: ${CYAN}nix build $(printf '.#%s ' "${ALL_PKGS[@]}")${RESET}"
 fi
