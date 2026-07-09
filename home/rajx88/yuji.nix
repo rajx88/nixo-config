@@ -41,7 +41,6 @@
     ./features/dev/opencode.nix
     ./features/dev/pi-coding-agent.nix
     ./features/dev/omp.nix
-    ./features/dev/claude.nix  # temporarily disabled
     ./features/dev/rtk.nix
     ./features/dev/aws.nix
     ./features/dev/python.nix
