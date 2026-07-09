@@ -33,7 +33,6 @@
     ./features/dev/zed.nix
     ./features/dev/opencode.nix
     ./features/dev/pi-coding-agent.nix
-    ./features/dev/claude.nix
     ./features/dev/rtk.nix
     ./features/dev/python.nix
     ./features/dev/worktrunk.nix
