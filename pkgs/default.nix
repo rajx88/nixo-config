@@ -11,4 +11,6 @@
   herdr = pkgs.callPackage ./herdr {};
   cursor = pkgs.callPackage ./cursor {};
   icm = pkgs.callPackage ./icm {};
+  radar = pkgs.callPackage ./radar {};
+  radar-desktop = pkgs.callPackage ./radar-desktop {};
 }
