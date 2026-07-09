@@ -109,9 +109,18 @@ in {
       privateKeyFile = "/persist/secrets/wireguard/private.key";
       autostart = false;
 
+      # Endpoint is not committed to the repo — read from /persist at runtime
+      # so the home IP is never in git. Create once on the machine:
+      #   echo "YOUR.HOME.IP:51820" > /persist/secrets/wireguard/endpoint
+      #   chmod 600 /persist/secrets/wireguard/endpoint
+      postUp = ''
+        ${pkgs.wireguard-tools}/bin/wg set wg0 \
+          peer 7QagNiSoCbm5Yjr6oX9I86yJJOCQF+2LR1WQAQ/wozs= \
+          endpoint "$(cat /persist/secrets/wireguard/endpoint)"
+      '';
+
       peers = [{
         publicKey = "7QagNiSoCbm5Yjr6oX9I86yJJOCQF+2LR1WQAQ/wozs=";
-        endpoint = "vpn.rx88.ws:51820";
         allowedIPs = [ "0.0.0.0/0" "::/0" ];
         persistentKeepalive = 25;
       }];
