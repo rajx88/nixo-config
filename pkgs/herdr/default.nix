@@ -5,11 +5,11 @@
 }:
 stdenv.mkDerivation rec {
   pname = "herdr";
-  version = "0.7.1";
+  version = "0.7.3";
 
   src = fetchurl {
     url = "https://github.com/ogulcancelik/herdr/releases/download/v${version}/herdr-linux-x86_64";
-    hash = "sha256-uWWsr/wsIvVLbmxkr3z46Yo/SsJiJjCgWZxnpLnYplQ=";
+    hash = "sha256-BD70Psur2ihGXc/x7sMYRRgVDVZ7i48gzanGyIdwZB0=";
   };
 
   dontUnpack = true;
