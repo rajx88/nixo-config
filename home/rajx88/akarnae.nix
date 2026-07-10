@@ -28,17 +28,20 @@
     ./features/dev/mise.nix
     ./features/dev/java.nix
     ./features/dev/kubectl.nix
+
     ./features/dev/gh.nix
     ./features/dev/glab.nix
+
     ./features/dev/zed.nix
-    ./features/dev/opencode.nix
-    ./features/dev/pi-coding-agent.nix
-    ./features/dev/rtk.nix
     ./features/dev/python.nix
-    ./features/dev/worktrunk.nix
+
     ./features/dev/codegraph.nix
     ./features/dev/icm.nix
+    ./features/dev/rtk.nix
+
     ./features/dev/cursor.nix
+    ./features/dev/opencode.nix
+    ./features/dev/pi-coding-agent.nix
 
     ./features/dev/herdr.nix
 
