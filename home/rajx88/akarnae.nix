@@ -41,7 +41,6 @@
 
     ./features/dev/cursor.nix
     ./features/dev/opencode.nix
-    ./features/dev/pi-coding-agent.nix
 
     ./features/dev/herdr.nix
 
