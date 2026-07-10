@@ -39,6 +39,8 @@
     ./features/dev/icm.nix
     ./features/dev/rtk.nix
 
+    ./features/dev/omp.nix
+    ./features/dev/pi-coding-agent.nix
     ./features/dev/cursor.nix
     ./features/dev/opencode.nix
 
