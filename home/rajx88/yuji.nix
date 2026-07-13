@@ -48,6 +48,7 @@
     ./features/dev/codegraph.nix
     ./features/dev/icm.nix
     ./features/dev/cursor.nix
+    ./features/dev/t3code.nix
 
     ./features/dev/bruno.nix
   ];
