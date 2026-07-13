@@ -53,7 +53,7 @@ let
 
   src = fetchurl {
     url = "https://api2.cursor.sh/updates/download/golden/linux-x64-deb/cursor/${version}";
-    hash = "sha256-g4fabr8ilxDiPpiK0kuB25FqhVY37mfAWEpWMO604Wk=";
+    hash = "sha256-2Kv9Lec+P68x25ketYCSFdBAQ1ZweZK8vEazzaKiB4I=";
   };
 
   deps = [
