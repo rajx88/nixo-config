@@ -1,5 +1,5 @@
 {pkgs, ...}: {
-  home.packages = [pkgs.radar pkgs.radar-desktop];
+  home.packages = [pkgs.radar];
 
   home.persistence."/persist".directories = [".radar"];
 

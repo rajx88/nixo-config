@@ -54,6 +54,12 @@ stdenv.mkDerivation {
     runHook postInstall
   '';
 
+  preFixup = ''
+    gappsWrapperArgs+=(
+      --set WEBKIT_DISABLE_COMPOSITING_MODE 1
+    )
+  '';
+
   desktopItems = [ desktopItem ];
 
   meta = {
