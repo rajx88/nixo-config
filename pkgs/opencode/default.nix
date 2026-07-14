@@ -8,11 +8,11 @@
 }:
 stdenv.mkDerivation rec {
   pname = "opencode";
-  version = "1.17.18";
+  version = "1.17.20";
 
   src = fetchurl {
     url = "https://github.com/anomalyco/opencode/releases/download/v${version}/opencode-linux-x64.tar.gz";
-    hash = "sha256-4UnTLuVmfAzV+4TQv4OTsxLpN4LutNdNKbuwOS3nEzw=";
+    hash = "sha256-txAMCtCYD7ol1ZUSO0IZpv3B+9RW3LZIWSNnQeGZxWQ=";
   };
 
   nativeBuildInputs = [
