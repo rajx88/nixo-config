@@ -79,7 +79,7 @@
           scale = 1.2;
           workspaces = [6 7 8 9 10];
           layout = "tile";
-          position = "3840x0";
+          position = "auto-right";
         }
       ];
     };
