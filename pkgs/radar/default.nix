@@ -5,23 +5,16 @@
   autoPatchelfHook,
 }:
 let
-  version = "1.8.1";
-  srcs = {
-    x86_64-linux = fetchurl {
-      url = "https://github.com/skyhook-io/radar/releases/download/v${version}/radar_v${version}_linux_amd64.tar.gz";
-      hash = "sha256-5B7pxKy2mRGBevWQfd40Q4ReJORAc929tBcV2O5K3Og=";
-    };
-    aarch64-linux = fetchurl {
-      url = "https://github.com/skyhook-io/radar/releases/download/v${version}/radar_v${version}_linux_arm64.tar.gz";
-      hash = "sha256-3J+H2k2YSQSOwQhkXpGSDZwlKF5+1C1KhrS+hbkIstY=";
-    };
-  };
+  version = "1.8.3";
 in
 stdenv.mkDerivation {
   pname = "radar";
   inherit version;
 
-  src = srcs.${stdenv.hostPlatform.system};
+  src = fetchurl {
+    url = "https://github.com/skyhook-io/radar/releases/download/v${version}/radar_v${version}_linux_amd64.tar.gz";
+    hash = "sha256-ZDU73MgUk5fm4Uc5ybxcxm5kTD2NbKsc1m55c0Mq/V4=";
+  };
 
   sourceRoot = ".";
 
@@ -39,9 +32,6 @@ stdenv.mkDerivation {
     homepage = "https://radarhq.io";
     license = lib.licenses.asl20;
     mainProgram = "kubectl-radar";
-    platforms = [
-      "x86_64-linux"
-      "aarch64-linux"
-    ];
+    platforms = [ "x86_64-linux" ];
   };
 }

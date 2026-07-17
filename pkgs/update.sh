@@ -25,6 +25,8 @@ PKG_DIRS=(
   "codegraph"
   "brave-origin"
   "herdr"
+  "radar-desktop"
+  "radar"
 )
 PKG_REPOS=(
   "earendil-works/pi"
@@ -33,6 +35,8 @@ PKG_REPOS=(
   "colbymchenry/codegraph"
   "brave/brave-browser"
   "ogulcancelik/herdr"
+  "skyhook-io/radar"
+  "skyhook-io/radar"
 )
 PKG_URLS=(
   "https://github.com/earendil-works/pi/releases/download/v{VERSION}/pi-linux-x64.tar.gz"
@@ -41,6 +45,8 @@ PKG_URLS=(
   "https://github.com/colbymchenry/codegraph/releases/download/v{VERSION}/codegraph-linux-x64.tar.gz"
   "https://github.com/brave/brave-browser/releases/download/v{VERSION}/brave-origin_{VERSION}_amd64.deb"
   "https://github.com/ogulcancelik/herdr/releases/download/v{VERSION}/herdr-linux-x86_64"
+  "https://github.com/skyhook-io/radar/releases/download/v{VERSION}/radar-desktop_v{VERSION}_linux_amd64.tar.gz"
+  "https://github.com/skyhook-io/radar/releases/download/v{VERSION}/radar_v{VERSION}_linux_amd64.tar.gz"
 )
 
 # ── Argument parsing ──────────────────────────────────────────────────────────
