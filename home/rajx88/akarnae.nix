@@ -37,7 +37,6 @@
 
     ./features/dev/codegraph.nix
     ./features/dev/icm.nix
-    ./features/dev/rtk.nix
 
     ./features/dev/omp.nix
     ./features/dev/pi-coding-agent.nix
