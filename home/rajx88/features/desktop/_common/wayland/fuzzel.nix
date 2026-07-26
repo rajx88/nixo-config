@@ -1,15 +1,17 @@
-{
+{config, lib, ...}: let
+  scale = (builtins.head (lib.filter (m: m.primary) config.monitors)).scale;
+in {
   programs.fuzzel = {
     enable = true;
     settings = {
       main = {
-        font = "Atkinson Hyperlegible Mono:size=12";
+        font = "${config.fontProfiles.monospace.name}:size=${toString (builtins.floor (config.fontProfiles.monospace.size * scale))}";
         terminal = "ghostty -e";
         layer = "overlay";
-        width = 45;
+        width = builtins.floor (45 * scale);
         lines = 20;
-        horizontal-pad = 50;
-        vertical-pad = 12;
+        horizontal-pad = builtins.floor (50 * scale);
+        vertical-pad = builtins.floor (12 * scale);
       };
       colors = {
         background = "15141bee";
@@ -25,8 +27,8 @@
         border = "a277ffff";
       };
       border = {
-        width = 2;
-        radius = 8;
+        width = builtins.floor (2 * scale);
+        radius = builtins.floor (8 * scale);
       };
     };
   };
