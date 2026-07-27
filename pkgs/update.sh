@@ -260,47 +260,41 @@ if in_filter "icm"; then
   fi
 fi
 
-# ── Cursor (non-GitHub: version from cursor.com/download) ─────────────────────
+# ── Cursor (non-GitHub: follow redirect to immutable URL) ─────────────────────
 if in_filter "cursor"; then
   pkg="cursor"
   PKG_FILE="$PKGS_DIR/$pkg/default.nix"
 
   CURRENT=$(grep 'version = ' "$PKG_FILE" | head -1 | sed 's/.*"\(.*\)".*/\1/')
 
-  # Fetch page body once, then extract the version with here-strings only
-  # (no live pipe into `head -1`/`grep -m1`). Piping a producer straight into
-  # a consumer that stops early (head -1, grep -m1) closes the pipe while
-  # the producer may still have more matches to write, so the producer gets
-  # SIGPIPE (rc 141); under pipefail that flips the whole pipeline non-zero
-  # even though the correct match was already produced, and the `||`
-  # fallback below then wipes an already-correct $LATEST. Here-strings feed
-  # a fully-captured value, so nothing closes early and nothing can SIGPIPE.
-  CURSOR_PAGE=$(curl -sL "https://cursor.com/download") || CURSOR_PAGE=""
+  # Follow the api2 redirect to get the immutable downloads.cursor.com URL.
+  # The redirect URL contains the full semver (e.g. 3.13.21) and a commit hash,
+  # making it content-addressed and reproducible.
+  IMMUTABLE_URL=$(curl -sLI "https://api2.cursor.sh/updates/download/golden/linux-x64-deb/cursor/${CURRENT}" 2>/dev/null \
+    | sed -n 's/^[Ll]ocation: *//p' | tr -d '\r') || IMMUTABLE_URL=""
 
-  LATEST=$(cursor_extract_version 'cursor/K[0-9]+(\.[0-9]+)+' "$CURSOR_PAGE") || LATEST=""
-  if [[ -z "$LATEST" ]]; then
-    LATEST=$(cursor_extract_version 'cursor/[0-9]+\.[0-9]+' "$CURSOR_PAGE") || LATEST=""
+  if [[ -z "$IMMUTABLE_URL" ]]; then
+    log_err "$pkg" "failed to follow cursor redirect"
+    (( FAILED++ )) || true
+  else
+    LATEST=$(printf '%s' "$IMMUTABLE_URL" | grep -oP 'cursor_\K[0-9]+\.[0-9]+\.[0-9]+') || LATEST=""
     if [[ -z "$LATEST" ]]; then
-      log_err "$pkg" "failed to fetch latest version"
+      log_err "$pkg" "failed to extract full version from $IMMUTABLE_URL"
       (( FAILED++ )) || true
-    fi
-  fi
-
-  if [[ -n "$LATEST" ]]; then
-    if [[ "$CURRENT" == "$LATEST" ]]; then
+    elif [[ "$CURRENT" == "$LATEST" ]]; then
       log_ok "$pkg" "up-to-date ($CURRENT)"
       (( SKIPPED++ )) || true
     else
       log_warn "$pkg" "$CURRENT → $LATEST"
       if ! $CHECK_ONLY; then
-        URL="https://api2.cursor.sh/updates/download/golden/linux-x64-deb/cursor/${LATEST}"
-        log_info "$pkg" "fetching hash..."
-        SRI=$(nix_sri "$URL") || {
-          log_err "$pkg" "failed to hash $URL"
+        log_info "$pkg" "fetching hash from immutable URL..."
+        SRI=$(nix_sri "$IMMUTABLE_URL") || {
+          log_err "$pkg" "failed to hash $IMMUTABLE_URL"
           (( FAILED++ )) || true; SRI=""
         }
         if [[ -n "$SRI" ]]; then
           sed -i "s/version = \"$CURRENT\"/version = \"$LATEST\"/" "$PKG_FILE"
+          sed -i "s|url = \"https://downloads.cursor.com/production/[^ ]*\"|url = \"$IMMUTABLE_URL\"|" "$PKG_FILE"
           sed -i "s|hash = \"sha256-.*\"|hash = \"$SRI\"|" "$PKG_FILE"
           log_ok "$pkg" "updated to $LATEST"
           (( UPDATED++ )) || true
