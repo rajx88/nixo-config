@@ -49,11 +49,11 @@
 
 let
   pname = "cursor";
-  version = "3.12";
+  version = "3.13";
 
   src = fetchurl {
     url = "https://api2.cursor.sh/updates/download/golden/linux-x64-deb/cursor/${version}";
-    hash = "sha256-4TXe1E7JeRAuDnuowYK412hLHWDK7gLfTnrQx7QR3Jc=";
+    hash = "sha256-iltzS+O8zD3m2vlsU22qZExxXl/j5eryFyFTgHLqEEw=";
   };
 
   deps = [

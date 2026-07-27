@@ -107,6 +107,18 @@ in_filter() {
   return 1
 }
 
+# Extract the first regex match (pattern $1) from text (arg $2), stripping
+# the "cursor/" prefix. Uses here-strings + builtins only — see the note
+# above the cursor section for why piping into head -1/grep -m1 is unsafe
+# under `set -o pipefail`.
+cursor_extract_version() {
+  local pattern="$1" text="$2" all first
+  all=$(grep -oP "$pattern" <<< "$text") || return 1
+  [[ -n "$all" ]] || return 1
+  first=$(head -1 <<< "$all")
+  printf '%s\n' "${first#cursor/}"
+}
+
 # ── Main loop ─────────────────────────────────────────────────────────────────
 UPDATED=0; SKIPPED=0; FAILED=0
 
@@ -254,12 +266,24 @@ if in_filter "cursor"; then
   PKG_FILE="$PKGS_DIR/$pkg/default.nix"
 
   CURRENT=$(grep 'version = ' "$PKG_FILE" | head -1 | sed 's/.*"\(.*\)".*/\1/')
-  LATEST=$(curl -sL "https://cursor.com/download" | grep -oP 'cursor/K[0-9]+(\.[0-9]+)+' | head -1 | sed 's|cursor/||') || LATEST=""
+
+  # Fetch page body once, then extract the version with here-strings only
+  # (no live pipe into `head -1`/`grep -m1`). Piping a producer straight into
+  # a consumer that stops early (head -1, grep -m1) closes the pipe while
+  # the producer may still have more matches to write, so the producer gets
+  # SIGPIPE (rc 141); under pipefail that flips the whole pipeline non-zero
+  # even though the correct match was already produced, and the `||`
+  # fallback below then wipes an already-correct $LATEST. Here-strings feed
+  # a fully-captured value, so nothing closes early and nothing can SIGPIPE.
+  CURSOR_PAGE=$(curl -sL "https://cursor.com/download") || CURSOR_PAGE=""
+
+  LATEST=$(cursor_extract_version 'cursor/K[0-9]+(\.[0-9]+)+' "$CURSOR_PAGE") || LATEST=""
   if [[ -z "$LATEST" ]]; then
-    LATEST=$(curl -sL "https://cursor.com/download" | grep -oP 'cursor/[0-9]+\.[0-9]+' | head -1 | sed 's|cursor/||') || {
+    LATEST=$(cursor_extract_version 'cursor/[0-9]+\.[0-9]+' "$CURSOR_PAGE") || LATEST=""
+    if [[ -z "$LATEST" ]]; then
       log_err "$pkg" "failed to fetch latest version"
-      (( FAILED++ )) || true; LATEST=""
-    }
+      (( FAILED++ )) || true
+    fi
   fi
 
   if [[ -n "$LATEST" ]]; then
