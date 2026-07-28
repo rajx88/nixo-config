@@ -7,13 +7,13 @@
 }:
 rustPlatform.buildRustPackage {
   pname = "icm";
-  version = "0.10.60";
+  version = "0.10.61";
 
   src = fetchFromGitHub {
     owner = "rtk-ai";
     repo = "icm";
-    rev = "icm-v0.10.60";
-    hash = "sha256-eRANjS83JGbep1Yrd+9pRTLcHZ80z7iqmUmBG/dYCo4=";
+    rev = "icm-v0.10.61";
+    hash = "sha256-dIZxq29umqRt81g0Y7RY90oAgf+ockrKfwPvFd8k8tU=";
   };
 
   cargoHash = "sha256-1YZ1GYnRxxbXXIG7d0+Nd8z2MhL8JQuuLexWNCmA+Ic=";
