@@ -12,12 +12,9 @@ in {
         font_family = "Atkinson Hyperlegible Mono";
         panel = {
           control_center_placement = "floating";
-          launcher_placement = "floating";
-          session_placement = "floating";
-          wallpaper_placement = "floating";
-          launcher_position = "center";
-          session_position = "center";
-          wallpaper_position = "center";
+          launcher_placement = "centered";
+          session_placement = "centered";
+          wallpaper_placement = "centered";
           open_near_click_control_center = true;
           open_near_click_clipboard = true;
           open_near_click_session = true;
@@ -50,25 +47,30 @@ in {
         battery.display_mode = "graphic";
       };
 
-      bar.main = {
-        position = "top";
-        background_opacity = 0.69;
-        capsule = false;
+      bar = {
+        order = ["default"];
+        default = {
+          position = "top";
+          background_opacity = 0.69;
+          capsule = false;
+          # margin_ends = 10;
+          # margin_edge = 10;
 
-        start = ["launcher" "cpu" "ram" "temp" "wallpaper" "media"];
-        center = ["workspaces" "clipboard"];
-        end = [
-          "tray"
-          "notifications"
-          "network"
-          "bluetooth"
-          "volume"
-          "brightness"
-          "battery"
-          "clock"
-          "control-center"
-          "session"
-        ];
+          start = ["launcher" "cpu" "ram" "temp" "wallpaper" "media"];
+          center = ["workspaces" "clipboard"];
+          end = [
+            "tray"
+            "notifications"
+            "network"
+            "bluetooth"
+            "volume"
+            "brightness"
+            "battery"
+            "clock"
+            "control-center"
+            "session"
+          ];
+        };
       };
     };
   };
