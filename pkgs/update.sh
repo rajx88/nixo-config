@@ -34,7 +34,7 @@ PKG_REPOS=(
   "can1357/oh-my-pi"
   "colbymchenry/codegraph"
   "brave/brave-browser"
-  "ogulcancelik/herdr"
+  "herdrdev/herdr"
   "skyhook-io/radar"
   "skyhook-io/radar"
 )
@@ -44,7 +44,7 @@ PKG_URLS=(
   "https://github.com/can1357/oh-my-pi/releases/download/v{VERSION}/omp-linux-x64"
   "https://github.com/colbymchenry/codegraph/releases/download/v{VERSION}/codegraph-linux-x64.tar.gz"
   "https://github.com/brave/brave-browser/releases/download/v{VERSION}/brave-origin_{VERSION}_amd64.deb"
-  "https://github.com/ogulcancelik/herdr/releases/download/v{VERSION}/herdr-linux-x86_64"
+  "https://github.com/herdrdev/herdr/releases/download/v{VERSION}/herdr-linux-x86_64"
   "https://github.com/skyhook-io/radar/releases/download/v{VERSION}/radar-desktop_v{VERSION}_linux_amd64.tar.gz"
   "https://github.com/skyhook-io/radar/releases/download/v{VERSION}/radar_v{VERSION}_linux_amd64.tar.gz"
 )
@@ -72,7 +72,7 @@ log_err()  { echo -e "${RED}[${1}]${RESET} ${2}" >&2; }
 
 github_latest() {
   local tag
-  tag=$(curl -sf "https://api.github.com/repos/${1}/releases/latest" | jq -r '.tag_name') || return 1
+  tag=$(curl -sfL "https://api.github.com/repos/${1}/releases/latest" | jq -r '.tag_name') || return 1
   [[ -n "$tag" && "$tag" != "null" ]] || return 1
   printf '%s\n' "${tag#v}"
 }
@@ -81,7 +81,7 @@ github_latest_strip() {
   local repo="$1"
   local prefix="$2"
   local tag
-  tag=$(curl -sf "https://api.github.com/repos/${repo}/releases/latest" | jq -r '.tag_name') || return 1
+  tag=$(curl -sfL "https://api.github.com/repos/${repo}/releases/latest" | jq -r '.tag_name') || return 1
   [[ -n "$tag" && "$tag" != "null" ]] || return 1
   tag="${tag#${prefix}}"
   printf '%s\n' "${tag#v}"

@@ -13,7 +13,7 @@
   copyDesktopItems,
 }:
 let
-  version = "1.8.6";
+  version = "1.8.7";
   desktopItem = makeDesktopItem {
     name = "radar-desktop";
     exec = "radar-desktop";
@@ -29,7 +29,7 @@ stdenv.mkDerivation {
 
   src = fetchurl {
     url = "https://github.com/skyhook-io/radar/releases/download/v${version}/radar-desktop_v${version}_linux_amd64.tar.gz";
-    hash = "sha256-XtQFYT5LtX+7jgmbpk0Pq876nX2lDNs9v0GbjphncSA=";
+    hash = "sha256-TzEAK9ie8XPcPvnRvznanFU8Svg+M9UnLjqILwzhlDw=";
   };
 
   sourceRoot = ".";
