@@ -25,6 +25,11 @@ in {
           command = ["codegraph" "serve" "--mcp"];
           enabled = true;
         };
+        engram = {
+          type = "local";
+          command = ["engram" "mcp" "--tools=agent"];
+          enabled = true;
+        };
       };
       permission = {
         bash = {
