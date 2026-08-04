@@ -12,4 +12,5 @@
   icm = pkgs.callPackage ./icm {};
   radar = pkgs.callPackage ./radar {};
   radar-desktop = pkgs.callPackage ./radar-desktop {};
+  engram = pkgs.callPackage ./engram {};
 }
