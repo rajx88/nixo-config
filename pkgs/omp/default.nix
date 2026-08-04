@@ -9,11 +9,11 @@
 }:
 stdenv.mkDerivation rec {
   pname = "omp";
-  version = "17.2.7";
+  version = "17.2.8";
 
   src = fetchurl {
     url = "https://github.com/can1357/oh-my-pi/releases/download/v${version}/omp-linux-x64";
-    hash = "sha256-bjgsgLCvWAFrD1N7YEo6KfHpEEq7SYcFKVNB44+9x3Q=";
+    hash = "sha256-6QPrkN6Zfl0M6VUBuEmTlsX+M3GD5Q+JC3hoT5Iy+Bo=";
   };
 
   nativeBuildInputs = [
