@@ -31,6 +31,7 @@
     ./features/dev/vscode.nix
     ./features/dev/mise.nix
     ./features/dev/java.nix
+    ./features/dev/jfrog-cli.nix
     ./features/dev/kubectl.nix
     ./features/dev/gh.nix
     ./features/dev/glab.nix
