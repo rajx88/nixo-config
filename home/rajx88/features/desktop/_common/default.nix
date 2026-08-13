@@ -15,7 +15,6 @@
     ./wallpapers
     ./keyring.nix
     ./zen.nix
-    ./ladybird.nix
   ];
   xdg.portal.enable = true;
 
