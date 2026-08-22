@@ -13,9 +13,7 @@ in {
     settings = {
       default_agent = "plan";
       plugin = [
-        # "@tarquinen/opencode-dcp@latest"
         "@simonwjackson/opencode-direnv"
-        # "superpowers@git+https://github.com/obra/superpowers.git"
         "@franlol/opencode-md-table-formatter@latest"
         "opencode-mermaid-renderer@latest"
       ];

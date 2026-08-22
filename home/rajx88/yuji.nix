@@ -40,6 +40,7 @@
     ./features/dev/postman.nix
     ./features/dev/zed.nix
     ./features/dev/opencode.nix
+    ./features/dev/opencommit.nix
     ./features/dev/pi-coding-agent.nix
     ./features/dev/omp.nix
     ./features/dev/rtk.nix
@@ -100,7 +101,10 @@
           workspaces = [];
         }
       ];
-      detect = { externalCount = 2; resolutions = ["3840x2160@120"]; };
+      detect = {
+        externalCount = 2;
+        resolutions = ["3840x2160@120"];
+      };
     };
 
     # Ultrawide + laptop panel centered below
@@ -129,7 +133,7 @@
           layout = "scroller";
         }
       ];
-      detect = { resolutions = ["3440x1440"]; };
+      detect = {resolutions = ["3440x1440"];};
     };
 
     # Dual 4K 120Hz + laptop centered below left screen
@@ -169,7 +173,10 @@
           position = "auto-right";
         }
       ];
-      detect = { externalCount = 2; resolutions = ["3840x2160@120"]; };
+      detect = {
+        externalCount = 2;
+        resolutions = ["3840x2160@120"];
+      };
     };
 
     # Laptop panel only
@@ -188,7 +195,7 @@
           primary = true;
         }
       ];
-      detect = { externalCount = 0; };
+      detect = {externalCount = 0;};
     };
   };
 }
