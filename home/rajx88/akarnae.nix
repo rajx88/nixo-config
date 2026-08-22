@@ -36,11 +36,13 @@
     ./features/dev/python.nix
 
     ./features/dev/codegraph.nix
-    ./features/dev/icm.nix
+    # ./features/dev/icm.nix
     ./features/dev/engram.nix
 
     ./features/dev/cursor.nix
     ./features/dev/opencode.nix
+    ./features/dev/opencommit.nix
+    ./features/dev/omp.nix
 
     ./features/dev/herdr.nix
 
