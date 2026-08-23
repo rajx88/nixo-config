@@ -148,12 +148,6 @@ in {
         # gco = "git co";
         # gcb = "git cob";
 
-        # vagrant
-        # vup = "vagrant up";
-        # vh = "vagrant halt";
-        # vr = "vagrant reload";
-        # vssh = "vagrant ssh";
-
         # tmux
         # ta = "tmux attach";
 
