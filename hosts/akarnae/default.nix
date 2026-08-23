@@ -23,6 +23,7 @@
 
     ../_common/optional/pipewire.nix
     ../_common/optional/net-debug.nix
+    ../_common/optional/libvirt.nix
   ];
 
   host.filesystem = {
