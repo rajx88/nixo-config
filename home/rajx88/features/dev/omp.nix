@@ -15,10 +15,6 @@
         "codegraph": {
           "command": "codegraph",
           "args": ["serve", "--mcp"]
-        },
-        "engram": {
-          "command": "engram",
-          "args": ["mcp", "--tools=agent"]
         }
       }
     }

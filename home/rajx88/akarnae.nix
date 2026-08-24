@@ -36,8 +36,7 @@
     ./features/dev/python.nix
 
     ./features/dev/codegraph.nix
-    # ./features/dev/icm.nix
-    ./features/dev/engram.nix
+    ./features/dev/icm.nix
 
     ./features/dev/cursor.nix
     ./features/dev/opencode.nix
