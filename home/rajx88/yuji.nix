@@ -49,7 +49,6 @@
     ./features/dev/worktrunk.nix
     ./features/dev/codegraph.nix
     ./features/dev/icm.nix
-    ./features/dev/engram.nix
     ./features/dev/cursor.nix
     ./features/dev/bruno.nix
   ];
