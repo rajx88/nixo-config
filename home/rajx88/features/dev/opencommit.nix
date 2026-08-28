@@ -6,5 +6,7 @@
   home.persistence."/persist".files = [
     ".opencommit"
     ".opencommitignore"
+    ".opencommit_migrations"
+    ".opencommit-models.json"
   ];
 }
