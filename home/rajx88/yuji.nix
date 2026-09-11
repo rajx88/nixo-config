@@ -18,7 +18,7 @@
     ./features/desktop/optional/ferdium.nix
 
     ./features/desktop/optional/plexdesktop.nix
-    ./features/desktop/optional/fladder.nix
+    ./features/desktop/optional/jellyfin.nix
     ./features/desktop/optional/obsidian.nix
     ./features/games/steam.nix
 
