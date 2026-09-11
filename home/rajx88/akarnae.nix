@@ -20,7 +20,7 @@
 
     ./features/desktop/optional/keymapp.nix
     ./features/desktop/optional/brave-origin.nix
-    ./features/desktop/optional/fladder.nix
+    ./features/desktop/optional/jellyfin.nix
 
     # dev
     ./features/dev/jetbrains.nix
