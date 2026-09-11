@@ -1,12 +1,7 @@
-{pkgs, ...}: {
+{...}: {
   programs.worktrunk = {
     enable = true;
-    shellIntegration = {
-      zsh = true;
-      bash = true;
-      fish = true;
-    };
-    config = {
+    settings = {
       # worktree-path = ".worktrees/{{ branch | sanitize }}";
       worktree-path = "~/code/worktrees/{{ repo }}/{{ branch | sanitize }}";
       merge.commit = true;
@@ -22,6 +17,18 @@
       ];
     };
   };
+
+  # Upstream home-manager ships `programs.worktrunk` with enable/package/settings
+  # only, so shell integration stays explicit here.
+  programs.zsh.initContent = ''
+    eval "$(wt config shell init zsh)"
+  '';
+  programs.bash.initExtra = ''
+    eval "$(wt config shell init bash)"
+  '';
+  programs.fish.interactiveShellInit = ''
+    wt config shell init fish | source
+  '';
 
   programs.zsh.shellAliases = {
     wso = "wt switch --create --execute=opencode";
