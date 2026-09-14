@@ -2,11 +2,7 @@
   pkgs,
   config,
   ...
-}: let
-  ocd =
-    pkgs.writeShellScriptBin "ocd"
-    (builtins.readFile ../../../../scripts/opencode.sh);
-in {
+}: {
   programs.opencode = {
     enable = true;
     package = pkgs.opencode;
