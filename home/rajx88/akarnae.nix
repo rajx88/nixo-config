@@ -37,6 +37,7 @@
 
     ./features/dev/codegraph.nix
     ./features/dev/icm.nix
+    ./features/dev/icm-codex.nix
     ./features/dev/codex.nix
 
     ./features/dev/cursor.nix
