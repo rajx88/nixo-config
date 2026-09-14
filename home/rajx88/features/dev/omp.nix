@@ -20,6 +20,19 @@
     }
   '';
 
+  # ICM integration: `icm init` detects Pi (via the `pi` binary / ~/.pi/agent),
+  # not omp (~/.omp/agent), so the files it normally generates for Pi / Claude
+  # Code are managed here instead:
+  #   - icm.ts               -> auto-inject recall + auto-extract tool output
+  #   - APPEND_SYSTEM.md     -> persistent-memory instructions (cli mode)
+  #   - skills/icm-*.md      -> /icm-recall + /icm-remember (skill mode)
+  home.file = {
+    ".omp/agent/extensions/icm.ts".source = ./omp-icm.ts;
+    ".omp/agent/APPEND_SYSTEM.md".source = ./omp-append-system.md;
+    ".omp/agent/skills/icm-recall.md".source = ./omp-skills/icm-recall.md;
+    ".omp/agent/skills/icm-remember.md".source = ./omp-skills/icm-remember.md;
+  };
+
   programs.fish.interactiveShellInit = ''
     omp completions fish | source
   '';
