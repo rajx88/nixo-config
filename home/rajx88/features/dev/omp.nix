@@ -15,6 +15,10 @@
         "codegraph": {
           "command": "codegraph",
           "args": ["serve", "--mcp"]
+        },
+        "radar": {
+          "type": "http",
+          "url": "http://localhost:9280/mcp"
         }
       }
     }

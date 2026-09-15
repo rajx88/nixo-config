@@ -19,6 +19,11 @@
           command = ["codegraph" "serve" "--mcp"];
           enabled = true;
         };
+        radar = {
+          type = "remote";
+          url = "http://localhost:9280/mcp";
+          enabled = true;
+        };
       };
       permission = {
         bash = {
