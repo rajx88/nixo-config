@@ -21,9 +21,14 @@
     auto_consolidate_threshold = 100
   '';
 
-  # Daily maintenance: drain the async consolidation queue (LLM via LiteLLM),
-  # then decay and prune. Without the master key, consolidation is skipped
-  # but decay/prune still run. Only created when icm is enabled.
+  # Daily maintenance: consolidate every topic over the threshold (LLM via
+  # LiteLLM), then decay and prune. Uses consolidate-all rather than
+  # consolidate-pending — the latter only drains topics enqueued by
+  # maybe_auto_consolidate, which is never called from the extract-pending
+  # path our omp extension uses, so the async queue stays empty forever no
+  # matter how large a topic grows. consolidate-all scans topic counts
+  # directly and doesn't depend on that queue. Without the secrets,
+  # consolidation is skipped but decay/prune still run. Only created when icm is enabled.
   systemd.user = lib.mkIf config.programs.icm.enable {
     services.icm-maintenance = {
       Unit = {
@@ -41,7 +46,7 @@
               export ANTHROPIC_AUTH_TOKEN="$(cat "$HOME/.local/share/litellm/master-key")"
               export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
               export DISABLE_NON_ESSENTIAL_MODEL_CALLS=1
-              ${pkgs.icm}/bin/icm consolidate-pending --limit 10 || true
+              ${pkgs.icm}/bin/icm consolidate-all --threshold 100 || true
             else
               echo "[icm-maintenance] litellm secrets missing under ~/.local/share/litellm/ — skipping consolidation"
             fi
