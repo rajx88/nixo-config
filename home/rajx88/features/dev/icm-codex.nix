@@ -5,5 +5,9 @@
     [consolidate.summarizer]
     provider = "codex"
     model = "gpt-5.6-luna"
+
+    [memory]
+    auto_consolidate_enabled = true
+    auto_consolidate_threshold = 100
   '';
 }

@@ -1,4 +1,9 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}: {
   home.packages = [pkgs.claude-code];
 
   # LLM-backed consolidation + auto-consolidation via Claude Code, routed
@@ -13,51 +18,53 @@
 
     [memory]
     auto_consolidate_enabled = true
-    auto_consolidate_threshold = 10
+    auto_consolidate_threshold = 100
   '';
 
   # Daily maintenance: drain the async consolidation queue (LLM via LiteLLM),
   # then decay and prune. Without the master key, consolidation is skipped
-  # but decay/prune still run.
-  systemd.user.services.icm-maintenance = {
-    Unit = {
-      Description = "ICM memory maintenance (consolidation, decay, prune)";
-      After = ["network.target"];
-    };
-    Service = {
-      Type = "oneshot";
-      ExecStart = let
-        script = pkgs.writeShellScript "icm-maintenance" ''
-          export PATH="${pkgs.claude-code}/bin:${pkgs.icm}/bin:${pkgs.coreutils}/bin:''${PATH:-}"
+  # but decay/prune still run. Only created when icm is enabled.
+  systemd.user = lib.mkIf config.programs.icm.enable {
+    services.icm-maintenance = {
+      Unit = {
+        Description = "ICM memory maintenance (consolidation, decay, prune)";
+        After = ["network.target"];
+      };
+      Service = {
+        Type = "oneshot";
+        ExecStart = let
+          script = pkgs.writeShellScript "icm-maintenance" ''
+            export PATH="${pkgs.claude-code}/bin:${pkgs.icm}/bin:${pkgs.coreutils}/bin:''${PATH:-}"
 
-          if [ -f "$HOME/.local/share/litellm/master-key" ] && [ -f "$HOME/.local/share/litellm/base-url" ]; then
-            export ANTHROPIC_BASE_URL="$(cat "$HOME/.local/share/litellm/base-url")"
-            export ANTHROPIC_AUTH_TOKEN="$(cat "$HOME/.local/share/litellm/master-key")"
-            export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
-            export DISABLE_NON_ESSENTIAL_MODEL_CALLS=1
-            ${pkgs.icm}/bin/icm consolidate-pending --limit 10 || true
-          else
-            echo "[icm-maintenance] litellm secrets missing under ~/.local/share/litellm/ — skipping consolidation"
-          fi
+            if [ -f "$HOME/.local/share/litellm/master-key" ] && [ -f "$HOME/.local/share/litellm/base-url" ]; then
+              export ANTHROPIC_BASE_URL="$(cat "$HOME/.local/share/litellm/base-url")"
+              export ANTHROPIC_AUTH_TOKEN="$(cat "$HOME/.local/share/litellm/master-key")"
+              export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
+              export DISABLE_NON_ESSENTIAL_MODEL_CALLS=1
+              ${pkgs.icm}/bin/icm consolidate-pending --limit 10 || true
+            else
+              echo "[icm-maintenance] litellm secrets missing under ~/.local/share/litellm/ — skipping consolidation"
+            fi
 
-          ${pkgs.icm}/bin/icm decay || true
-          ${pkgs.icm}/bin/icm prune || true
-        '';
-      in "${script}";
+            ${pkgs.icm}/bin/icm decay || true
+            ${pkgs.icm}/bin/icm prune || true
+          '';
+        in "${script}";
+      };
     };
-  };
 
-  systemd.user.timers.icm-maintenance = {
-    Unit = {
-      Description = "Daily ICM memory maintenance";
-    };
-    Timer = {
-      OnCalendar = "daily";
-      Persistent = true;
-      RandomizedDelaySec = "15m";
-    };
-    Install = {
-      WantedBy = ["timers.target"];
+    timers.icm-maintenance = {
+      Unit = {
+        Description = "Daily ICM memory maintenance";
+      };
+      Timer = {
+        OnCalendar = "daily";
+        Persistent = true;
+        RandomizedDelaySec = "15m";
+      };
+      Install = {
+        WantedBy = ["timers.target"];
+      };
     };
   };
 
