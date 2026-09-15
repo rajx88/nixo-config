@@ -1,4 +1,9 @@
-{pkgs, ...}: let
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}: let
   # icm shells out to `codex exec` non-interactively, which refuses to run
   # outside a git repo (e.g. from ~) unless --skip-git-repo-check is passed —
   # and icm has no way to pass it. This wrapper adds the flag to exec
@@ -32,4 +37,50 @@ in {
   home.persistence."/persist".directories = [
     ".codex" # sessions, history, login state
   ];
+
+  # Daily ICM maintenance: drain the async consolidation queue (LLM via the
+  # codex summarizer over opencode-go), then decay and prune. Mirrors the
+  # icm-litellm timer on yuji; on akarnae the summarizer is codex, so the
+  # env here is OPENCODE_GO_API_KEY instead of the LiteLLM gateway.
+  # Only created when icm is actually enabled on this machine.
+  systemd.user = lib.mkIf config.programs.icm.enable {
+    services.icm-maintenance = {
+      Unit = {
+        Description = "ICM memory maintenance (consolidation, decay, prune)";
+        After = ["network.target"];
+      };
+      Service = {
+        Type = "oneshot";
+        ExecStart = let
+          script = pkgs.writeShellScript "icm-maintenance" ''
+            export PATH="${codexWrapped}/bin:${pkgs.icm}/bin:${pkgs.jq}/bin:${pkgs.coreutils}/bin:''${PATH:-}"
+
+            if [ -f "$HOME/.local/share/opencode/auth.json" ]; then
+              export OPENCODE_GO_API_KEY="$(${pkgs.jq}/bin/jq -r '.["opencode-go"].key' "$HOME/.local/share/opencode/auth.json")"
+              ${pkgs.icm}/bin/icm consolidate-pending --limit 10 || true
+            else
+              echo "[icm-maintenance] opencode auth.json missing — skipping consolidation"
+            fi
+
+            ${pkgs.icm}/bin/icm decay || true
+            ${pkgs.icm}/bin/icm prune || true
+          '';
+        in "${script}";
+      };
+    };
+
+    timers.icm-maintenance = {
+      Unit = {
+        Description = "Daily ICM memory maintenance";
+      };
+      Timer = {
+        OnCalendar = "daily";
+        Persistent = true;
+        RandomizedDelaySec = "15m";
+      };
+      Install = {
+        WantedBy = ["timers.target"];
+      };
+    };
+  };
 }
