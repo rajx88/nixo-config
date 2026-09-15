@@ -54,7 +54,6 @@
     ./features/dev/bruno.nix
   ];
 
-
   programs.proxy.pac.enable = true;
 
   services.ssh-tunnels.enable = true;

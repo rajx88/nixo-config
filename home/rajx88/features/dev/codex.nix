@@ -38,11 +38,13 @@ in {
     ".codex" # sessions, history, login state
   ];
 
-  # Daily ICM maintenance: drain the async consolidation queue (LLM via the
-  # codex summarizer over opencode-go), then decay and prune. Mirrors the
-  # icm-litellm timer on yuji; on akarnae the summarizer is codex, so the
-  # env here is OPENCODE_GO_API_KEY instead of the LiteLLM gateway.
-  # Only created when icm is actually enabled on this machine.
+  # Daily ICM maintenance: consolidate every topic over the threshold (LLM
+  # via the codex summarizer over opencode-go), then decay and prune. Uses
+  # consolidate-all rather than consolidate-pending — the latter only
+  # drains topics enqueued by maybe_auto_consolidate, which is never called
+  # from the extract-pending path the omp extension uses, so the async
+  # queue stays empty forever regardless of topic size. consolidate-all
+  # scans topic counts directly. Only created when icm is enabled.
   systemd.user = lib.mkIf config.programs.icm.enable {
     services.icm-maintenance = {
       Unit = {
@@ -57,7 +59,7 @@ in {
 
             if [ -f "$HOME/.local/share/opencode/auth.json" ]; then
               export OPENCODE_GO_API_KEY="$(${pkgs.jq}/bin/jq -r '.["opencode-go"].key' "$HOME/.local/share/opencode/auth.json")"
-              ${pkgs.icm}/bin/icm consolidate-pending --limit 10 || true
+              ${pkgs.icm}/bin/icm consolidate-all --threshold 100 || true
             else
               echo "[icm-maintenance] opencode auth.json missing — skipping consolidation"
             fi
