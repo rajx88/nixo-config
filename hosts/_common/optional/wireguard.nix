@@ -66,6 +66,15 @@ in {
   services.resolved.enable = true;
   networking.networkmanager.dns = "systemd-resolved";
 
+  # NM has native "wireguard" device-type support and will otherwise claim
+  # wg0 the moment wg-quick creates it (no matching NM connection profile
+  # for it), silently stripping the address + full-tunnel policy routes
+  # wg-quick just installed. This raced unnoticed for months because "away"
+  # sessions were rare/brief — confirmed via nmcli showing wg0 state
+  # "disconnected" with a fully empty policy table 51820 while wg-quick
+  # itself reported success.
+  networking.networkmanager.unmanaged = [ "interface-name:wg0" ];
+
   # Global routing domain: every *.lan query goes to pihole regardless of
   # per-link DNS. When wg0 is up, its per-link `~.` overrides and routes
   # ALL DNS through the tunnel's CoreDNS.
