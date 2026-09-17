@@ -1,9 +1,4 @@
-{
-  pkgs,
-  lib,
-  config,
-  ...
-}: let
+{pkgs, ...}: let
   # icm shells out to `codex exec` non-interactively, which refuses to run
   # outside a git repo (e.g. from ~) unless --skip-git-repo-check is passed —
   # and icm has no way to pass it. This wrapper adds the flag to exec
@@ -37,52 +32,4 @@ in {
   home.persistence."/persist".directories = [
     ".codex" # sessions, history, login state
   ];
-
-  # Daily ICM maintenance: consolidate every topic over the threshold (LLM
-  # via the codex summarizer over opencode-go), then decay and prune. Uses
-  # consolidate-all rather than consolidate-pending — the latter only
-  # drains topics enqueued by maybe_auto_consolidate, which is never called
-  # from the extract-pending path the omp extension uses, so the async
-  # queue stays empty forever regardless of topic size. consolidate-all
-  # scans topic counts directly. Only created when icm is enabled.
-  systemd.user = lib.mkIf config.programs.icm.enable {
-    services.icm-maintenance = {
-      Unit = {
-        Description = "ICM memory maintenance (consolidation, decay, prune)";
-        After = ["network.target"];
-      };
-      Service = {
-        Type = "oneshot";
-        ExecStart = let
-          script = pkgs.writeShellScript "icm-maintenance" ''
-            export PATH="${codexWrapped}/bin:${pkgs.icm}/bin:${pkgs.jq}/bin:${pkgs.coreutils}/bin:''${PATH:-}"
-
-            if [ -f "$HOME/.local/share/opencode/auth.json" ]; then
-              export OPENCODE_GO_API_KEY="$(${pkgs.jq}/bin/jq -r '.["opencode-go"].key' "$HOME/.local/share/opencode/auth.json")"
-              ${pkgs.icm}/bin/icm consolidate-all --threshold 100 || true
-            else
-              echo "[icm-maintenance] opencode auth.json missing — skipping consolidation"
-            fi
-
-            ${pkgs.icm}/bin/icm decay || true
-            ${pkgs.icm}/bin/icm prune || true
-          '';
-        in "${script}";
-      };
-    };
-
-    timers.icm-maintenance = {
-      Unit = {
-        Description = "Daily ICM memory maintenance";
-      };
-      Timer = {
-        OnCalendar = "daily";
-        Persistent = true;
-        RandomizedDelaySec = "15m";
-      };
-      Install = {
-        WantedBy = ["timers.target"];
-      };
-    };
-  };
 }

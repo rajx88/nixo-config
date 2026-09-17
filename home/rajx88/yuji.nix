@@ -49,7 +49,6 @@
     ./features/dev/worktrunk.nix
     ./features/dev/codegraph.nix
     ./features/dev/icm.nix
-    ./features/dev/icm-litellm.nix
     ./features/dev/cursor.nix
     ./features/dev/bruno.nix
   ];
@@ -57,6 +56,8 @@
   programs.proxy.pac.enable = true;
 
   services.ssh-tunnels.enable = true;
+
+  programs.icm.summarizer = "claude-litellm";
 
   monitorProfiles = {
     enable = true;
