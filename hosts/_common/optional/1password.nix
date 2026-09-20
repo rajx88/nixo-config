@@ -10,7 +10,6 @@
       text = ''
         zen
         zen-beta
-        brave-origin
       '';
       mode = "0755";
     };
