@@ -7,7 +7,6 @@
     ./ghostty.nix
     ./firefox.nix
     ./chromium.nix
-    ./brave.nix
     ./fonts.nix
     ./gtk.nix
     ./playerctl.nix
