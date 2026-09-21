@@ -38,24 +38,34 @@
       # though ethernet is already connected and proving we're home.
       # wg0/lo/virtual interfaces are excluded so we never probe through the tunnel.
       for ifc in $(${pkgs.iproute2}/bin/ip -o link show up | ${pkgs.gawk}/bin/awk -F': ' '{print $2}' | ${pkgs.gnugrep}/bin/grep -v -E '^(wg|lo|docker|veth|br-|virbr|tailscale)'); do
-        for _ in 1 2 3; do
-          ${ping} -c1 -W1 -I "$ifc" -n 192.168.1.100 >/dev/null 2>&1 && return 0
-          ${sleep} 0.3
+        # Probe the LAN gateway as well as pihole. pihole lives on the same
+        # host as the WireGuard server, so if that host is down/rebooting we
+        # would otherwise misdetect "away", raise a full tunnel to a dead
+        # endpoint, and blackhole ALL traffic while sitting at home.
+        for host in 192.168.1.1 192.168.1.100; do
+          ${ping} -c1 -W1 -I "$ifc" -n "$host" >/dev/null 2>&1 && return 0
         done
+        ${sleep} 0.3
       done
       return 1
     }
 
     enter_home() {
-      ${systemctl} stop --quiet wg-quick-wg0 || true
-      ${logger} -t wg-home-away "home ($iface $status) — wg0 stopped"
+      if ${systemctl} stop --quiet wg-quick-wg0; then
+        ${logger} -t wg-home-away "home ($iface $status) — wg0 stopped"
+      else
+        ${logger} -t wg-home-away -p warning "home ($iface $status) — failed to stop wg0"
+      fi
     }
 
     enter_away() {
       # Don't start if already running
       ${systemctl} is-active --quiet wg-quick-wg0 && return 0
-      ${systemctl} start --quiet wg-quick-wg0 || true
-      ${logger} -t wg-home-away "away ($iface $status) — wg0 started"
+      if ${systemctl} start --quiet wg-quick-wg0; then
+        ${logger} -t wg-home-away "away ($iface $status) — wg0 started"
+      else
+        ${logger} -t wg-home-away -p warning "away ($iface $status) — FAILED to start wg0"
+      fi
     }
 
     if at_home; then enter_home; else enter_away; fi
@@ -110,11 +120,18 @@ in {
   }];
 
   networking.wg-quick.interfaces = {
-    # Full-tunnel: ALL traffic and ALL DNS through home.
+    # Full-tunnel for IPv4 and DNS through home.
+    # IPv6 is intentionally NOT tunneled (no ::/0): the server's wg0 has no
+    # IPv6 address or NAT66, so routing ::/0 into it blackholed all IPv6 and
+    # made dual-stack sites/apps hang. IPv6 now uses the native uplink.
     # At home the dispatcher keeps this DOWN — pihole + LAN handle
     # everything natively.
     wg0 = {
       address = [ "10.69.43.2/24" ];
+      # The endpoint is injected in postUp from /persist, so wg-quick can't
+      # derive the path MTU itself (it falls back to the physical default
+      # route and varies by uplink: 1420 on ethernet, 1220 on some hotspots).
+      mtu = 1420;
       privateKeyFile = "/persist/secrets/wireguard/private.key";
       autostart = false;
 
@@ -130,7 +147,7 @@ in {
 
       peers = [{
         publicKey = "7QagNiSoCbm5Yjr6oX9I86yJJOCQF+2LR1WQAQ/wozs=";
-        allowedIPs = [ "0.0.0.0/0" "::/0" ];
+        allowedIPs = [ "0.0.0.0/0" ];
         persistentKeepalive = 25;
       }];
     };
