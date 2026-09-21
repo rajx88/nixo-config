@@ -155,9 +155,14 @@ in {
 
   # Drive resolved AFTER wg-quick is fully up — avoids a race we hit with PostUp.
   # ExecStopPost reverts so leaving the tunnel doesn't leak stale state.
+  #
+  # Point the tunnel straight at pihole (192.168.1.100), reachable through the
+  # tunnel, rather than at the server's CoreDNS container (10.69.43.1). wg0's
+  # `~.` route sends EVERY name (including .lan) to pihole, so gravity/filtering
+  # applies and there is no CoreDNS middleman to keep alive across restarts.
   systemd.services.wg-quick-wg0.serviceConfig = {
     ExecStartPost = [
-      "${resolvectl} dns    wg0 10.69.43.1"
+      "${resolvectl} dns    wg0 192.168.1.100"
       "${resolvectl} domain wg0 '~.'"
     ];
     ExecStopPost = "-${resolvectl} revert wg0";
