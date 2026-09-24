@@ -52,7 +52,14 @@
         model = "github_copilot/claude-sonnet-5"
 
         [memory]
-        auto_consolidate_enabled = true
+        # icm's own async auto-consolidate enqueue only fires on some write
+        # paths (observed: never for our CLI/extract-pending-driven writes,
+        # only sporadically otherwise) — most topics that cross the threshold
+        # never get enqueued at all, so draining the queue leaves real
+        # backlog uncollected. Disabled; `consolidate-all` below is the sole,
+        # reliable mechanism since it scans live topic counts unconditionally
+        # instead of depending on that queue.
+        auto_consolidate_enabled = false
         auto_consolidate_threshold = 100
       ''
       else if summarizer == "codex"
@@ -62,7 +69,7 @@
         model = "gpt-5.6-luna"
 
         [memory]
-        auto_consolidate_enabled = true
+        auto_consolidate_enabled = false
         auto_consolidate_threshold = 100
       ''
       else null;
@@ -115,11 +122,13 @@
       };
 
     # Daily maintenance: consolidate every topic over the threshold, then
-    # decay and prune. consolidate-all scans topic counts directly rather
-    # than draining an enqueue-based pending queue (the omp extension never
-    # feeds one), so it's run unconditionally. Consolidation itself is
-    # skipped (decay/prune still run) when `programs.icm.summarizer` is null
-    # or its secrets aren't available yet.
+    # decay and prune. consolidate-all scans topic counts directly (live,
+    # unconditional) rather than draining icm's own async auto-consolidate
+    # queue — that queue only fires on some write paths and leaves most
+    # over-threshold topics with no job ever created, so it's disabled
+    # (`auto_consolidate_enabled = false` above) rather than relied on.
+    # Consolidation itself is skipped (decay/prune still run) when
+    # `programs.icm.summarizer` is null or its secrets aren't available yet.
     systemd.user.services.icm-maintenance = {
       Unit = {
         Description = "ICM memory maintenance (consolidation, decay, prune)";
@@ -151,7 +160,11 @@
       Unit.Description = "Daily ICM memory maintenance";
       Timer = {
         OnCalendar = "daily";
-        Persistent = true;
+        # Requires `linger` enabled for this user (hosts/_common/users) so the
+        # user systemd instance keeps running across logout/idle instead of
+        # being torn down between sessions — without that, this daily
+        # calendar timer would rarely survive long enough to actually fire.
+        Persistent = true; # catch up a missed run if the machine was off/asleep through the window
         RandomizedDelaySec = "15m";
       };
       Install.WantedBy = ["timers.target"];
