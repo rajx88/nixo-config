@@ -160,6 +160,9 @@
       Unit.Description = "Daily ICM memory maintenance";
       Timer = {
         OnCalendar = "daily";
+        OnBootSec = "5m"; # also run shortly after each boot/login, since this
+        # machine is usually off overnight and the daily calendar slot can be
+        # missed entirely otherwise
         # Requires `linger` enabled for this user (hosts/_common/users) so the
         # user systemd instance keeps running across logout/idle instead of
         # being torn down between sessions — without that, this daily
