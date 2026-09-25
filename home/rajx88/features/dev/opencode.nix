@@ -13,48 +13,36 @@ in {
     package = pkgs.opencode;
     settings = {
       default_agent = "plan";
-      plugins = [
+      plugin = [
         "@simonwjackson/opencode-direnv"
         "@franlol/opencode-md-table-formatter@latest"
         "opencode-mermaid-renderer@latest"
       ];
-      mcp = {
-        servers =
-          {
-            codegraph = {
-              type = "local";
-              command = ["codegraph" "serve" "--mcp"];
-            };
-          }
-          // lib.optionalAttrs hasRadar {
-            radar = {
-              type = "remote";
-              url = "http://localhost:9280/mcp";
-            };
+      mcp =
+        {
+          codegraph = {
+            type = "local";
+            command = ["codegraph" "serve" "--mcp"];
+            enabled = true;
           };
+        }
+        // lib.optionalAttrs hasRadar {
+          radar = {
+            type = "remote";
+            url = "http://localhost:9280/mcp";
+            enabled = true;
+          };
+        };
+      permission = {
+        bash = {
+          "rm *" = "ask";
+        };
+        external_directory = {
+          "${config.xdg.configHome}/opencode/**" = "allow";
+          "/tmp/**" = "allow";
+          "${config.home.homeDirectory}/code/**" = "allow";
+        };
       };
-      permissions = [
-        {
-          action = "shell";
-          resource = "rm *";
-          effect = "ask";
-        }
-        {
-          action = "external_directory";
-          resource = "${config.xdg.configHome}/opencode/*";
-          effect = "allow";
-        }
-        {
-          action = "external_directory";
-          resource = "/tmp/*";
-          effect = "allow";
-        }
-        {
-          action = "external_directory";
-          resource = "${config.home.homeDirectory}/code/*";
-          effect = "allow";
-        }
-      ];
     };
   };
 

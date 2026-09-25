@@ -8,15 +8,11 @@
 }:
 stdenv.mkDerivation rec {
   pname = "opencode";
-  version = "2.0.16";
+  version = "1.18.32";
 
-  # v2 binaries are no longer published as GitHub release assets (the
-  # v2.x releases on github.com only carry the auto-generated source
-  # tarball/zip) -- opencode.ai/files/bin is the actual distribution
-  # host for prebuilt binaries as of v2.
   src = fetchurl {
-    url = "https://opencode.ai/files/bin/${version}/opencode-linux-x64.tar.gz";
-    hash = "sha256-K5zaM6elOH68XTfaR4uny5BSSnaXQa/aTETObNLCgWM=";
+    url = "https://github.com/anomalyco/opencode/releases/download/v${version}/opencode-linux-x64.tar.gz";
+    hash = "sha256-MEbgQE/cYPuAMH56R4JLoHR3NkF4pNCbqoVISW3W1Ds=";
   };
 
   nativeBuildInputs = [
