@@ -125,14 +125,16 @@ the machine). It is fully reversible via **Restore Factory Keys**.
 
 ## Phase 5 — enroll your keys
 
-```bash
-sudo sbctl enroll-keys --microsoft --firmware-builtin
+```fish
+sudo sbctl enroll-keys --microsoft --firmware-builtin --ignore-immutable
 ```
 
 - `--microsoft` — keeps Microsoft's KEK/db so **Windows** (and the **NVIDIA** GPU
   option ROM) still validate. Mandatory on this machine.
 - `--firmware-builtin` — keeps the vendor default keys so ASUS firmware updates keep
   working.
+- `--ignore-immutable` — NixOS marks the efivarfs entries immutable; sbctl clears the
+  bit itself. Without it you get `File is immutable: .../KEK-*`.
 
 Check:
 
