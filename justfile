@@ -57,3 +57,22 @@ cp-config: generate-config
 
 set-password:
 	bash  ./scripts/change-pass.sh
+
+####
+# secure boot / tpm
+####
+
+# Enroll a fresh TPM2 keyslot for the LUKS root (auto-unlock). Run after a BIOS update
+# or any Secure Boot key/dbx change.
+tpm-enroll:
+	sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7+11 /dev/nvme0n1p3
+
+# Drop the TPM2 keyslot and go back to passphrase-only boot.
+tpm-wipe:
+	sudo systemd-cryptenroll --wipe-slot=tpm2 /dev/nvme0n1p3
+
+# Show Secure Boot status and the LUKS tokens.
+sb-status:
+	sbctl status
+	sudo cryptsetup luksDump /dev/nvme0n1p3 | grep -A2 '^Tokens:'
+
