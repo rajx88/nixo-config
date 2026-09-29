@@ -253,6 +253,10 @@ in firmware always lets the machine boot so you can repair it.
   (weaker) or accept the module restriction. Confirm with `nvidia-smi`.
 - **`sbctl verify` shows unsigned kernel files** → expected; lanzaboote signs the
   UKI/generation, not the raw `kernel-*.efi` blobs.
+- **`systemd-boot-fallbackx64.efi` is unsigned** → expected and harmless; the firmware
+  boots the signed `/EFI/systemd/systemd-bootx64.efi` (and the signed
+  `/EFI/BOOT/BOOTX64.EFI`). The fallback stub is a leftover systemd-boot artifact that
+  lanzaboote does not manage.
 
 ## Why Windows stays safe
 
