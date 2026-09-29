@@ -119,6 +119,10 @@ the machine). It is fully reversible via **Restore Factory Keys**.
    - **Secure Boot Mode** → `Custom` (keep it Custom permanently; `Standard` would
      reload the factory keys and drop yours)
    - **OS Type** → `Windows UEFI mode`
+   - *Note:* on some ASUS boards (e.g. PRIME Z370-A) the `Secure Boot Mode` entry is
+     not visible. Key Management is only reachable in Custom mode, so if you can open
+     Key Management you are already effectively in Custom. Secure Boot's on/off is
+     driven by `OS Type`, not by Standard/Custom.
 4. Enter **Key Management** → select **Delete PK** (a.k.a. "Reset to Setup Mode").
    Do **not** pick an option that erases **dbx**.
 5. Press `F10` to save and exit, and boot back into NixOS.
@@ -151,8 +155,9 @@ enrolled, Secure Boot activates on the next boot:
 2. Verify (Phase 7). `sbctl status` should show **Secure Boot: enabled (user)**.
 
 If it still shows disabled, re-enter BIOS → **Boot → Secure Boot** and confirm
-**OS Type = Windows UEFI mode** and **Secure Boot Mode = Custom** (toggle OS Type away
-and back if needed), then `F10` to save.
+**OS Type = Windows UEFI mode** (toggle it to `Other OS` and back to force a rewrite),
+then `F10` to save. Also make sure **CSM is disabled**, otherwise Secure Boot is
+greyed out.
 
 To disable later: set **OS Type = Other OS**.
 
