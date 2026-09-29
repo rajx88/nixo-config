@@ -144,9 +144,15 @@ sudo sbctl status
 
 ## Phase 6 — enable Secure Boot
 
-1. Reboot → `DEL` at POST → **Boot → Secure Boot**.
-2. Ensure **OS Type = Windows UEFI mode** and **Secure Boot Mode = Custom**.
-3. `F10` to save and exit.
+`OS Type = Windows UEFI mode` was already set in Phase 4, so with your PK now
+enrolled, Secure Boot activates on the next boot:
+
+1. Reboot.
+2. Verify (Phase 7). `sbctl status` should show **Secure Boot: enabled (user)**.
+
+If it still shows disabled, re-enter BIOS → **Boot → Secure Boot** and confirm
+**OS Type = Windows UEFI mode** and **Secure Boot Mode = Custom** (toggle OS Type away
+and back if needed), then `F10` to save.
 
 To disable later: set **OS Type = Other OS**.
 
