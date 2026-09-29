@@ -34,6 +34,15 @@
   # UEFI Secure Boot via lanzaboote. See docs/secure-boot.md for the procedure.
   host.secureBoot.enable = true;
 
+  # TPM2 auto-unlock for the LUKS root. See docs/secure-boot.md Phase 8.
+  # systemd stage 1 implies fallbackToPassword, so the passphrase still works
+  # if the TPM unseal fails.
+  security.tpm2.enable = true;
+  boot.initrd.availableKernelModules = ["tpm_tis" "tpm_crb"];
+  boot.initrd.luks.devices.crypted = {
+    crypttabExtraOpts = ["tpm2-device=auto"];
+  };
+
   networking = {
     networkmanager.enable = true;
     hostName = "akarnae";

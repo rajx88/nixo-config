@@ -193,13 +193,14 @@ This makes the LUKS disk unlock automatically at boot, but only while the Secure
 chain is intact (bound to **PCR 7**, the Secure Boot policy). The LUKS passphrase stays
 as a fallback.
 
-> Lanzaboote is **not** systemd-stub, so there is no kernel/initrd measurement in
-> **PCR 11** to bind to. PCR 7 is the reliable measurement here.
+> On this host the initrd is systemd stage 1, which **implies `fallbackToPassword`**,
+> so setting that option explicitly is a hard assertion error. The passphrase keeps
+> working automatically if the TPM unseal fails.
 > If you want a secret at boot, use `--tpm2-with-pin=yes` (see below).
 
 ### 8.1 NixOS config
 
-Add to `hosts/akarnae/default.nix` (or a small module):
+Already applied in `hosts/akarnae/default.nix`:
 
 ```nix
 security.tpm2.enable = true;
@@ -207,31 +208,31 @@ boot.initrd.availableKernelModules = [ "tpm_tis" "tpm_crb" ];
 
 boot.initrd.luks.devices.crypted = {
   crypttabExtraOpts = [ "tpm2-device=auto" ];
-  # CRITICAL: never lock yourself out if the TPM unseal fails.
-  fallbackToPassword = true;
 };
 ```
 
 Rebuild and reboot:
 
-```bash
-nh os switch && sudo reboot
+```fish
+nh os switch; and sudo reboot
 ```
 
 ### 8.2 Enroll the TPM
 
-Once booted, bind a new LUKS keyslot to the TPM:
+Once booted, bind a new LUKS keyslot to the TPM. `bootctl status` reported
+`Measured UKI: yes` / `Measured OS: yes`, so bind to **PCR 7 (Secure Boot policy) +
+PCR 11 (UKI measurement)**:
 
-```bash
-sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7 /dev/nvme0n1p3
+```fish
+sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7+11 /dev/nvme0n1p3
 ```
 
 Reboot — the disk should now unlock with no prompt. The passphrase still works.
 
 Optional hardening: add a PIN (typed at boot) or extra PCRs:
 
-```bash
-sudo systemd-cryptenroll --tpm2-device=auto --tpm2-with-pin=yes --tpm2-pcrs=7+14 /dev/nvme0n1p3
+```fish
+sudo systemd-cryptenroll --tpm2-device=auto --tpm2-with-pin=yes --tpm2-pcrs=7+11+14 /dev/nvme0n1p3
 ```
 
 ### 8.3 Re-enroll after firmware/dbx changes
