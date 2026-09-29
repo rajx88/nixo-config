@@ -249,8 +249,21 @@ sudo systemd-cryptenroll --tpm2-device=auto --tpm2-with-pin=yes --tpm2-pcrs=7+11
 ### 8.3 Re-enroll after firmware/dbx changes
 
 Changing Secure Boot keys, updating `dbx`, or a BIOS update changes PCR 7, so
-auto-unlock stops and you get the passphrase prompt. Re-run the `systemd-cryptenroll`
-command above to re-bind. **Keep the passphrase keyslot forever.**
+auto-unlock stops and you get the passphrase prompt. Re-enroll with the `just`
+recipe:
+
+```fish
+just tpm-enroll   # sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7+11 /dev/nvme0n1p3
+```
+
+Other helpers:
+
+```fish
+just sb-status    # Secure Boot status + LUKS tokens
+just tpm-wipe     # drop the TPM2 keyslot, back to passphrase-only boot
+```
+
+**Keep the passphrase keyslot (slot 0) forever.**
 
 ---
 
