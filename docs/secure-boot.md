@@ -11,6 +11,17 @@ validating and Windows is unaffected. There is no BitLocker, so no recovery-key 
 
 > Commands below are written for **fish** (the login shell on these hosts).
 
+## Status
+
+Verified working on akarnae (2026-09-29):
+
+- `sbctl status` → `Secure Boot: enabled (user)`, `Setup Mode: disabled`, owner GUID is
+  the machine's own key (generated with `sbctl create-keys`).
+- `bootctl status` → `Secure Boot: enabled (user)`, `Measured UKI/OS: yes`.
+- All lanzaboote generations on the ESP sign and verify; rebuilds re-sign correctly.
+- LUKS: keyslot `0` = passphrase, keyslot `1` = `systemd-tpm2` token → disk auto-unlocks
+  (passphrase fallback still works).
+
 > This is UEFI Secure Boot, not legacy/CSM.
 > `dbx` (forbidden signatures) is left untouched.
 
