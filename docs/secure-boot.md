@@ -9,6 +9,8 @@ The host dual-boots Windows on a separate disk (`nvme1n1`, its own ESP). We enro
 our own keys **plus Microsoft's** (`--microsoft`), so the Windows Boot Manager keeps
 validating and Windows is unaffected. There is no BitLocker, so no recovery-key prompt.
 
+> Commands below are written for **fish** (the login shell on these hosts).
+
 > This is UEFI Secure Boot, not legacy/CSM.
 > `dbx` (forbidden signatures) is left untouched.
 
@@ -65,14 +67,13 @@ created **after** the impermanence bind mount for `/var/lib/sbctl` is active. So
 `sbctl` is only installed once lanzaboote is enabled, so for this one-time step run
 it straight from nixpkgs:
 
-```bash
-SBCTL=$(nix build nixpkgs#sbctl --no-link --print-out-paths)
-sudo "$SBCTL/bin/sbctl" create-keys
+```fish
+sudo (nix build nixpkgs#sbctl --no-link --print-out-paths)/bin/sbctl create-keys
 ```
 
 Confirm the keys landed in the persisted location:
 
-```bash
+```fish
 sudo ls -R /persist/var/lib/sbctl/keys
 ```
 
