@@ -25,10 +25,11 @@ in {
       ];
       # Disable global flake registry
       flake-registry = "";
+      # Add each flake input as a registry and nix_path
+      nix-path = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
     };
-    # Add each flake input as a registry and nix_path
+    # Add each flake input as a registry
     registry = lib.mapAttrs (_: flake: {inherit flake;}) flakeInputs;
-    nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
   };
 
   programs.nh = {
@@ -36,5 +37,4 @@ in {
     clean.enable = true;
     clean.extraArgs = "--keep-since 7d --keep 3";
   };
-
 }
