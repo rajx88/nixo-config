@@ -62,8 +62,12 @@ created **after** the impermanence bind mount for `/var/lib/sbctl` is active. So
 
 ## Phase 2 — create the signing keys
 
+`sbctl` is only installed once lanzaboote is enabled, so for this one-time step run
+it straight from nixpkgs:
+
 ```bash
-sudo sbctl create-keys
+SBCTL=$(nix build nixpkgs#sbctl --no-link --print-out-paths)
+sudo "$SBCTL/bin/sbctl" create-keys
 ```
 
 Confirm the keys landed in the persisted location:
