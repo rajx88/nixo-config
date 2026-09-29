@@ -5,4 +5,5 @@
   encryption = import ./encryption.nix;
   impermanence = import ./impermanence.nix;
   backup = import ./backup.nix;
+  secure-boot = import ./secure-boot.nix;
 }

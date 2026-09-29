@@ -31,6 +31,11 @@
     impermanence.enable = true;
   };
 
+  # UEFI Secure Boot via lanzaboote. See docs/secure-boot.md for the step-by-step
+  # procedure. Keep this `false` for the prep build, create the signing keys once
+  # the /var/lib/sbctl bind mount is active, then flip to `true` (Phase 3).
+  host.secureBoot.enable = false;
+
   networking = {
     networkmanager.enable = true;
     hostName = "akarnae";

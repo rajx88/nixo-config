@@ -99,6 +99,15 @@ After the installation just reboot.
 sudo reboot
 ```
 
+## Secure Boot
+
+`akarnae` supports UEFI Secure Boot via [lanzaboote](https://github.com/nix-community/lanzaboote),
+with an optional TPM2 auto-unlock phase for the LUKS disk. The full step-by-step
+procedure (key generation, firmware Setup Mode, enrolling keys, verification, recovery,
+and the optional TPM2 phase) lives in [`docs/secure-boot.md`](docs/secure-boot.md).
+
+It is opt-in per host via `host.secureBoot.enable`.
+
 ## Things to look at in the future
 
 The following things are potentially interesting to include into this configuration.
