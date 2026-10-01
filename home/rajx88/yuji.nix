@@ -51,6 +51,7 @@
     ./features/dev/icm.nix
     ./features/dev/cursor.nix
     ./features/dev/bruno.nix
+    ./features/dev/twg.nix
   ];
 
   programs.proxy.pac.enable = true;
