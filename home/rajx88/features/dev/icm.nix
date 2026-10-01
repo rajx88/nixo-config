@@ -12,6 +12,14 @@
   #   - icm.ts               -> auto-inject recall + auto-extract tool output
   #   - APPEND_SYSTEM.md     -> persistent-memory instructions (cli mode)
   #   - skills/icm-*.md      -> /icm-recall + /icm-remember (skill mode)
+  #
+  # ~/.config/opencode/plugins/icm.ts is deliberately NOT managed here — it is
+  # a hand-patched plain file living in the persisted .config/opencode
+  # directory, alongside the unmanaged herdr-agent-state.js. `icm init --mode
+  # hook` owns that path and would overwrite the patch; the file's own header
+  # documents the divergence and how to re-apply it. Do not add it to
+  # home.file: home-manager would re-symlink it into the store on every
+  # activation and clobber the fix.
   options.programs.icm.summarizer = lib.mkOption {
     type = lib.types.nullOr (lib.types.enum ["claude-litellm" "codex"]);
     default = null;
@@ -51,6 +59,15 @@
         provider = "claude"
         model = "github_copilot/claude-sonnet-5"
 
+        # `icm extract-pending` (the drain the OpenCode/omp plugins enqueue into)
+        # resolves its own summarizer independently of [consolidate.summarizer].
+        # Without this it falls back to the built-in default provider with no
+        # explicit model, so the queue never drained predictably. Same backend
+        # as consolidation so both paths agree on credentials.
+        [extraction.summarizer]
+        provider = "claude"
+        model = "github_copilot/claude-sonnet-5"
+
         [memory]
         # icm's own async auto-consolidate enqueue only fires on some write
         # paths (observed: never for our CLI/extract-pending-driven writes,
@@ -65,6 +82,10 @@
       else if summarizer == "codex"
       then ''
         [consolidate.summarizer]
+        provider = "codex"
+        model = "gpt-5.6-luna"
+
+        [extraction.summarizer]
         provider = "codex"
         model = "gpt-5.6-luna"
 
@@ -169,6 +190,58 @@
         # calendar timer would rarely survive long enough to actually fire.
         Persistent = true; # catch up a missed run if the machine was off/asleep through the window
         RandomizedDelaySec = "15m";
+      };
+      Install.WantedBy = ["timers.target"];
+    };
+
+    # Drain the async extraction queue that the OpenCode and omp plugins fill
+    # via `icm extract --enqueue`.
+    #
+    # The plugins also self-drain, but only after DRAIN_EVERY (10) enqueues
+    # *per agent process*, and each drain is a detached fire-and-forget spawn.
+    # In practice the queue outran the counter: 11 rows sat undrained across
+    # two opencode processes, none of which had reached the threshold. A timer
+    # makes draining independent of agent lifetime and of how many processes
+    # happen to be running.
+    #
+    # Skipped when no summarizer is configured or its secrets are missing —
+    # extract-pending is LLM-backed and would otherwise fail every run.
+    systemd.user.services.icm-extract-pending = {
+      Unit = {
+        Description = "ICM pending-extraction drain";
+        After = ["network.target"];
+      };
+      Service = {
+        Type = "oneshot";
+        ExecStart = let
+          script = pkgs.writeShellScript "icm-extract-pending" ''
+            export PATH="${pkgs.icm}/bin:${pkgs.coreutils}/bin:''${PATH:-}"
+
+            ICM_SUMMARIZER_READY=0
+            ${summarizerEnv}
+
+            if [ "$ICM_SUMMARIZER_READY" != 1 ]; then
+              echo "[icm-extract-pending] no summarizer configured — skipping drain"
+              exit 0
+            fi
+
+            # ICM_WORKER mirrors what the agent plugins set, so a timer-triggered
+            # drain and an in-process one can't both hold the extract lock.
+            ICM_WORKER=1 icm extract-pending --limit 30 || true
+          '';
+        in "${script}";
+      };
+    };
+
+    systemd.user.timers.icm-extract-pending = {
+      Unit.Description = "Periodically drain ICM's pending-extraction queue";
+      Timer = {
+        # Frequent: enqueues arrive continuously while an agent session runs,
+        # and each drain only handles --limit rows.
+        OnUnitActiveSec = "15m";
+        OnBootSec = "3m";
+        Persistent = true;
+        RandomizedDelaySec = "2m";
       };
       Install.WantedBy = ["timers.target"];
     };
