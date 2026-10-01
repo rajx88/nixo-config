@@ -15,6 +15,7 @@ REPO_ROOT="$(realpath "$PKGS_DIR/..")"
 
 # ── Package table ─────────────────────────────────────────────────────────────
 # worktrunk: fetchFromGitHub + cargoHash — handled in the dedicated section below.
+# twg: Atlassian publishes no GitHub releases — handled in the dedicated section below.
 
 PKG_DIRS=(
   "pi-coding-agent"
@@ -299,11 +300,49 @@ if in_filter "cursor"; then
   fi
 fi
 
+# ── TWG (non-GitHub: Atlassian release manifest) ──────────────────────────────
+if in_filter "twg"; then
+  pkg="twg"
+  PKG_FILE="$PKGS_DIR/twg/default.nix"
+
+  CURRENT=$(grep 'version = ' "$PKG_FILE" | head -1 | sed 's/.*"\(.*\)".*/\1/')
+
+  # atlassian/twg-cli publishes no GitHub releases, so the stable channel record
+  # is Atlassian's manifest. assets["linux-x64"].url is already stamped with the
+  # version, so it stays content-addressed if the asset is ever republished.
+  MANIFEST=$(curl -sfL https://teamwork-graph.atlassian.com/cli/manifest.json) || MANIFEST=""
+  LATEST=$(jq -r '.version // empty' <<<"$MANIFEST" 2>/dev/null) || LATEST=""
+  URL=$(jq -r '.assets["linux-x64"].url // empty' <<<"$MANIFEST" 2>/dev/null) || URL=""
+
+  if [[ -z "$LATEST" || -z "$URL" ]]; then
+    log_err "$pkg" "failed to read version/asset URL from the TWG manifest"
+    (( FAILED++ )) || true
+  elif [[ "$CURRENT" == "$LATEST" ]]; then
+    log_ok "$pkg" "up-to-date ($CURRENT)"
+    (( SKIPPED++ )) || true
+  else
+    log_warn "$pkg" "$CURRENT → $LATEST"
+    if ! $CHECK_ONLY; then
+      log_info "$pkg" "fetching hash..."
+      SRI=$(nix_sri "$URL") || {
+        log_err "$pkg" "failed to hash $URL"
+        (( FAILED++ )) || true; SRI=""
+      }
+      if [[ -n "$SRI" ]]; then
+        sed -i "s/version = \"$CURRENT\"/version = \"$LATEST\"/" "$PKG_FILE"
+        sed -i "s|hash = \"sha256-.*\"|hash = \"$SRI\"|"           "$PKG_FILE"
+        log_ok "$pkg" "updated to $LATEST"
+        (( UPDATED++ )) || true
+      fi
+    fi
+  fi
+fi
+
 # ── Summary ───────────────────────────────────────────────────────────────────
 echo ""
 echo -e "  ${GREEN}${UPDATED} updated${RESET}  ${CYAN}${SKIPPED} up-to-date${RESET}  ${RED}${FAILED} failed${RESET}"
 
-ALL_PKGS=("${PKG_DIRS[@]}" "worktrunk" "icm" "cursor")
+ALL_PKGS=("${PKG_DIRS[@]}" "worktrunk" "icm" "cursor" "twg")
 if [[ $UPDATED -gt 0 ]]; then
   echo -e "\nVerify: ${CYAN}nix build $(printf '.#%s ' "${ALL_PKGS[@]}")${RESET}"
 fi
