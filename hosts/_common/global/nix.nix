@@ -17,12 +17,6 @@ in {
         "flakes"
       ];
       warn-dirty = false;
-      extra-substituters = [
-        "https://noctalia.cachix.org"
-      ];
-      extra-trusted-public-keys = [
-        "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
-      ];
       # Disable global flake registry
       flake-registry = "";
       # Add each flake input as a registry and nix_path
