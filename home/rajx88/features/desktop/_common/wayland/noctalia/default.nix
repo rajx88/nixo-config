@@ -1,10 +1,6 @@
-{inputs, config, ...}: let
+{config, ...}: let
   home = config.home.homeDirectory;
 in {
-  imports = [
-    inputs.noctalia.homeModules.default
-  ];
-
   programs.noctalia = {
     enable = true;
     settings = {
