@@ -63,9 +63,10 @@ set-password:
 ####
 
 # Enroll a fresh TPM2 keyslot for the LUKS root (auto-unlock). Run after a BIOS update
-# or any Secure Boot key/dbx change.
+# or any Secure Boot key/dbx change. Binds PCR 7 (Secure Boot policy) only: PCR 11
+# would change on every rebuild and re-prompt for the passphrase.
 tpm-enroll:
-	sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7+11 /dev/nvme0n1p3
+	sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7 /dev/nvme0n1p3
 
 # Drop the TPM2 keyslot and go back to passphrase-only boot.
 tpm-wipe:
