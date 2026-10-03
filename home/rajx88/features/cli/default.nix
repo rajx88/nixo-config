@@ -17,6 +17,7 @@
     ./zoxide.nix
 
     ./yazi.nix
+    ./superfile.nix
     ./atuin.nix
     ./antidote.nix
     ./zsh.nix
