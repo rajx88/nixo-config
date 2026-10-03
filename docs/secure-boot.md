@@ -230,20 +230,24 @@ nh os switch; and sudo reboot
 
 ### 8.2 Enroll the TPM
 
-Once booted, bind a new LUKS keyslot to the TPM. `bootctl status` reported
-`Measured UKI: yes` / `Measured OS: yes`, so bind to **PCR 7 (Secure Boot policy) +
-PCR 11 (UKI measurement)**:
+Once booted, bind a new LUKS keyslot to the TPM. Bind to **PCR 7 (Secure Boot policy)
+only**:
 
 ```fish
-sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7+11 /dev/nvme0n1p3
+just tpm-enroll   # sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7 /dev/nvme0n1p3
 ```
+
+> **Do not add PCR 11 here.** Lanzaboote rebuilds produce a new UKI, so PCR 11 changes
+> on *every* `nh os switch` and the seal breaks — forcing the passphrase prompt after
+> each rebuild. PCR 7 alone survives rebuilds and only changes on a BIOS update or a
+> Secure Boot key/dbx change.
 
 Reboot — the disk should now unlock with no prompt. The passphrase still works.
 
-Optional hardening: add a PIN (typed at boot) or extra PCRs:
+Optional hardening: add a PIN (typed at boot):
 
 ```fish
-sudo systemd-cryptenroll --tpm2-device=auto --tpm2-with-pin=yes --tpm2-pcrs=7+11+14 /dev/nvme0n1p3
+sudo systemd-cryptenroll --tpm2-device=auto --tpm2-with-pin=yes --tpm2-pcrs=7 /dev/nvme0n1p3
 ```
 
 ### 8.3 Re-enroll after firmware/dbx changes
@@ -253,7 +257,7 @@ auto-unlock stops and you get the passphrase prompt. Re-enroll with the `just`
 recipe:
 
 ```fish
-just tpm-enroll   # sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7+11 /dev/nvme0n1p3
+just tpm-enroll   # sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7 /dev/nvme0n1p3
 ```
 
 Other helpers:
