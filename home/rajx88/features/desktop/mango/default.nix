@@ -37,8 +37,8 @@ in {
       trackpad_accel_profile = 0;
 
       # Focus
-      sloppyfocus = true;
-      warpcursor = true;
+      sloppy_focus = true;
+      warp_cursor = true;
 
       # Disable bottom-left hot corner
       enable_hotarea = 0;
@@ -53,25 +53,35 @@ in {
       scroller_proportion_preset = "0.33,0.5,0.67,1.0";
 
       # Source the active monitor profile snippet (provides monitorrule, tagrule, workspace binds)
-      source-optional = "${home}/.config/mango/active-profile.conf";
+      source_optional = "${home}/.config/mango/active-profile.conf";
 
-      # Window rules — explicit size; isnosizehint bypasses ghostty size constraints
-      windowrule = [
-        "isnamedscratchpad:1,isnosizehint:1,width:${toString notesWidth},height:${toString fullHeight},appid:scratchpad.notes"
-        "isnamedscratchpad:1,isnosizehint:1,width:${toString todoWidth},height:${toString fullHeight},appid:scratchpad.todo"
+      # Window rules — explicit size; no_size_hint bypasses ghostty size constraints
+      window_rule = [
+        "is_named_scratchpad:1,no_size_hint:1,width:${toString notesWidth},height:${toString fullHeight},app_id:scratchpad.notes"
+        "is_named_scratchpad:1,no_size_hint:1,width:${toString todoWidth},height:${toString fullHeight},app_id:scratchpad.todo"
       ];
     };
 
-    autostart_sh = ''
+    # NOTE: the mango hm-module unconditionally emits `exec-once=...` (hyphen),
+    # but the 1407fcf binary only accepts `exec_once` (underscore). We therefore
+    # avoid `autostart_sh` and wire autostart ourselves.
+    extraConfig = ''
+      exec_once = ~/.config/mango/autostart.sh
+    '';
+
+    bottomPrefixes = ["source_optional"];
+
+    systemd.enable = true;
+  };
+
+  xdg.configFile."mango/autostart.sh" = {
+    executable = true;
+    text = ''
       wl-clip-persist --clipboard regular --reconnect-tries 0 &
       wl-paste --type text --watch cliphist store &
       noctalia &
       mprofile auto &
     '';
-
-    bottomPrefixes = ["source-optional"];
-
-    systemd.enable = true;
   };
 
   # Polkit agent (wayland-native, works with any wlroots compositor)
