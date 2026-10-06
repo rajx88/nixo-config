@@ -52,7 +52,7 @@ in {
       scroller_ignore_proportion_single = 0;
       scroller_proportion_preset = "0.33,0.5,0.67,1.0";
 
-      # Source the active monitor profile snippet (provides monitorrule, tagrule, workspace binds)
+      # Source the active monitor profile snippet (provides monitor_rule, tag_rule, workspace binds)
       source_optional = "${home}/.config/mango/active-profile.conf";
 
       # Window rules — explicit size; no_size_hint bypasses ghostty size constraints
@@ -81,6 +81,7 @@ in {
       wl-paste --type text --watch cliphist store &
       noctalia &
       mprofile auto &
+      mango-lid-state &
     '';
   };
 

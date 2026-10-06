@@ -12,20 +12,23 @@ build:
 debug:
   nh os switch -- --show-trace --verbose
 
+# Home-manager is wired into the NixOS config on yuji/akarnae, so a plain
+# `nh home switch` cannot find a standalone #homeConfigurations.<user>@<host>.
+# Use the OS switch (which also builds & activates the embedded home config).
 hms:
-  nh home switch
+  nh os switch
 
 clean:
   nh clean all --keep-since 7d --keep 3
 
 arch:
-	just hm arch
+	just rb
 
 wsl:
-	just hm wsl
+	just rb
 
 hm $MACHINE:
-	home-manager switch --flake .#{{user}}@{{MACHINE}}
+	nh os switch
 
 up:
   nix flake update

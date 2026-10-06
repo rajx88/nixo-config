@@ -58,11 +58,11 @@
 
     positions = computePositions;
 
-    # monitorrule lines
+    # monitor_rule lines
     monitorrules = lib.imap0 (idx: m: let
       pos = builtins.elemAt positions idx;
       posStr = ",x:${toString (builtins.floor pos.x)},y:${toString (builtins.floor pos.y)}";
-    in "monitorrule = name:^${m.name}$,width:${toString m.width},height:${toString m.height},refresh:${toString m.refreshRate}${posStr},scale:${toString m.scale}" + (lib.optionalString (m.vertical != "0") ",rr:${m.vertical}")
+    in "monitor_rule = name:^${m.name}$,width:${toString m.width},height:${toString m.height},refresh:${toString m.refreshRate}${posStr},scale:${toString m.scale}" + (lib.optionalString (m.vertical != "0") ",rr:${m.vertical}") + (lib.optionalString (m.primary or false) ",primary:1")
     ) enabledMonitors;
 
     # workspace bind lines
@@ -71,9 +71,9 @@
       ++ map (ws: "bind = SUPER+SHIFT,${wsToKey ws},tagcrossmon,${toString ws},^${m.name}$") m.workspaces
     ) (lib.filter (m: m.workspaces != []) enabledMonitors);
 
-    # tagrule lines
+    # tag_rule lines
     tagrules = lib.concatMap (m:
-      map (ws: "tagrule = id:${toString ws},layout_name:${m.layout}") m.workspaces
+      map (ws: "tag_rule = id:${toString ws},layout_name:${m.layout}") m.workspaces
     ) (lib.filter (m: m.workspaces != [] && m.layout != "") enabledMonitors);
 
   in builtins.concatStringsSep "\n" (monitorrules ++ wsBinds ++ tagrules);
