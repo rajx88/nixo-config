@@ -170,6 +170,15 @@
               echo "[icm-maintenance] no summarizer configured — skipping consolidation"
             fi
 
+            # Enable semantic/vector search (issue #345 load-dynamic build):
+            # downloads the onnxruntime + model once per user (~11MB), then
+            # backfills vectors for existing memories. Both are idempotent and
+            # land in the already-persisted ~/.local/share/icm, so running them
+            # every maintenance pass is cheap once caught up. Best-effort: a
+            # missing network connection must never break the rest of upkeep.
+            icm embeddings download || true
+            icm embed || true
+
             icm decay || true
             icm prune || true
           '';
