@@ -1,5 +1,6 @@
 {
   lib,
+  pkgs,
   rustPlatform,
   fetchFromGitHub,
   pkg-config,
@@ -7,27 +8,38 @@
 }:
 rustPlatform.buildRustPackage {
   pname = "icm";
-  version = "0.10.65";
+  version = "0.11.0";
 
   src = fetchFromGitHub {
     owner = "rtk-ai";
     repo = "icm";
-    rev = "icm-v0.10.65";
-    hash = "sha256-uV2SRnBcd1zYbPr+bH1IzR1rOVveAttAF+CYgRStzWw=";
+    rev = "icm-v0.11.0";
+    hash = "sha256-Vfy85dqTwlWzjAgBgo/e/r8HPwOQJ839DMusQtaP3qU=";
   };
 
-  cargoHash = "sha256-sHHY/kLp8oxvj3A/2u1G5xuiNV+0NDpFFuQK4CW8VUo=";
+  cargoHash = "sha256-wyK5UG1JAb+Xw3dhghjzYlcyu4qWdLx+b0zmIZ1WJHI=";
 
-  nativeBuildInputs = [pkg-config];
+  nativeBuildInputs = [pkg-config pkgs.makeWrapper];
 
   buildInputs = [openssl];
 
   cargoBuildFlags = [
     "--no-default-features"
-    "--features=tui,http-api,backend-sqlite"
+    "--features=embeddings-dynamic,tui,http-api,backend-sqlite"
   ];
 
   doCheck = false;
+
+  # The embeddings-dynamic build dlopens onnxruntime (downloaded at runtime by
+  # `icm embeddings download`). That shared lib needs libstdc++.so.6, but it
+  # ships its own RUNPATH, so the icm binary's rpath is NOT consulted for its
+  # transitive deps — only LD_LIBRARY_PATH is. Without this, every
+  # embed/recall-with-vectors call fails with "onnxruntime runtime not found"
+  # on NixOS. (issue #345)
+  postInstall = ''
+    wrapProgram $out/bin/icm \
+      --prefix LD_LIBRARY_PATH : ${pkgs.stdenv.cc.cc.lib}/lib
+  '';
 
   meta = with lib; {
     description = "Permanent memory for AI agents. Single binary, zero dependencies, MCP native.";
