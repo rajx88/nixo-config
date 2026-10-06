@@ -47,6 +47,31 @@
   lidOpenScript = pkgs.writeShellScript "mango-lid-open" ''
     ${wlr-randr} --output ${internalPanel} --on
   '';
+
+  # Applies the *current* lid state to the internal panel. switchbind only
+  # fires on lid-switch events, so a config reload (or mprofile switch) that
+  # runs reapply_monitor_rules() will re-enable the panel even with the lid
+  # closed. Call this after load to re-sync the panel with reality.
+  lidStateScript = pkgs.writeShellScriptBin "mango-lid-state" ''
+    set -euo pipefail
+    PANEL=${internalPanel}
+
+    [ -n "''${WAYLAND_DISPLAY:-}" ] || exit 0
+
+    closed=false
+    for d in /proc/acpi/button/lid/*/; do
+      [ -f "$d/state" ] || continue
+      case "$(cat "$d/state")" in
+        *closed*) closed=true; break ;;
+      esac
+    done
+
+    if [ "$closed" = true ]; then
+      ${wlr-randr} --output "$PANEL" --off
+    else
+      ${wlr-randr} --output "$PANEL" --on
+    fi
+  '';
 in {
   # switchbind=fold,cmd  → on lid close
   # switchbind=unfold,cmd → on lid open
@@ -58,5 +83,5 @@ in {
     ];
   };
 
-  home.packages = lib.mkIf isLaptopFlag [pkgs.wlr-randr];
+  home.packages = lib.mkIf isLaptopFlag [pkgs.wlr-randr lidStateScript];
 }
