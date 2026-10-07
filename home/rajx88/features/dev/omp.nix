@@ -33,6 +33,13 @@ in {
     }
   '';
 
+  # Hindsight memory: omp loads the pi bundle of the shared coding-agents
+  # runtime (staged by `npx @vectorize-io/hindsight-coding-agents install`
+  # into the persisted ~/.hindsight). Kept as an out-of-store symlink so the
+  # auto-updater can refresh the bundle without a rebuild.
+  home.file.".omp/agent/extensions/hindsight.js".source =
+    config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.hindsight/coding-agents/dist/pi.js";
+
   programs.fish.interactiveShellInit = ''
     omp completions fish | source
   '';

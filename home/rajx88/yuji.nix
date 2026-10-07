@@ -41,14 +41,12 @@
     ./features/dev/zed.nix
     ./features/dev/opencode.nix
     ./features/dev/opencommit.nix
-    ./features/dev/pi-coding-agent.nix
     ./features/dev/omp.nix
     ./features/dev/rtk.nix
     ./features/dev/aws.nix
     ./features/dev/python.nix
     ./features/dev/worktrunk.nix
     ./features/dev/codegraph.nix
-    ./features/dev/icm.nix
     ./features/dev/cursor.nix
     ./features/dev/bruno.nix
     ./features/dev/twg.nix
@@ -58,7 +56,6 @@
 
   services.ssh-tunnels.enable = true;
 
-  programs.icm.summarizer = "claude-litellm";
 
   monitorProfiles = {
     enable = true;
