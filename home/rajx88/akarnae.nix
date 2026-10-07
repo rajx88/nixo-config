@@ -35,7 +35,6 @@
     ./features/dev/python.nix
 
     ./features/dev/codegraph.nix
-    ./features/dev/icm.nix
     ./features/dev/codex.nix
 
     ./features/dev/cursor.nix
@@ -47,8 +46,6 @@
 
     ./features/dev/bruno.nix
   ];
-
-  programs.icm.summarizer = "codex";
 
   #  ------   -----   ------
   # | HDMI | | DP-1| | DP-2 |

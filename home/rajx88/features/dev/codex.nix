@@ -1,8 +1,7 @@
 {pkgs, ...}: let
-  # icm shells out to `codex exec` non-interactively, which refuses to run
-  # outside a git repo (e.g. from ~) unless --skip-git-repo-check is passed —
-  # and icm has no way to pass it. This wrapper adds the flag to exec
-  # invocations only; interactive TUI use is passed through untouched.
+  # Non-interactive `codex exec` refuses to run outside a git repo (e.g. from
+  # ~) unless --skip-git-repo-check is passed. This wrapper adds the flag to
+  # exec invocations only; interactive TUI use is passed through untouched.
   codexWrapped = pkgs.writeShellScriptBin "codex" ''
     if [ "''${1:-}" = "exec" ]; then
       shift
