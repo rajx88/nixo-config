@@ -17,6 +17,7 @@ in {
         "@simonwjackson/opencode-direnv"
         "@franlol/opencode-md-table-formatter@latest"
         "opencode-mermaid-renderer@latest"
+        "${config.home.homeDirectory}/.hindsight/coding-agents"
       ];
       mcp =
         {
@@ -51,6 +52,7 @@ in {
   home.persistence."/persist".directories = [
     ".local/share/opencode"
     ".config/opencode"
+    ".hindsight"
     ".agents"
   ];
 }
