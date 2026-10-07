@@ -42,7 +42,6 @@
     ./features/dev/opencode.nix
     ./features/dev/opencommit.nix
     ./features/dev/omp.nix
-    ./features/dev/pi-coding-agent.nix
 
     ./features/dev/herdr.nix
 
