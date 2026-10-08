@@ -178,6 +178,38 @@
       };
     };
 
+    # Utrecht office: single Dell 2560x1440, laptop centered below
+    profiles.office-ut = {
+      monitors = [
+        {
+          name = "DP-1";
+          width = 2560;
+          height = 1440;
+          preferredMode = true;
+          refreshRate = 60;
+          position = "0x0";
+          workspaces = [1 2 3 4 5];
+          layout = "scroller";
+          primary = true;
+        }
+        {
+          name = "eDP-1";
+          width = 1920;
+          height = 1200;
+          preferredMode = true;
+          isLaptop = true;
+          refreshRate = 60;
+          position = "center-below";
+          workspaces = [6 7 8 9 10];
+          layout = "scroller";
+        }
+      ];
+      detect = {
+        externalCount = 1;
+        resolutions = ["2560x1440@60"];
+      };
+    };
+
     # Laptop panel only
     profiles.laptop = {
       monitors = [
