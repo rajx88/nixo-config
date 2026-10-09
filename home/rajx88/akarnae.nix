@@ -45,6 +45,9 @@
     ./features/dev/herdr.nix
 
     ./features/dev/bruno.nix
+
+    ./features/dev/ao.nix
+    ./features/dev/t3code.nix
   ];
 
   #  ------   -----   ------
