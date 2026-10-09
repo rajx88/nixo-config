@@ -3,7 +3,8 @@
   lib,
   config,
   ...
-}: let
+}:
+let
   # The radar MCP server is only reachable where features/dev/radar.nix runs the
   # daemon (yuji, which has cluster access). Gate on that package so a host
   # without it (akarnae) doesn't point omp at a dead endpoint.
@@ -15,8 +16,12 @@
           "type": "http",
           "url": "http://localhost:9280/mcp"
         }'';
-in {
-  home.packages = [pkgs.omp pkgs.bun];
+in
+{
+  home.packages = [
+    pkgs.omp
+    pkgs.bun
+  ];
 
   # omp-native user MCP config (discovered at ~/.omp/agent/mcp.json).
   # These servers are also declared in opencode.nix; omp reads this file

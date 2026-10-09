@@ -3,7 +3,8 @@
   pkgs,
   inputs,
   ...
-}: rec {
+}:
+rec {
   gtk = {
     enable = true;
     # theme = {
@@ -40,5 +41,5 @@
     };
   };
 
-  xdg.portal.extraPortals = [pkgs.xdg-desktop-portal-gtk];
+  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
 }

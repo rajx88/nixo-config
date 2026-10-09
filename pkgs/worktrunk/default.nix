@@ -18,9 +18,9 @@ rustPlatform.buildRustPackage {
 
   cargoHash = "sha256-CVk7tSdt0eh7MtbbMruU1f4664tlnQPjQ2ovXfRcbIA=";
 
-  nativeBuildInputs = [pkg-config];
+  nativeBuildInputs = [ pkg-config ];
 
-  buildInputs = [tree-sitter];
+  buildInputs = [ tree-sitter ];
 
   env = {
     VERGEN_IDEMPOTENT = "1";
@@ -33,7 +33,10 @@ rustPlatform.buildRustPackage {
   meta = with lib; {
     description = "A CLI for Git worktree management, designed for parallel AI agent workflows";
     homepage = "https://github.com/max-sixty/worktrunk";
-    license = with licenses; [mit asl20];
+    license = with licenses; [
+      mit
+      asl20
+    ];
     mainProgram = "wt";
   };
 }

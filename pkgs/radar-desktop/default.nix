@@ -20,7 +20,10 @@ let
     icon = "radar-desktop";
     desktopName = "Radar";
     comment = "Modern Kubernetes visibility — topology, traffic, and Helm management";
-    categories = [ "Development" "Network" ];
+    categories = [
+      "Development"
+      "Network"
+    ];
   };
 in
 stdenv.mkDerivation {

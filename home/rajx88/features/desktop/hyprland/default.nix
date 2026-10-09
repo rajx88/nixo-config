@@ -3,7 +3,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   imports = [
     # Include the results of the hardware scan
     ../_common
@@ -22,8 +23,8 @@
   ];
 
   xdg.portal = {
-    extraPortals = [pkgs.xdg-desktop-portal-hyprland];
-    configPackages = [config.wayland.windowManager.hyprland.package];
+    extraPortals = [ pkgs.xdg-desktop-portal-hyprland ];
+    configPackages = [ config.wayland.windowManager.hyprland.package ];
   };
 
   services.hyprpolkitagent.enable = true;

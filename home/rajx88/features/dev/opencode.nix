@@ -3,11 +3,13 @@
   lib,
   config,
   ...
-}: let
+}:
+let
   # Same gate as omp.nix: radar's daemon only exists where features/dev/radar.nix
   # is imported (yuji). akarnae has no radar package, so no remote MCP entry.
   hasRadar = lib.any (p: p ? pname && p.pname == "radar") config.home.packages;
-in {
+in
+{
   programs.opencode = {
     enable = true;
     package = pkgs.opencode;
@@ -19,21 +21,24 @@ in {
         "opencode-mermaid-renderer@latest"
         "${config.home.homeDirectory}/.hindsight/coding-agents"
       ];
-      mcp =
-        {
-          codegraph = {
-            type = "local";
-            command = ["codegraph" "serve" "--mcp"];
-            enabled = true;
-          };
-        }
-        // lib.optionalAttrs hasRadar {
-          radar = {
-            type = "remote";
-            url = "http://localhost:9280/mcp";
-            enabled = true;
-          };
+      mcp = {
+        codegraph = {
+          type = "local";
+          command = [
+            "codegraph"
+            "serve"
+            "--mcp"
+          ];
+          enabled = true;
         };
+      }
+      // lib.optionalAttrs hasRadar {
+        radar = {
+          type = "remote";
+          url = "http://localhost:9280/mcp";
+          enabled = true;
+        };
+      };
       permission = {
         bash = {
           "rm *" = "ask";

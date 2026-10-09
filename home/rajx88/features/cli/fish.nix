@@ -2,14 +2,16 @@
   lib,
   config,
   ...
-}: let
+}:
+let
   inherit (lib) mkIf;
   hasPackage = pname: lib.any (p: p ? pname && p.pname == pname) config.home.packages;
   hasEza = hasPackage "eza";
   hasLazyGit = hasPackage "lazygit";
   hasFastFetch = hasPackage "fastfetch";
   hasNeovim = config.programs.neovim.enable;
-in {
+in
+{
   home.persistence."/persist".directories = [
     ".config/fish"
     ".local/share/fish"

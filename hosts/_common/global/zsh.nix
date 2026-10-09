@@ -10,6 +10,6 @@
 
   environment = {
     # needed for completion for system packages
-    pathsToLink = ["/share/zsh"];
+    pathsToLink = [ "/share/zsh" ];
   };
 }

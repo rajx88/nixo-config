@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   # Persist JetBrains IDE settings and metadata across reboots with impermanence.
   home.persistence."/persist" = {
     directories = [

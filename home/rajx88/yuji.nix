@@ -3,7 +3,8 @@
   outputs,
   config,
   ...
-}: {
+}:
+{
   imports = [
     inputs.nix-barracudavpn.homeManagerModules.proxy
     inputs.nix-barracudavpn.homeManagerModules.ssh-tunnels
@@ -59,7 +60,6 @@
 
   services.ssh-tunnels.enable = true;
 
-
   monitorProfiles = {
     enable = true;
     default = "home";
@@ -76,7 +76,13 @@
           bitdepth = 10;
           scale = 1.2;
           position = "0x0";
-          workspaces = [1 2 3 4 5];
+          workspaces = [
+            1
+            2
+            3
+            4
+            5
+          ];
           layout = "scroller";
           primary = true;
         }
@@ -88,7 +94,13 @@
           refreshRate = 120;
           bitdepth = 10;
           scale = 1.2;
-          workspaces = [6 7 8 9 10];
+          workspaces = [
+            6
+            7
+            8
+            9
+            10
+          ];
           layout = "scroller";
           position = "auto-right";
         }
@@ -100,12 +112,12 @@
           isLaptop = true;
           refreshRate = 60;
           position = "auto";
-          workspaces = [];
+          workspaces = [ ];
         }
       ];
       detect = {
         externalCount = 2;
-        resolutions = ["3840x2160@120"];
+        resolutions = [ "3840x2160@120" ];
       };
     };
 
@@ -119,7 +131,13 @@
           preferredMode = true;
           refreshRate = 60;
           position = "auto";
-          workspaces = [1 2 3 4 5];
+          workspaces = [
+            1
+            2
+            3
+            4
+            5
+          ];
           layout = "scroller";
           primary = true;
         }
@@ -131,11 +149,19 @@
           isLaptop = true;
           refreshRate = 60;
           position = "center-below";
-          workspaces = [6 7 8 9 10];
+          workspaces = [
+            6
+            7
+            8
+            9
+            10
+          ];
           layout = "scroller";
         }
       ];
-      detect = {resolutions = ["3440x1440"];};
+      detect = {
+        resolutions = [ "3440x1440" ];
+      };
     };
 
     # Dual 4K 120Hz + laptop centered below left screen
@@ -149,7 +175,13 @@
           refreshRate = 120;
           bitdepth = 10;
           position = "0x0";
-          workspaces = [1 2 3 4 5];
+          workspaces = [
+            1
+            2
+            3
+            4
+            5
+          ];
           layout = "scroller";
           primary = true;
         }
@@ -161,7 +193,7 @@
           isLaptop = true;
           refreshRate = 60;
           position = "center-below";
-          workspaces = [];
+          workspaces = [ ];
         }
         {
           name = "DP-1";
@@ -170,14 +202,20 @@
           preferredMode = false;
           refreshRate = 120;
           bitdepth = 10;
-          workspaces = [6 7 8 9 10];
+          workspaces = [
+            6
+            7
+            8
+            9
+            10
+          ];
           layout = "scroller";
           position = "auto-right";
         }
       ];
       detect = {
         externalCount = 2;
-        resolutions = ["3840x2160@120"];
+        resolutions = [ "3840x2160@120" ];
       };
     };
 
@@ -191,7 +229,13 @@
           preferredMode = true;
           refreshRate = 60;
           position = "0x0";
-          workspaces = [1 2 3 4 5];
+          workspaces = [
+            1
+            2
+            3
+            4
+            5
+          ];
           layout = "scroller";
           primary = true;
         }
@@ -203,13 +247,19 @@
           isLaptop = true;
           refreshRate = 60;
           position = "center-below";
-          workspaces = [6 7 8 9 10];
+          workspaces = [
+            6
+            7
+            8
+            9
+            10
+          ];
           layout = "scroller";
         }
       ];
       detect = {
         externalCount = 1;
-        resolutions = ["2560x1440@60"];
+        resolutions = [ "2560x1440@60" ];
       };
     };
 
@@ -224,12 +274,25 @@
           isLaptop = true;
           refreshRate = 60;
           position = "0x0";
-          workspaces = [1 2 3 4 5 6 7 8 9 10];
+          workspaces = [
+            1
+            2
+            3
+            4
+            5
+            6
+            7
+            8
+            9
+            10
+          ];
           layout = "scroller";
           primary = true;
         }
       ];
-      detect = {externalCount = 0;};
+      detect = {
+        externalCount = 0;
+      };
     };
   };
 }

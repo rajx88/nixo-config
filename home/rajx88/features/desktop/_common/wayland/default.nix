@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   imports = [
     # ./swayidle.nix
     ./swaylock.nix
@@ -33,12 +33,12 @@
   };
 
   xdg.portal = {
-    extraPortals = [pkgs.xdg-desktop-portal-wlr];
+    extraPortals = [ pkgs.xdg-desktop-portal-wlr ];
     config = {
       common = {
-        default = ["gtk"];
-        "org.freedesktop.impl.portal.ScreenCast" = ["wlr"];
-        "org.freedesktop.impl.portal.Screenshot" = ["wlr"];
+        default = [ "gtk" ];
+        "org.freedesktop.impl.portal.ScreenCast" = [ "wlr" ];
+        "org.freedesktop.impl.portal.Screenshot" = [ "wlr" ];
       };
     };
   };

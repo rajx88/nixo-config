@@ -1,12 +1,12 @@
-{pkgs, ...}: {
-  home.packages = [pkgs.radar];
+{ pkgs, ... }: {
+  home.packages = [ pkgs.radar ];
 
-  home.persistence."/persist".directories = [".radar"];
+  home.persistence."/persist".directories = [ ".radar" ];
 
   systemd.user.services.radar = {
     Unit = {
       Description = "Radar Kubernetes MCP server";
-      After = ["network.target"];
+      After = [ "network.target" ];
     };
     Service = {
       Type = "exec";
@@ -15,7 +15,7 @@
       RestartSec = "5s";
     };
     Install = {
-      WantedBy = ["default.target"];
+      WantedBy = [ "default.target" ];
     };
   };
 
@@ -25,15 +25,17 @@
     };
     Service = {
       Type = "oneshot";
-      ExecStart = let
-        script = pkgs.writeShellScript "radar-auth-watch" ''
-          if ${pkgs.kubectl}/bin/kubectl auth can-i get pods --namespace=default &>/dev/null; then
-            systemctl --user start radar
-          else
-            systemctl --user stop radar
-          fi
-        '';
-      in "${script}";
+      ExecStart =
+        let
+          script = pkgs.writeShellScript "radar-auth-watch" ''
+            if ${pkgs.kubectl}/bin/kubectl auth can-i get pods --namespace=default &>/dev/null; then
+              systemctl --user start radar
+            else
+              systemctl --user stop radar
+            fi
+          '';
+        in
+        "${script}";
     };
   };
 
@@ -46,7 +48,7 @@
       OnUnitActiveSec = "60s";
     };
     Install = {
-      WantedBy = ["timers.target"];
+      WantedBy = [ "timers.target" ];
     };
   };
 }

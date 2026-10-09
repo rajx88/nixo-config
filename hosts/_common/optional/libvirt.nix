@@ -1,4 +1,4 @@
-{...}: {
+{ ... }: {
   # KVM/QEMU hypervisor via libvirt (native Linux virtualization).
   # Requires boot.kernelModules = ["kvm-intel"] (already set in hardware-configuration.nix).
   virtualisation.libvirtd.enable = true;

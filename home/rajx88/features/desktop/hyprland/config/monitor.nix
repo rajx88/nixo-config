@@ -2,22 +2,23 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   monitors = config.monitors;
 
   # true if any monitor entry has isLaptop = true
   isLaptopFlag = lib.any (m: (m.isLaptop or false)) monitors;
 
   # pick the first eDP-like panel from your list; fallback to "eDP-1"
-  internalPanel = let
-    m = lib.findFirst (m: lib.hasPrefix "eDP" m.name) null monitors;
-  in
-    if m != null
-    then m.name
-    else "eDP-1";
+  internalPanel =
+    let
+      m = lib.findFirst (m: lib.hasPrefix "eDP" m.name) null monitors;
+    in
+    if m != null then m.name else "eDP-1";
 
   lidSwitchName = "Lid Switch"; # adjust if Hyprland shows a different name
-in {
+in
+{
   home.file.".config/hypr/lid-close-safeguard.sh" = {
     text = ''
       #!/usr/bin/env bash
@@ -46,20 +47,21 @@ in {
   };
 
   wayland.windowManager.hyprland.settings = {
-    monitor =
-      map
-      (
-        m: "${m.name},${
-          if m.enabled
-          then
-            (if m.preferredMode
-            then "preferred,${toString m.position},${toString m.scale},transform,${toString m.vertical}"
-            else "${toString m.width}x${toString m.height}@${toString m.refreshRate},${toString m.position},${toString m.scale},transform,${toString m.vertical}")
-            + (lib.optionalString (m.bitdepth != null) ",bitdepth,${toString m.bitdepth}")
-          else "disable"
-        }"
-      )
-      monitors;
+    monitor = map (
+      m:
+      "${m.name},${
+        if m.enabled then
+          (
+            if m.preferredMode then
+              "preferred,${toString m.position},${toString m.scale},transform,${toString m.vertical}"
+            else
+              "${toString m.width}x${toString m.height}@${toString m.refreshRate},${toString m.position},${toString m.scale},transform,${toString m.vertical}"
+          )
+          + (lib.optionalString (m.bitdepth != null) ",bitdepth,${toString m.bitdepth}")
+        else
+          "disable"
+      }"
+    ) monitors;
 
     # Lid rules only if any monitor entry marks the machine as a laptop
     bindl = lib.optionals isLaptopFlag [

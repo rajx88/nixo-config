@@ -1,6 +1,11 @@
-{disks ? ["/dev/nvme0n1"], ...}: let
+{
+  disks ? [ "/dev/nvme0n1" ],
+  ...
+}:
+let
   rawdisk = builtins.elemAt disks 0;
-in {
+in
+{
   disko.devices = {
     disk = {
       main = {
@@ -36,7 +41,7 @@ in {
               content = {
                 type = "luks";
                 name = "crypted";
-                extraOpenArgs = ["--allow-discards"];
+                extraOpenArgs = [ "--allow-discards" ];
                 # disable settings.keyFile if you want to use interactive password entry
                 # be sure there is no trailing newline
                 # for example use `echo -n "password" > /tmp/secret.key`
@@ -49,27 +54,42 @@ in {
                 # additionalKeyFiles = [ "/tmp/additionalSecret.key" ];
                 content = {
                   type = "btrfs";
-                  extraArgs = ["-f"];
+                  extraArgs = [ "-f" ];
                   subvolumes = {
                     "/root" = {
                       mountpoint = "/";
-                      mountOptions = ["compress=zstd" "noatime"];
+                      mountOptions = [
+                        "compress=zstd"
+                        "noatime"
+                      ];
                     };
                     "/home" = {
                       mountpoint = "/home";
-                      mountOptions = ["compress=zstd" "noatime"];
+                      mountOptions = [
+                        "compress=zstd"
+                        "noatime"
+                      ];
                     };
                     "/home/snapshots" = {
                       mountpoint = "/home/.snapshots";
-                      mountOptions = ["compress=zstd" "noatime"];
+                      mountOptions = [
+                        "compress=zstd"
+                        "noatime"
+                      ];
                     };
                     "/nix" = {
                       mountpoint = "/nix";
-                      mountOptions = ["compress=zstd" "noatime"];
+                      mountOptions = [
+                        "compress=zstd"
+                        "noatime"
+                      ];
                     };
                     "/log" = {
                       mountpoint = "/var/log";
-                      mountOptions = ["compress=zstd" "noatime"];
+                      mountOptions = [
+                        "compress=zstd"
+                        "noatime"
+                      ];
                     };
                   };
                 };

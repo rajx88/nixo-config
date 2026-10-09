@@ -2,7 +2,8 @@
   pkgs,
   config,
   ...
-}: let
+}:
+let
   prvtIdentity = {
     contentSuffix = "prvt-gitconfig";
     contents = {
@@ -17,7 +18,8 @@
     "~/code/nix/"
     "~/code/notes/"
   ];
-in {
+in
+{
   home.persistence."/persist".directories = [
     ".config/git"
   ];
@@ -59,13 +61,12 @@ in {
       maintenance.strategy = "incremental";
     };
     lfs.enable = true;
-    includes =
-      [
-        {
-          condition = "gitdir:~/code/wrk/";
-          path = "${config.xdg.configHome}/git/work.inc";
-        }
-      ]
-      ++ map (dir: prvtIdentity // {condition = "gitdir:${dir}";}) prvtDirs;
+    includes = [
+      {
+        condition = "gitdir:~/code/wrk/";
+        path = "${config.xdg.configHome}/git/work.inc";
+      }
+    ]
+    ++ map (dir: prvtIdentity // { condition = "gitdir:${dir}"; }) prvtDirs;
   };
 }

@@ -2,7 +2,8 @@
   pkgs,
   lib,
   ...
-}: {
+}:
+{
   home.packages = with pkgs; [
     # discord
     # (discord.override {
@@ -16,5 +17,5 @@
     # discocss
   ];
 
-  home.persistence."/persist".directories = [".config/discord"];
+  home.persistence."/persist".directories = [ ".config/discord" ];
 }

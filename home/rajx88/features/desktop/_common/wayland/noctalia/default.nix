@@ -1,6 +1,8 @@
-{config, ...}: let
+{ config, ... }:
+let
   home = config.home.homeDirectory;
-in {
+in
+{
   programs.noctalia = {
     enable = true;
     settings = {
@@ -44,7 +46,7 @@ in {
       };
 
       bar = {
-        order = ["default"];
+        order = [ "default" ];
         default = {
           position = "top";
           background_opacity = 0.69;
@@ -52,8 +54,18 @@ in {
           # margin_ends = 10;
           # margin_edge = 10;
 
-          start = ["launcher" "cpu" "ram" "temp" "wallpaper" "media"];
-          center = ["workspaces" "clipboard"];
+          start = [
+            "launcher"
+            "cpu"
+            "ram"
+            "temp"
+            "wallpaper"
+            "media"
+          ];
+          center = [
+            "workspaces"
+            "clipboard"
+          ];
           end = [
             "tray"
             "notifications"

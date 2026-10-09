@@ -4,9 +4,11 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   cfg = config.host.secureBoot;
-in {
+in
+{
   imports = [
     inputs.lanzaboote.nixosModules.lanzaboote
   ];
@@ -27,7 +29,7 @@ in {
     # can be generated after a reboot with the bind mount already active, *before*
     # lanzaboote starts signing.
     (lib.mkIf config.host.filesystem.impermanence.enable {
-      host.filesystem.impermanence.directories = ["/var/lib/sbctl"];
+      host.filesystem.impermanence.directories = [ "/var/lib/sbctl" ];
     })
 
     (lib.mkIf cfg.enable {
@@ -41,7 +43,7 @@ in {
       };
 
       # For debugging and troubleshooting Secure Boot.
-      environment.systemPackages = [pkgs.sbctl];
+      environment.systemPackages = [ pkgs.sbctl ];
     })
   ];
 }

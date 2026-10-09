@@ -3,7 +3,8 @@
   lib,
   config,
   ...
-}: let
+}:
+let
   swaylockPkg = pkgs.swaylock-effects;
   swaylock = "${swaylockPkg}/bin/swaylock";
   pactl = "${pkgs.pulseaudio}/bin/pactl";
@@ -28,43 +29,55 @@
     ${wlopm} --on '*' 2>&1 | logger -t swayidle-dpms || true
   '';
 
-  afterLockTimeout = {
-    timeout,
-    command,
-    resumeCommand ? null,
-  }: [
+  afterLockTimeout =
     {
-      timeout = lockTime + timeout;
-      inherit command resumeCommand;
-    }
-  ];
+      timeout,
+      command,
+      resumeCommand ? null,
+    }:
+    [
+      {
+        timeout = lockTime + timeout;
+        inherit command resumeCommand;
+      }
+    ];
 
   commonArgs = "--clock --indicator --timestr '%k:%M' --datestr '%a %e.%m.%Y' --daemonize";
 
   lockscreenWp = config.home.sessionVariables.LOCKSCREEN_WP or "";
 
-  mkLockScript = { grace ? false }: let
-    graceArg = lib.optionalString grace "--grace 5";
-  in pkgs.writeShellScriptBin "swaylock-lock${lib.optionalString grace "-idle"}" ''
-    if [ -f "${lockscreenWp}" ]; then
-      exec ${swaylock} -i "${lockscreenWp}" ${graceArg} ${commonArgs}
-    else
-      exec ${swaylock} --screenshots --effect-scale 0.5 --effect-blur 10x3 ${graceArg} ${commonArgs}
-    fi
-  '';
+  mkLockScript =
+    {
+      grace ? false,
+    }:
+    let
+      graceArg = lib.optionalString grace "--grace 5";
+    in
+    pkgs.writeShellScriptBin "swaylock-lock${lib.optionalString grace "-idle"}" ''
+      if [ -f "${lockscreenWp}" ]; then
+        exec ${swaylock} -i "${lockscreenWp}" ${graceArg} ${commonArgs}
+      else
+        exec ${swaylock} --screenshots --effect-scale 0.5 --effect-blur 10x3 ${graceArg} ${commonArgs}
+      fi
+    '';
 
-  lockScriptBin     = mkLockScript { grace = false; }; # keybind — no grace
-  lockScriptIdleBin = mkLockScript { grace = true;  }; # swayidle — 5s grace
+  lockScriptBin = mkLockScript { grace = false; }; # keybind — no grace
+  lockScriptIdleBin = mkLockScript { grace = true; }; # swayidle — 5s grace
 
   # Skip when hypridle is handling idle/lock (e.g. hyprland uses hyprlock/hypridle)
   enabled = !config.services.hypridle.enable;
-in {
+in
+{
   programs.swaylock = lib.mkIf enabled {
     enable = true;
     package = swaylockPkg;
   };
 
-  home.packages = lib.mkIf enabled [ lockScriptBin lockScriptIdleBin pkgs.wlopm ];
+  home.packages = lib.mkIf enabled [
+    lockScriptBin
+    lockScriptIdleBin
+    pkgs.wlopm
+  ];
 
   services.swayidle = lib.mkIf enabled {
     enable = true;
@@ -78,59 +91,59 @@ in {
         }
       ]
       ++
-      # Dim: kbd backlight off
-      [
-        {
-          timeout = 30;
-          command = "${brightnessctl} --device '*:kbd_backlight' --save set 0";
-          resumeCommand = "${brightnessctl} --device '*:kbd_backlight' --restore";
-        }
-      ]
+        # Dim: kbd backlight off
+        [
+          {
+            timeout = 30;
+            command = "${brightnessctl} --device '*:kbd_backlight' --save set 0";
+            resumeCommand = "${brightnessctl} --device '*:kbd_backlight' --restore";
+          }
+        ]
       ++
-      # Dim: screen 50%
-      [
-        {
-          timeout = 50;
-          command = "${brightnessctl} set 50%-";
-        }
-      ]
+        # Dim: screen 50%
+        [
+          {
+            timeout = 50;
+            command = "${brightnessctl} set 50%-";
+          }
+        ]
       ++
-      # Dim: screen another 50%
-      [
-        {
-          timeout = 110;
-          command = "${brightnessctl} set 50%-";
-        }
-      ]
+        # Dim: screen another 50%
+        [
+          {
+            timeout = 110;
+            command = "${brightnessctl} set 50%-";
+          }
+        ]
       ++
-      # Lock screen
-      [
-        {
-          timeout = lockTime;
-          command = "${lockScriptIdleBin}/bin/swaylock-lock-idle";
-        }
-      ]
+        # Lock screen
+        [
+          {
+            timeout = lockTime;
+            command = "${lockScriptIdleBin}/bin/swaylock-lock-idle";
+          }
+        ]
       ++
-      # Mute mic (after lock)
-      (afterLockTimeout {
-        timeout = 10;
-        command = "${pactl} list sources short | awk '{print $2}' | xargs -I{} ${pactl} set-source-mute {} yes";
-        resumeCommand = "${pactl} list sources short | awk '{print $2}' | xargs -I{} ${pactl} set-source-mute {} no";
-      })
+        # Mute mic (after lock)
+        (afterLockTimeout {
+          timeout = 10;
+          command = "${pactl} list sources short | awk '{print $2}' | xargs -I{} ${pactl} set-source-mute {} yes";
+          resumeCommand = "${pactl} list sources short | awk '{print $2}' | xargs -I{} ${pactl} set-source-mute {} no";
+        })
       ++
-      # DPMS off (after lock)
-      (afterLockTimeout {
-        timeout = 100;
-        command = "${wlopmOff}/bin/wlopm-off";
-        resumeCommand = "${wlopmOn}/bin/wlopm-on";
-      })
+        # DPMS off (after lock)
+        (afterLockTimeout {
+          timeout = 100;
+          command = "${wlopmOff}/bin/wlopm-off";
+          resumeCommand = "${wlopmOn}/bin/wlopm-on";
+        })
       ++
-      # If discharging: suspend
-      [
-        {
-          timeout = 900;
-          command = "${isDischarging} && systemctl suspend";
-        }
-      ];
+        # If discharging: suspend
+        [
+          {
+            timeout = 900;
+            command = "${isDischarging} && systemctl suspend";
+          }
+        ];
   };
 }

@@ -4,11 +4,13 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   # Access home-manager proxy config
   pacEnabled = config.programs.proxy.pac.enable or false;
   pacUrl = config.programs.proxy.pac.url or "";
-in {
+in
+{
   # home.nix
   imports = [
     inputs.zen-browser.homeModules.beta
@@ -16,7 +18,7 @@ in {
     # or inputs.zen-browser.homeModules.twilight-official
   ];
 
-  home.persistence."/persist".directories = [".config/zen"];
+  home.persistence."/persist".directories = [ ".config/zen" ];
 
   programs.zen-browser = {
     enable = true;

@@ -35,7 +35,12 @@ stdenv.mkDerivation rec {
     mv $out/lib/pi/pi $out/lib/pi/.pi-unwrapped
     patchelf --set-interpreter ${glibc}/lib/ld-linux-x86-64.so.2 $out/lib/pi/.pi-unwrapped
     makeWrapper $out/lib/pi/.pi-unwrapped $out/bin/pi \
-      --prefix PATH : ${lib.makeBinPath [ripgrep git]}
+      --prefix PATH : ${
+        lib.makeBinPath [
+          ripgrep
+          git
+        ]
+      }
     runHook postInstall
   '';
 
@@ -44,6 +49,6 @@ stdenv.mkDerivation rec {
     homepage = "https://shittycodingagent.ai";
     license = lib.licenses.mit;
     mainProgram = "pi";
-    platforms = ["x86_64-linux"];
+    platforms = [ "x86_64-linux" ];
   };
 }

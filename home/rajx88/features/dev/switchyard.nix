@@ -3,7 +3,8 @@
   lib,
   config,
   ...
-}: let
+}:
+let
   # NVIDIA NeMo Switchyard: local model router in front of the homelab LiteLLM
   # gateway. Runs on the laptop (not the homelab) as a localhost-only user
   # service. Agents pick a route per task:
@@ -43,7 +44,7 @@
 
   # base_url is filled in at service start from ~/.local/share/litellm/base-url
   # so the gateway hostname stays out of git.
-  routes = (pkgs.formats.toml {}).generate "switchyard-routes.toml" {
+  routes = (pkgs.formats.toml { }).generate "switchyard-routes.toml" {
     schema_version = 1;
     fallback_client = "litellm";
     llm_clients.litellm = {
@@ -67,20 +68,28 @@
       };
     };
     routes = {
-      claude_auto = {id = "sy/claude-auto";} // stage "sonnet" "haiku";
-      claude_heavy = {id = "sy/claude-heavy";} // stage "opus" "sonnet";
+      claude_auto = {
+        id = "sy/claude-auto";
+      }
+      // stage "sonnet" "haiku";
+      claude_heavy = {
+        id = "sy/claude-heavy";
+      }
+      // stage "opus" "sonnet";
     };
   };
 
   # Fail the build if upstream rejects the generated config.
   checkedRoutes =
-    pkgs.runCommand "switchyard-routes-checked.toml" {
-      SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
-    } ''
-      sed 's|@LITELLM_BASE_URL@|https://example.invalid|' ${routes} > check.toml
-      LITELLM_API_KEY=dummy ${lib.getExe pkgs.switchyard} --config check.toml --dry-run
-      cp ${routes} $out
-    '';
+    pkgs.runCommand "switchyard-routes-checked.toml"
+      {
+        SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+      }
+      ''
+        sed 's|@LITELLM_BASE_URL@|https://example.invalid|' ${routes} > check.toml
+        LITELLM_API_KEY=dummy ${lib.getExe pkgs.switchyard} --config check.toml --dry-run
+        cp ${routes} $out
+      '';
 
   start = pkgs.writeShellScript "switchyard-start" ''
     set -euo pipefail
@@ -97,24 +106,28 @@
       --host 127.0.0.1 --port ${toString port} \
       --routing-log-file ${stateDir}/routing.jsonl
   '';
-in {
-  home.packages = [pkgs.switchyard];
+in
+{
+  home.packages = [ pkgs.switchyard ];
 
   systemd.user.services.switchyard = {
     Unit = {
       Description = "NVIDIA NeMo Switchyard model router (localhost)";
-      After = ["network-online.target"];
+      After = [ "network-online.target" ];
       # Wait for the impermanence bind mount holding base-url and the key;
       # a ConditionPathExists here races the mount on first activation.
-      RequiresMountsFor = [litellmDir stateDir];
+      RequiresMountsFor = [
+        litellmDir
+        stateDir
+      ];
     };
     Service = {
       ExecStart = "${start}";
       Restart = "on-failure";
       RestartSec = 5;
-      Environment = ["RUST_LOG=switchyard_server=info"];
+      Environment = [ "RUST_LOG=switchyard_server=info" ];
     };
-    Install.WantedBy = ["default.target"];
+    Install.WantedBy = [ "default.target" ];
   };
 
   # opencode: Anthropic-compatible provider pointing at the local router.
@@ -126,40 +139,43 @@ in {
       baseURL = "http://127.0.0.1:${toString port}/v1";
       apiKey = "switchyard-local";
     };
-    models =
-      lib.mapAttrs (_: name: {
-        inherit name;
-        reasoning = true;
-        tool_call = true;
-        attachment = true;
-        limit = {
-          context = contextWindow;
-          output = maxOutput;
-        };
-      })
-      routeNames;
+    models = lib.mapAttrs (_: name: {
+      inherit name;
+      reasoning = true;
+      tool_call = true;
+      attachment = true;
+      limit = {
+        context = contextWindow;
+        output = maxOutput;
+      };
+    }) routeNames;
   };
 
   # omp: anthropic-messages so omp sends a session id (needed for
   # capable_hold_turns), adaptive thinking so Claude accepts it.
-  home.file.".omp/agent/models.yml".text = lib.generators.toYAML {} {
+  home.file.".omp/agent/models.yml".text = lib.generators.toYAML { } {
     providers.switchyard = {
       baseUrl = "http://127.0.0.1:${toString port}";
       api = "anthropic-messages";
       auth = "none";
-      models =
-        lib.mapAttrsToList (id: name: {
-          inherit id name;
-          reasoning = true;
-          input = ["text" "image"];
-          contextWindow = contextWindow;
-          maxTokens = maxOutput;
-          thinking = {
-            mode = "anthropic-adaptive";
-            efforts = ["low" "medium" "high"];
-          };
-        })
-        routeNames;
+      models = lib.mapAttrsToList (id: name: {
+        inherit id name;
+        reasoning = true;
+        input = [
+          "text"
+          "image"
+        ];
+        contextWindow = contextWindow;
+        maxTokens = maxOutput;
+        thinking = {
+          mode = "anthropic-adaptive";
+          efforts = [
+            "low"
+            "medium"
+            "high"
+          ];
+        };
+      }) routeNames;
     };
   };
 

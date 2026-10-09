@@ -6,5 +6,5 @@
     };
   };
 
-  home.persistence."/persist".directories = [".thunderbird"];
+  home.persistence."/persist".directories = [ ".thunderbird" ];
 }

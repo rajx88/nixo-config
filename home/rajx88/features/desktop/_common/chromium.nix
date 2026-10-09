@@ -3,11 +3,12 @@
   config,
   lib,
   ...
-}: {
+}:
+{
   programs.chromium = {
     enable = true;
     extensions = [
-      {id = "aeblfdkhhhdcdjpifhhbdiojplfjncoa";} # 1Password
+      { id = "aeblfdkhhhdcdjpifhhbdiojplfjncoa"; } # 1Password
     ];
     # Set PAC URL via command line if enabled
     commandLineArgs = lib.optionals (config.programs.proxy.pac.enable or false) [
@@ -23,5 +24,5 @@
   #   "x-scheme-handler/https" = ["chromium.desktop"];
   # };
 
-  home.persistence."/persist".directories = [".config/chromium"];
+  home.persistence."/persist".directories = [ ".config/chromium" ];
 }

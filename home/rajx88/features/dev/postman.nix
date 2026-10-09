@@ -1,7 +1,7 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   home.packages = with pkgs; [
     postman
   ];
 
-  home.persistence."/persist".directories = [".config/Postman"];
+  home.persistence."/persist".directories = [ ".config/Postman" ];
 }

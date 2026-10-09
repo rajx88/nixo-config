@@ -5,17 +5,20 @@
   config,
   outputs,
   ...
-}: {
-  imports =
-    [
-      ../features/cli
-    ]
-    ++ (builtins.attrValues outputs.homeManagerModules);
+}:
+{
+  imports = [
+    ../features/cli
+  ]
+  ++ (builtins.attrValues outputs.homeManagerModules);
 
   nix = {
     package = lib.mkDefault pkgs.nix;
     settings = {
-      experimental-features = ["nix-command" "flakes"];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
       warn-dirty = false;
       download-buffer-size = 33554432;
     };
@@ -33,12 +36,12 @@
     mimeApps = {
       enable = true;
       defaultApplications = {
-        "text/plain" = ["code.desktop"];
-        "image/*" = ["com.brave.Origin.desktop"];
-        "text/html" = ["com.brave.Origin.desktop"];
-        "text/xml" = ["com.brave.Origin.desktop"];
-        "x-scheme-handler/http" = ["com.brave.Origin.desktop"];
-        "x-scheme-handler/https" = ["com.brave.Origin.desktop"];
+        "text/plain" = [ "code.desktop" ];
+        "image/*" = [ "com.brave.Origin.desktop" ];
+        "text/html" = [ "com.brave.Origin.desktop" ];
+        "text/xml" = [ "com.brave.Origin.desktop" ];
+        "x-scheme-handler/http" = [ "com.brave.Origin.desktop" ];
+        "x-scheme-handler/https" = [ "com.brave.Origin.desktop" ];
       };
     };
     userDirs = {
@@ -66,7 +69,7 @@
     username = lib.mkDefault "rajx88";
     homeDirectory = lib.mkDefault "/home/${config.home.username}";
     stateVersion = lib.mkDefault "26.05";
-    sessionPath = ["$HOME/.local/bin"];
+    sessionPath = [ "$HOME/.local/bin" ];
     sessionVariables = {
       FLAKE = "$HOME/code/nix/nixo-config";
       NH_FLAKE = "$HOME/code/nix/nixo-config";

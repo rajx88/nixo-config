@@ -2,9 +2,11 @@
   pkgs,
   config,
   ...
-}: let
+}:
+let
   ifTheyExist = groups: builtins.filter (group: builtins.hasAttr group config.users.groups) groups;
-in {
+in
+{
   imports = [
     ../../optional/1password.nix
   ];
@@ -19,22 +21,21 @@ in {
 
     hashedPasswordFile = "/persist/passwords/user";
 
-    extraGroups =
-      [
-        "wheel"
-        "video"
-        "audio"
-      ]
-      ++ ifTheyExist [
-        "network"
-        "networkmanager"
-        "docker"
-        "podman"
-        "git"
-        "libvirtd"
-      ];
+    extraGroups = [
+      "wheel"
+      "video"
+      "audio"
+    ]
+    ++ ifTheyExist [
+      "network"
+      "networkmanager"
+      "docker"
+      "podman"
+      "git"
+      "libvirtd"
+    ];
 
-    packages = [pkgs.home-manager];
+    packages = [ pkgs.home-manager ];
   };
 
   # homemanager module

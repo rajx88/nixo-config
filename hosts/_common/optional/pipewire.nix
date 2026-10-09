@@ -2,7 +2,8 @@
   pkgs,
   lib,
   ...
-}: {
+}:
+{
   # hardware.enableAllFirmware = true;
   services.pulseaudio.enable = lib.mkForce false;
 

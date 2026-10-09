@@ -49,6 +49,6 @@ stdenv.mkDerivation rec {
     homepage = "https://opencode.ai/";
     license = lib.licenses.mit;
     mainProgram = "opencode";
-    platforms = ["x86_64-linux"];
+    platforms = [ "x86_64-linux" ];
   };
 }

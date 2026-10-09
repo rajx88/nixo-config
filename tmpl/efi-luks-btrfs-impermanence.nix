@@ -1,6 +1,11 @@
-{disks ? ["/dev/nvme0n1"], ...}: let
+{
+  disks ? [ "/dev/nvme0n1" ],
+  ...
+}:
+let
   rawdisk = builtins.elemAt disks 0;
-in {
+in
+{
   disko.devices = {
     disk = {
       main = {
@@ -39,20 +44,29 @@ in {
                 # additionalKeyFiles = [ "/tmp/additionalSecret.key" ];
                 content = {
                   type = "btrfs";
-                  extraArgs = ["-f"];
+                  extraArgs = [ "-f" ];
                   subvolumes = {
                     "/root" = {
                       mountpoint = "/";
-                      mountOptions = ["compress=zstd" "noatime"];
+                      mountOptions = [
+                        "compress=zstd"
+                        "noatime"
+                      ];
                     };
-                    "/root-blank" = {};
+                    "/root-blank" = { };
                     "/nix" = {
                       mountpoint = "/nix";
-                      mountOptions = ["compress=zstd" "noatime"];
+                      mountOptions = [
+                        "compress=zstd"
+                        "noatime"
+                      ];
                     };
                     "/persist" = {
                       mountpoint = "/persist";
-                      mountOptions = ["compress=zstd" "noatime"];
+                      mountOptions = [
+                        "compress=zstd"
+                        "noatime"
+                      ];
                     };
                   };
                 };

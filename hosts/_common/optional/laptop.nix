@@ -2,10 +2,11 @@
   config,
   pkgs,
   ...
-}: {
-  imports = [./bluetooth.nix];
+}:
+{
+  imports = [ ./bluetooth.nix ];
 
-  environment.systemPackages = [pkgs.brightnessctl];
+  environment.systemPackages = [ pkgs.brightnessctl ];
 
   # Configure logind to suspend on lid close
   services.logind.settings.Login = {
@@ -16,7 +17,7 @@
 
   systemd.services.set-brightness = {
     description = "Set screen brightness to 100% on boot";
-    wantedBy = ["multi-user.target"];
+    wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       Type = "oneshot";
       ExecStart = "${pkgs.brightnessctl}/bin/brightnessctl -s set 100%";

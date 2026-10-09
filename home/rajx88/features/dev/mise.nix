@@ -1,4 +1,4 @@
-{...}: {
+{ ... }: {
   home.persistence."/persist".directories = [
     ".local/share/mise"
     ".local/state/mise"

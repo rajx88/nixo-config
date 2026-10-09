@@ -171,7 +171,7 @@ stdenv.mkDerivation {
     homepage = "https://cursor.com";
     description = "AI-first code editor built on VSCode";
     license = lib.licenses.unfree;
-    platforms = ["x86_64-linux"];
+    platforms = [ "x86_64-linux" ];
     mainProgram = "cursor";
   };
 }

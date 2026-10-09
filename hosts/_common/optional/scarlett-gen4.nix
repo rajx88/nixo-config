@@ -1,11 +1,11 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   # The Scarlett's onboard mixer/gain state is not persisted by NixOS and can
   # silently reset (e.g. after the interface is power-cycled on the dock),
   # leaving the mic input effectively at zero gain. Re-apply it on every boot.
   systemd.services.scarlett-gen4-mixer = {
     description = "Apply Focusrite Scarlett 2i2 4th Gen input settings";
-    wantedBy = ["multi-user.target"];
-    after = ["sound.target"];
+    wantedBy = [ "multi-user.target" ];
+    after = [ "sound.target" ];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
