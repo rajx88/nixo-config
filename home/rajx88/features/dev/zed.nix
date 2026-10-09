@@ -24,19 +24,22 @@
       };
       languages = {
         Nix = {
-          language_servers = ["nil" "!nixd"];
+          language_servers = [
+            "nil"
+            "!nixd"
+          ];
         };
       };
       lsp = {
         nil = {
           initialization_options = {
             formatting = {
-              command = ["alejandra" "--quiet" "--"];
+              command = [ "nixfmt" ];
             };
           };
           settings = {
             diagnostics = {
-              ignored = ["unused_binding"];
+              ignored = [ "unused_binding" ];
             };
           };
         };

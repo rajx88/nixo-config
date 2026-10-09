@@ -2,7 +2,8 @@
   pkgs,
   config,
   ...
-}: {
+}:
+{
   home.persistence."/persist".directories = [
     # ".config/VSCodium"
     # ".vscode-oss/extensions"
@@ -13,6 +14,10 @@
     enable = true;
     # package = pkgs.vscodium;
     profiles.default = {
+      userSettings = {
+        "nix.formatterPath" = "nixfmt";
+      };
+
       # userSettings = {
       #   # needed for hyprland will crash imeediately without it
       #   "window.titleBarStyle" = "custom";
@@ -23,16 +28,15 @@
 
       # Can search for a package:
       # https://search.nixos.org/packages?channel=23.11&from=0&size=50&sort=relevance&type=packages&query=vscode-extensions
-      extensions = with pkgs.vscode-extensions;
+      extensions =
+        with pkgs.vscode-extensions;
         [
           github.copilot
-          kamadorueda.alejandra
           jnoortheen.nix-ide
           mkhl.direnv
           ms-vscode.makefile-tools
         ]
-        ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace
-        [
+        ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
           {
             name = "rose-pine";
             publisher = "mvllow";

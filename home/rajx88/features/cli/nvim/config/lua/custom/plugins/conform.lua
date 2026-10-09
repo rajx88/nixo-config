@@ -29,7 +29,7 @@ return {
       lua = { "stylua" },
       fish = { "fish_indent" },
       sh = { "shfmt" },
-      nix = { "alejandra" },
+      nix = { "nixfmt" },
       go = { "goimports", "gofumpt" },
       java = { "google-java-format" },
       jsonnet = { "jsonnetfmt" },

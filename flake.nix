@@ -61,69 +61,72 @@
     };
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    home-manager,
-    disko,
-    systems,
-    impermanence,
-    ...
-  } @ inputs: let
-    inherit (self) outputs;
+  outputs =
+    {
+      self,
+      nixpkgs,
+      home-manager,
+      disko,
+      systems,
+      impermanence,
+      ...
+    }@inputs:
+    let
+      inherit (self) outputs;
 
-    lib = nixpkgs.lib // home-manager.lib;
-    forEachSystem = f: lib.genAttrs (import systems) (system: f pkgsFor.${system});
-    pkgsFor = lib.genAttrs (import systems) (
-      system:
+      lib = nixpkgs.lib // home-manager.lib;
+      forEachSystem = f: lib.genAttrs (import systems) (system: f pkgsFor.${system});
+      pkgsFor = lib.genAttrs (import systems) (
+        system:
         import nixpkgs {
           inherit system;
           config.allowUnfree = true;
         }
-    );
-  in {
-    inherit lib;
+      );
+    in
+    {
+      inherit lib;
 
-    nixosModules = import ./modules/nixos;
-    homeManagerModules = import ./modules/home-manager;
+      nixosModules = import ./modules/nixos;
+      homeManagerModules = import ./modules/home-manager;
 
-    overlays = import ./overlays {inherit inputs outputs;};
+      overlays = import ./overlays { inherit inputs outputs; };
 
-    packages = forEachSystem (pkgs: import ./pkgs {inherit pkgs;});
-    devShells = forEachSystem (pkgs: import ./shell.nix {inherit pkgs;});
-    formatter = forEachSystem (pkgs: pkgs.alejandra);
+      packages = forEachSystem (pkgs: import ./pkgs { inherit pkgs; });
+      devShells = forEachSystem (pkgs: import ./shell.nix { inherit pkgs; });
+      formatter = forEachSystem (pkgs: pkgs.nixfmt-tree);
 
-    # NixOS configuration entrypoint
-    # Available through 'nixos-rebuild --flake .#your-hostname'
-    nixosConfigurations = {
-      akarnae = lib.nixosSystem {
-        specialArgs = {inherit inputs outputs;};
-        modules = [
-          disko.nixosModules.disko
-          {disko.devices.disk.main.device = "/dev/nvme0n1";}
-          ./hosts/akarnae
-        ];
+      # NixOS configuration entrypoint
+      # Available through 'nixos-rebuild --flake .#your-hostname'
+      nixosConfigurations = {
+        akarnae = lib.nixosSystem {
+          specialArgs = { inherit inputs outputs; };
+          modules = [
+            disko.nixosModules.disko
+            { disko.devices.disk.main.device = "/dev/nvme0n1"; }
+            ./hosts/akarnae
+          ];
+        };
+        yuji = lib.nixosSystem {
+          specialArgs = { inherit inputs outputs; };
+          modules = [
+            disko.nixosModules.disko
+            { disko.devices.disk.main.device = "/dev/nvme0n1"; }
+            ./hosts/yuji
+          ];
+        };
       };
-      yuji = lib.nixosSystem {
-        specialArgs = {inherit inputs outputs;};
-        modules = [
-          disko.nixosModules.disko
-          {disko.devices.disk.main.device = "/dev/nvme0n1";}
-          ./hosts/yuji
-        ];
+
+      # Standalone home-manager configuration entrypoint
+      # Available through 'home-manager --flake .#your-username@your-hostname'
+      homeConfigurations = {
+        "appeltaartu@wsl" = lib.homeManagerConfiguration {
+          pkgs = pkgsFor.x86_64-linux;
+          extraSpecialArgs = { inherit inputs outputs; };
+          modules = [
+            ./home/appeltaartu/generic.nix
+          ];
+        };
       };
     };
-
-    # Standalone home-manager configuration entrypoint
-    # Available through 'home-manager --flake .#your-username@your-hostname'
-    homeConfigurations = {
-      "appeltaartu@wsl" = lib.homeManagerConfiguration {
-        pkgs = pkgsFor.x86_64-linux;
-        extraSpecialArgs = {inherit inputs outputs;};
-        modules = [
-          ./home/appeltaartu/generic.nix
-        ];
-      };
-    };
-  };
 }

@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   imports = [
     ./bash.nix
     ./bat.nix
@@ -35,7 +35,7 @@
     jq # JSON pretty printer and manipulator
 
     nil # Nix LSP
-    alejandra # Nix formatter
+    nixfmt # Nix formatter
 
     ltex-ls # Spell checking LSP
 
