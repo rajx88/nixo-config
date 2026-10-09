@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   home.sessionVariables.EDITOR = "nvim";
 
   home.persistence."/persist".directories = [
@@ -47,7 +47,7 @@
 
         # formatters
         stylua
-        alejandra
+        nixfmt
         gofumpt
         gotools # goimports
         shfmt
@@ -96,7 +96,10 @@
         ];
         terminal = true;
         type = "Application";
-        categories = ["Utility" "TextEditor"];
+        categories = [
+          "Utility"
+          "TextEditor"
+        ];
       };
     };
   };
