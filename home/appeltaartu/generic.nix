@@ -1,4 +1,4 @@
-{lib, ...}: {
+{ lib, ... }: {
   imports = [
     ../rajx88/generic.nix
     ../rajx88/features/dev/mise.nix

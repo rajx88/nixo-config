@@ -30,7 +30,12 @@ stdenv.mkDerivation rec {
     install -Dm755 $src $out/bin/.omp-unwrapped
     patchelf --set-interpreter ${glibc}/lib/ld-linux-x86-64.so.2 $out/bin/.omp-unwrapped
     makeWrapper $out/bin/.omp-unwrapped $out/bin/omp \
-      --prefix PATH : ${lib.makeBinPath [ripgrep git]}
+      --prefix PATH : ${
+        lib.makeBinPath [
+          ripgrep
+          git
+        ]
+      }
     runHook postInstall
   '';
 
@@ -39,6 +44,6 @@ stdenv.mkDerivation rec {
     homepage = "https://omp.sh";
     license = lib.licenses.mit;
     mainProgram = "omp";
-    platforms = ["x86_64-linux"];
+    platforms = [ "x86_64-linux" ];
   };
 }

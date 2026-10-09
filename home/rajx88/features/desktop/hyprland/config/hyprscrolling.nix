@@ -3,7 +3,8 @@
   config,
   lib,
   ...
-}: {
+}:
+{
   options.hyprland.scrolling.enable = lib.mkEnableOption "Enable Hyprland scrolling layout and plugin";
 
   config = lib.mkIf config.hyprland.scrolling.enable {

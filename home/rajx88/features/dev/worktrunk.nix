@@ -1,4 +1,4 @@
-{...}: {
+{ ... }: {
   programs.worktrunk = {
     enable = true;
     settings = {

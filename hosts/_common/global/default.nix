@@ -2,23 +2,23 @@
   inputs,
   outputs,
   ...
-}: {
-  imports =
-    [
-      inputs.home-manager.nixosModules.home-manager
-      ./gamemode.nix
-      ./locale.nix
-      ./nix.nix
-      ./nix-ld.nix
-      ./openssh.nix
-      ./podman.nix
-      ./steam-hardware.nix
-      ./systemd-initrd.nix
-      ./systemd.nix
-      ./zsh.nix
-      ./fish.nix
-    ]
-    ++ (builtins.attrValues outputs.nixosModules);
+}:
+{
+  imports = [
+    inputs.home-manager.nixosModules.home-manager
+    ./gamemode.nix
+    ./locale.nix
+    ./nix.nix
+    ./nix-ld.nix
+    ./openssh.nix
+    ./podman.nix
+    ./steam-hardware.nix
+    ./systemd-initrd.nix
+    ./systemd.nix
+    ./zsh.nix
+    ./fish.nix
+  ]
+  ++ (builtins.attrValues outputs.nixosModules);
 
   home-manager.useGlobalPkgs = true;
   home-manager.backupFileExtension = "hm-bak";
@@ -35,7 +35,7 @@
 
   # fix qt6 plugins
   environment.profileRelativeSessionVariables = {
-    QT_PLUGIN_PATH = ["/lib/qt-6/plugins"];
+    QT_PLUGIN_PATH = [ "/lib/qt-6/plugins" ];
   };
 
   # Enable polkit for system authentication

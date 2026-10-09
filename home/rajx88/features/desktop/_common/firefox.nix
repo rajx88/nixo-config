@@ -4,11 +4,13 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   # Access home-manager proxy config
   pacEnabled = config.programs.proxy.pac.enable or false;
   pacUrl = config.programs.proxy.pac.url or "";
-in {
+in
+{
   programs.firefox = {
     enable = true;
     policies = lib.mkIf pacEnabled {
@@ -20,7 +22,7 @@ in {
       };
     };
     profiles.rajx88 = {
-      bookmarks = {};
+      bookmarks = { };
 
       # Set PAC file via user.js settings
       settings = lib.mkIf pacEnabled {
@@ -39,5 +41,5 @@ in {
   #   "x-scheme-handler/https" = ["firefox.desktop"];
   # };
 
-  home.persistence."/persist".directories = [".mozilla/firefox"];
+  home.persistence."/persist".directories = [ ".mozilla/firefox" ];
 }

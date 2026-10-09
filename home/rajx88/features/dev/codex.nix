@@ -1,4 +1,5 @@
-{pkgs, ...}: let
+{ pkgs, ... }:
+let
   # Non-interactive `codex exec` refuses to run outside a git repo (e.g. from
   # ~) unless --skip-git-repo-check is passed. This wrapper adds the flag to
   # exec invocations only; interactive TUI use is passed through untouched.
@@ -9,7 +10,8 @@
     fi
     exec ${pkgs.codex}/bin/codex "$@"
   '';
-in {
+in
+{
   home.packages = [
     codexWrapped
     pkgs.jq # used by the OPENCODE_GO_API_KEY bootstrap below

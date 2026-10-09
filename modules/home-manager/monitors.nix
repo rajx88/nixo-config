@@ -2,8 +2,14 @@
   lib,
   config,
   ...
-}: let
-  inherit (lib) mkOption mkEnableOption types mkIf;
+}:
+let
+  inherit (lib)
+    mkOption
+    mkEnableOption
+    types
+    mkIf
+    ;
 
   monitorSubmodule = types.submodule {
     options = {
@@ -63,12 +69,17 @@
         description = "Scale factor for the monitor (e.g. 1.5 for 150%).";
       };
       bitdepth = mkOption {
-        type = types.nullOr (types.enum [8 10]);
+        type = types.nullOr (
+          types.enum [
+            8
+            10
+          ]
+        );
         default = null;
       };
       workspaces = mkOption {
         type = types.listOf types.int;
-        default = [];
+        default = [ ];
       };
       layout = mkOption {
         type = types.str;
@@ -79,11 +90,12 @@
   };
 
   cfg = config.monitorProfiles;
-in {
+in
+{
   options = {
     monitors = mkOption {
       type = types.listOf monitorSubmodule;
-      default = [];
+      default = [ ];
     };
 
     monitorProfiles = {
@@ -95,28 +107,30 @@ in {
       };
 
       profiles = mkOption {
-        type = types.attrsOf (types.submodule {
-          options = {
-            monitors = mkOption {
-              type = types.listOf monitorSubmodule;
-              default = [];
-              description = "Monitor configuration for this profile.";
-            };
-            detect = {
-              externalCount = mkOption {
-                type = types.nullOr types.int;
-                default = null;
-                description = "Number of external monitors expected for auto-detection.";
+        type = types.attrsOf (
+          types.submodule {
+            options = {
+              monitors = mkOption {
+                type = types.listOf monitorSubmodule;
+                default = [ ];
+                description = "Monitor configuration for this profile.";
               };
-              resolutions = mkOption {
-                type = types.listOf types.str;
-                default = [];
-                description = "Expected resolutions for auto-detection (e.g. \"3840x2160@120\").";
+              detect = {
+                externalCount = mkOption {
+                  type = types.nullOr types.int;
+                  default = null;
+                  description = "Number of external monitors expected for auto-detection.";
+                };
+                resolutions = mkOption {
+                  type = types.listOf types.str;
+                  default = [ ];
+                  description = "Expected resolutions for auto-detection (e.g. \"3840x2160@120\").";
+                };
               };
             };
-          };
-        });
-        default = {};
+          }
+        );
+        default = { };
         description = "Named monitor profiles.";
       };
     };
@@ -130,7 +144,8 @@ in {
           -> ((lib.length (lib.filter (m: m.primary) config.monitors)) == 1);
         message = "Exactly one monitor must be set to primary.";
       }
-    ] ++ lib.optionals cfg.enable [
+    ]
+    ++ lib.optionals cfg.enable [
       {
         assertion = builtins.hasAttr cfg.default cfg.profiles;
         message = "monitorProfiles.default '${cfg.default}' is not a valid profile name. Available: ${builtins.concatStringsSep ", " (builtins.attrNames cfg.profiles)}";

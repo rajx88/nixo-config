@@ -1,4 +1,5 @@
-{pkgs, ...}: let
+{ pkgs, ... }:
+let
   # Rebuild indexed projects whose graph was built by an older CodeGraph
   # extraction engine. Incremental auto-sync never re-extracts unchanged
   # files, so a `codegraph index` full rebuild is the only way to pick up
@@ -25,8 +26,9 @@
       fi
     done
   '';
-in {
-  home.packages = [pkgs.codegraph];
+in
+{
+  home.packages = [ pkgs.codegraph ];
 
   systemd.user.services.codegraph-reindex = {
     Unit = {
@@ -52,7 +54,7 @@ in {
       Persistent = true;
     };
     Install = {
-      WantedBy = ["timers.target"];
+      WantedBy = [ "timers.target" ];
     };
   };
 }

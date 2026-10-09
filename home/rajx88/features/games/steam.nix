@@ -1,10 +1,11 @@
 {
   pkgs,
   ...
-}: let
+}:
+let
   steam-with-pkgs = pkgs.steam.override {
-    extraPkgs = pkgs:
-      with pkgs; [
+    extraPkgs =
+      pkgs: with pkgs; [
         libxcursor
         libxi
         libxinerama
@@ -18,7 +19,8 @@
         mangohud
       ];
   };
-in {
+in
+{
   home.packages = with pkgs; [
     steam-with-pkgs
     mangohud

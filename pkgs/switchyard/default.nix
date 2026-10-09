@@ -20,10 +20,13 @@ rustPlatform.buildRustPackage {
 
   # Only the standalone proxy binary; the workspace also holds the Python
   # bindings and relay plugin, which we don't need.
-  cargoBuildFlags = ["-p" "switchyard-server"];
+  cargoBuildFlags = [
+    "-p"
+    "switchyard-server"
+  ];
 
-  nativeBuildInputs = [pkg-config];
-  buildInputs = [openssl];
+  nativeBuildInputs = [ pkg-config ];
+  buildInputs = [ openssl ];
 
   # Integration tests hit live providers.
   doCheck = false;
@@ -33,6 +36,6 @@ rustPlatform.buildRustPackage {
     homepage = "https://github.com/NVIDIA-NeMo/Switchyard";
     license = licenses.asl20;
     mainProgram = "switchyard-server";
-    platforms = ["x86_64-linux"];
+    platforms = [ "x86_64-linux" ];
   };
 }

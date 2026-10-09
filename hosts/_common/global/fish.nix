@@ -4,6 +4,6 @@
   };
 
   environment = {
-    pathsToLink = ["/share/fish"];
+    pathsToLink = [ "/share/fish" ];
   };
 }

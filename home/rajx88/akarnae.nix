@@ -2,7 +2,8 @@
   inputs,
   outputs,
   ...
-}: {
+}:
+{
   imports = [
     ./global
 
@@ -67,7 +68,13 @@
           bitdepth = 10;
           scale = 1.2;
           position = "0x0";
-          workspaces = [1 2 3 4 5];
+          workspaces = [
+            1
+            2
+            3
+            4
+            5
+          ];
           layout = "scroller";
           primary = true;
         }
@@ -78,7 +85,13 @@
           refreshRate = 120;
           bitdepth = 10;
           scale = 1.2;
-          workspaces = [6 7 8 9 10];
+          workspaces = [
+            6
+            7
+            8
+            9
+            10
+          ];
           layout = "tile";
           position = "auto-right";
         }

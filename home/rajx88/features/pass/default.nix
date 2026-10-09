@@ -2,13 +2,14 @@
   pkgs,
   config,
   ...
-}: {
+}:
+{
   programs.password-store = {
     enable = true;
     settings = {
       PASSWORD_STORE_DIR = "${config.home.homeDirectory}/.password-store";
     };
-    package = pkgs.pass.withExtensions (p: [p.pass-otp]);
+    package = pkgs.pass.withExtensions (p: [ p.pass-otp ]);
   };
 
   services.pass-secret-service = {
@@ -16,5 +17,5 @@
     storePath = "${config.home.homeDirectory}/.password-store";
   };
 
-  home.persistence."/persist".directories = [".password-store"];
+  home.persistence."/persist".directories = [ ".password-store" ];
 }

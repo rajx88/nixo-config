@@ -1,7 +1,7 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   # Orchestrator.inc (Agent Orchestrator): fleet control plane for coding
   # agents. Owns its own daemon; drives tmux/gh/opencode/claude/codex.
-  home.packages = [pkgs.ao];
+  home.packages = [ pkgs.ao ];
 
   home.persistence."/persist".directories = [
     ".agent-orchestrator" # daemon runtime/config state

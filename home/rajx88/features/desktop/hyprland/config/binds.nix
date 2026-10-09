@@ -3,44 +3,46 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   vaultPath = config.home.sessionVariables.VAULT_PATH;
-in {
+in
+{
 
   wayland.windowManager.hyprland.settings = {
     "$mod" = "SUPER";
 
-    bind = let
-      hyprlock = "${config.programs.hyprlock.package}/bin/hyprlock";
+    bind =
+      let
+        hyprlock = "${config.programs.hyprlock.package}/bin/hyprlock";
 
+        playerctl = "${config.services.playerctld.package}/bin/playerctl";
+        playerctld = "${config.services.playerctld.package}/bin/playerctld";
 
-      playerctl = "${config.services.playerctld.package}/bin/playerctl";
-      playerctld = "${config.services.playerctld.package}/bin/playerctld";
+        grim = "${pkgs.grim}/bin/grim";
+        slurp = "${pkgs.slurp}/bin/slurp";
+        wl-copy = "${pkgs.wl-clipboard}/bin/wl-copy";
+        screenshot = pkgs.writeShellScript "screenshot" ''
+          geom=$(${slurp}) || exit 1
+          file=${config.xdg.userDirs.extraConfig.SCRNSHTS}/$(date +%Y-%m-%d_%H-%M-%S).png
+          ${grim} -g "$geom" "$file" && ${wl-copy} --type image/png < "$file"
+        '';
+        pactl = "${pkgs.pulseaudio}/bin/pactl";
 
-      grim = "${pkgs.grim}/bin/grim";
-      slurp = "${pkgs.slurp}/bin/slurp";
-      wl-copy = "${pkgs.wl-clipboard}/bin/wl-copy";
-      screenshot = pkgs.writeShellScript "screenshot" ''
-        geom=$(${slurp}) || exit 1
-        file=${config.xdg.userDirs.extraConfig.SCRNSHTS}/$(date +%Y-%m-%d_%H-%M-%S).png
-        ${grim} -g "$geom" "$file" && ${wl-copy} --type image/png < "$file"
-      '';
-      pactl = "${pkgs.pulseaudio}/bin/pactl";
+        gtk-launch = "${pkgs.gtk3}/bin/gtk-launch";
+        xdg-mime = "${pkgs.xdg-utils}/bin/xdg-mime";
+        defaultApp = type: "${gtk-launch} $(${xdg-mime} query default ${type})";
 
-      gtk-launch = "${pkgs.gtk3}/bin/gtk-launch";
-      xdg-mime = "${pkgs.xdg-utils}/bin/xdg-mime";
-      defaultApp = type: "${gtk-launch} $(${xdg-mime} query default ${type})";
+        terminal = config.home.sessionVariables.TERM;
+        browser = defaultApp "x-scheme-handler/https";
+        editor = defaultApp "text/plain";
 
-      terminal = config.home.sessionVariables.TERM;
-      browser = defaultApp "x-scheme-handler/https";
-      editor = defaultApp "text/plain";
-
-      files = "${pkgs.thunar}/bin/thunar";
-      # Launch 1Password via its desktop entry so we don't pin a store path.
-      # Prefer the beta GUI if configured; rely on PATH fallback if desktop entry missing.
-      # Desktop entry name is typically "1password".
-      passman = "${gtk-launch} 1password || 1password";
-    in
+        files = "${pkgs.thunar}/bin/thunar";
+        # Launch 1Password via its desktop entry so we don't pin a store path.
+        # Prefer the beta GUI if configured; rely on PATH fallback if desktop entry missing.
+        # Desktop entry name is typically "1password".
+        passman = "${gtk-launch} 1password || 1password";
+      in
       [
         # Program bindings
         "$mod,t,exec,${terminal}"
@@ -66,10 +68,10 @@ in {
         ",XF86AudioStop,exec,${playerctl} stop"
       ])
       ++
-      # Launcher — noctalia built-in
-      [
-        "$mod,space,exec,noctalia msg panel-toggle launcher"
-      ]
+        # Launcher — noctalia built-in
+        [
+          "$mod,space,exec,noctalia msg panel-toggle launcher"
+        ]
       ++ [
         # noctalia control center
         "$mod SHIFT,w,exec,noctalia msg panel-toggle control-center"

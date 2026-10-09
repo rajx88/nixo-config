@@ -1,5 +1,5 @@
-{pkgs, ...}: {
-  home.packages = [pkgs.twg];
+{ pkgs, ... }: {
+  home.packages = [ pkgs.twg ];
 
   # ~/.config/twg holds auth.conf (OAuth access/refresh tokens), upkeep.json and
   # any installer-owned agent skills. Off the ephemeral root they are wiped every

@@ -3,15 +3,15 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   monitors = config.monitors;
   isLaptopFlag = lib.any (m: (m.isLaptop or false)) monitors;
-  internalPanel = let
-    m = lib.findFirst (m: lib.hasPrefix "eDP" m.name) null monitors;
-  in
-    if m != null
-    then m.name
-    else "eDP-1";
+  internalPanel =
+    let
+      m = lib.findFirst (m: lib.hasPrefix "eDP" m.name) null monitors;
+    in
+    if m != null then m.name else "eDP-1";
 
   wlr-randr = "${pkgs.wlr-randr}/bin/wlr-randr";
 
@@ -72,7 +72,8 @@
       ${wlr-randr} --output "$PANEL" --on
     fi
   '';
-in {
+in
+{
   # switchbind=fold,cmd  → on lid close
   # switchbind=unfold,cmd → on lid open
   # Note: requires HandleLidSwitch=ignore in logind (set at NixOS level)
@@ -83,5 +84,8 @@ in {
     ];
   };
 
-  home.packages = lib.mkIf isLaptopFlag [pkgs.wlr-randr lidStateScript];
+  home.packages = lib.mkIf isLaptopFlag [
+    pkgs.wlr-randr
+    lidStateScript
+  ];
 }

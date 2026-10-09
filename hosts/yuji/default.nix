@@ -4,7 +4,8 @@
   lib,
   inputs,
   ...
-}: {
+}:
+{
   imports = [
     inputs.hardware.nixosModules.common-cpu-intel
     inputs.hardware.nixosModules.common-gpu-nvidia
@@ -52,8 +53,13 @@
 
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;
-    kernelModules = [ "nvidia" "nvidia_modeset" "nvidia_drm" "nvidia_uvm" ];
-    kernelParams  = [ "nvidia.NVreg_PreserveVideoMemoryAllocations=1" ];
+    kernelModules = [
+      "nvidia"
+      "nvidia_modeset"
+      "nvidia_drm"
+      "nvidia_uvm"
+    ];
+    kernelParams = [ "nvidia.NVreg_PreserveVideoMemoryAllocations=1" ];
     blacklistedKernelModules = [ "nouveau" ];
   };
 
@@ -91,12 +97,12 @@
     };
 
     nvidia = {
-      prime.offload.enable = false;   # no PRIME offload — Intel drives all displays
-      modesetting.enable        = true;
-      powerManagement.enable    = false;
+      prime.offload.enable = false; # no PRIME offload — Intel drives all displays
+      modesetting.enable = true;
+      powerManagement.enable = false;
       powerManagement.finegrained = false;
-      open            = true;         # required for Blackwell (GB207 / sm_120)
-      nvidiaSettings  = true;
+      open = true; # required for Blackwell (GB207 / sm_120)
+      nvidiaSettings = true;
       package = config.boot.kernelPackages.nvidiaPackages.latest;
     };
 

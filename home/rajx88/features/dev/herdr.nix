@@ -1,5 +1,5 @@
-{pkgs, ...}: {
-  home.packages = [pkgs.herdr];
+{ pkgs, ... }: {
+  home.packages = [ pkgs.herdr ];
 
   # ~/.config/herdr holds config.toml (including the first-run `onboarding = false`
   # marker) and session.json; ~/.local/state/herdr holds the agent-detection and

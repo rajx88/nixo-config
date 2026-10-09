@@ -2,7 +2,8 @@
   config,
   lib,
   ...
-}: {
+}:
+{
   wayland.windowManager.hyprland.settings = {
     "$mod" = "SUPER";
     bindm = [
@@ -10,42 +11,43 @@
       "$mod,mouse:273,resizewindow"
     ];
 
-    bind = let
-      workspaces = [
-        "1"
-        "2"
-        "3"
-        "4"
-        "5"
-        "6"
-        "7"
-        "8"
-        "9"
-        "F1"
-        "F2"
-        "F3"
-        "F4"
-        "F5"
-        "F6"
-        "F7"
-        "F8"
-        "F9"
-        "F10"
-        "F11"
-        "F12"
-      ];
-      # Map keys (arrows and hjkl) to hyprland directions (l, r, u, d)
-      directions = rec {
-        left = "l";
-        right = "r";
-        up = "u";
-        down = "d";
-        h = left;
-        l = right;
-        k = up;
-        j = down;
-      };
-    in
+    bind =
+      let
+        workspaces = [
+          "1"
+          "2"
+          "3"
+          "4"
+          "5"
+          "6"
+          "7"
+          "8"
+          "9"
+          "F1"
+          "F2"
+          "F3"
+          "F4"
+          "F5"
+          "F6"
+          "F7"
+          "F8"
+          "F9"
+          "F10"
+          "F11"
+          "F12"
+        ];
+        # Map keys (arrows and hjkl) to hyprland directions (l, r, u, d)
+        directions = rec {
+          left = "l";
+          right = "r";
+          up = "u";
+          down = "d";
+          h = left;
+          l = right;
+          k = up;
+          j = down;
+        };
+      in
       [
         "$mod SHIFT,q,killactive"
 
@@ -65,46 +67,33 @@
         "$mod SHIFT,0,movetoworkspacesilent,10"
       ]
       ++
-      # Change workspace
-      (map (
-          n: "$mod,${n},workspace,${n}"
-        )
-        workspaces)
+        # Change workspace
+        (map (n: "$mod,${n},workspace,${n}") workspaces)
       ++
-      # Move window to workspace
-      (map (
-          n: "$mod SHIFT,${n},movetoworkspacesilent,${n}"
-        )
-        workspaces)
+        # Move window to workspace
+        (map (n: "$mod SHIFT,${n},movetoworkspacesilent,${n}") workspaces)
       ++
-      # Move focus
-      lib.optionals (!config.hyprland.scrolling.enable) (lib.mapAttrsToList (
-          key: direction: "$mod,${key},movefocus,${direction}"
+        # Move focus
+        lib.optionals (!config.hyprland.scrolling.enable) (
+          lib.mapAttrsToList (key: direction: "$mod,${key},movefocus,${direction}") directions
         )
-        directions)
       ++
-      # Swap windows
-      lib.optionals (!config.hyprland.scrolling.enable) (lib.mapAttrsToList (
-          key: direction: "$mod SHIFT,${key},swapwindow,${direction}"
+        # Swap windows
+        lib.optionals (!config.hyprland.scrolling.enable) (
+          lib.mapAttrsToList (key: direction: "$mod SHIFT,${key},swapwindow,${direction}") directions
         )
-        directions)
       ++
-      # Move windows
-      lib.optionals (!config.hyprland.scrolling.enable) (lib.mapAttrsToList (
-          key: direction: "$mod CONTROL,${key},movewindoworgroup,${direction}"
+        # Move windows
+        lib.optionals (!config.hyprland.scrolling.enable) (
+          lib.mapAttrsToList (key: direction: "$mod CONTROL,${key},movewindoworgroup,${direction}") directions
         )
-        directions)
       ++
-      # Move monitor focus
-      (lib.mapAttrsToList (
-          key: direction: "$mod ALT,${key},focusmonitor,${direction}"
-        )
-        directions)
+        # Move monitor focus
+        (lib.mapAttrsToList (key: direction: "$mod ALT,${key},focusmonitor,${direction}") directions)
       ++
-      # Move workspace to other monitor
-      (lib.mapAttrsToList (
+        # Move workspace to other monitor
+        (lib.mapAttrsToList (
           key: direction: "$mod ALT SHIFT,${key},movecurrentworkspacetomonitor,${direction}"
-        )
-        directions);
+        ) directions);
   };
 }

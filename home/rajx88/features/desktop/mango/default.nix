@@ -4,14 +4,16 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   monitors = config.monitors;
   primaryMon = lib.findFirst (m: m.primary or false) (builtins.head monitors) monitors;
   notesWidth = primaryMon.width / 2;
   todoWidth = primaryMon.width / 10 * 4;
   fullHeight = primaryMon.height;
   home = config.home.homeDirectory;
-in {
+in
+{
   imports = [
     inputs.mango.hmModules.mango
 
@@ -69,7 +71,7 @@ in {
       exec_once = ~/.config/mango/autostart.sh
     '';
 
-    bottomPrefixes = ["source_optional"];
+    bottomPrefixes = [ "source_optional" ];
 
     systemd.enable = true;
   };

@@ -3,7 +3,8 @@
   lib,
   pkgs,
   ...
-}: {
+}:
+{
   options.services.greetd.sessionCommand = lib.mkOption {
     type = lib.types.str;
     default = "start-hyprland";

@@ -1,9 +1,10 @@
-{ pkgs, ... }: let
+{ pkgs, ... }:
+let
   resolvectl = "${pkgs.systemd}/bin/resolvectl";
-  systemctl  = "${pkgs.systemd}/bin/systemctl";
-  ping       = "${pkgs.iputils}/bin/ping";
-  logger     = "${pkgs.util-linux}/bin/logger";
-  sleep      = "${pkgs.coreutils}/bin/sleep";
+  systemctl = "${pkgs.systemd}/bin/systemctl";
+  ping = "${pkgs.iputils}/bin/ping";
+  logger = "${pkgs.util-linux}/bin/logger";
+  sleep = "${pkgs.coreutils}/bin/sleep";
 
   wgSwitch = pkgs.writeShellScript "wg-switch" ''
     # runs as root via pkexec — stop $1, start $2
@@ -70,9 +71,13 @@
 
     if at_home; then enter_home; else enter_away; fi
   '';
-in {
+in
+{
   # Stable path for wg-switch so polkit policy can reference it
-  environment.etc."wg-switch" = { source = wgSwitch; mode = "0755"; };
+  environment.etc."wg-switch" = {
+    source = wgSwitch;
+    mode = "0755";
+  };
   services.resolved.enable = true;
   networking.networkmanager.dns = "systemd-resolved";
 
@@ -114,10 +119,12 @@ in {
     };
   };
 
-  networking.networkmanager.dispatcherScripts = [{
-    type   = "basic";
-    source = homeProbe;
-  }];
+  networking.networkmanager.dispatcherScripts = [
+    {
+      type = "basic";
+      source = homeProbe;
+    }
+  ];
 
   networking.wg-quick.interfaces = {
     # Full-tunnel for IPv4 and DNS through home.
@@ -145,11 +152,13 @@ in {
           endpoint "$(cat /persist/secrets/wireguard/endpoint)"
       '';
 
-      peers = [{
-        publicKey = "7QagNiSoCbm5Yjr6oX9I86yJJOCQF+2LR1WQAQ/wozs=";
-        allowedIPs = [ "0.0.0.0/0" ];
-        persistentKeepalive = 25;
-      }];
+      peers = [
+        {
+          publicKey = "7QagNiSoCbm5Yjr6oX9I86yJJOCQF+2LR1WQAQ/wozs=";
+          allowedIPs = [ "0.0.0.0/0" ];
+          persistentKeepalive = 25;
+        }
+      ];
     };
   };
 

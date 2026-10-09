@@ -1,11 +1,15 @@
-{config, lib, ...}: let
+{ config, lib, ... }:
+let
   scale = (builtins.head (lib.filter (m: m.primary) config.monitors)).scale;
-in {
+in
+{
   programs.fuzzel = {
     enable = true;
     settings = {
       main = {
-        font = "${config.fontProfiles.monospace.name}:size=${toString (builtins.floor (config.fontProfiles.monospace.size * scale))}";
+        font = "${config.fontProfiles.monospace.name}:size=${
+          toString (builtins.floor (config.fontProfiles.monospace.size * scale))
+        }";
         terminal = "ghostty -e";
         layer = "overlay";
         width = builtins.floor (45 * scale);

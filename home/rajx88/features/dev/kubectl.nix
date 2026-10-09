@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   home.packages = with pkgs; [
     kubectl
     kubectx
@@ -8,5 +8,5 @@
     k9s
   ];
 
-  home.persistence."/persist".directories = [".kube"];
+  home.persistence."/persist".directories = [ ".kube" ];
 }

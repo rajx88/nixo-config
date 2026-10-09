@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   home.persistence."/persist".directories = [
     ".config/obsidian"
   ];

@@ -4,7 +4,8 @@
   lib,
   inputs,
   ...
-}: {
+}:
+{
   imports = [
     inputs.hardware.nixosModules.common-cpu-intel-cpu-only
     inputs.hardware.nixosModules.common-gpu-nvidia
@@ -38,9 +39,12 @@
   # systemd stage 1 implies fallbackToPassword, so the passphrase still works
   # if the TPM unseal fails.
   security.tpm2.enable = true;
-  boot.initrd.availableKernelModules = ["tpm_tis" "tpm_crb"];
+  boot.initrd.availableKernelModules = [
+    "tpm_tis"
+    "tpm_crb"
+  ];
   boot.initrd.luks.devices.crypted = {
-    crypttabExtraOpts = ["tpm2-device=auto"];
+    crypttabExtraOpts = [ "tpm2-device=auto" ];
   };
 
   networking = {
@@ -51,7 +55,12 @@
 
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;
-    kernelModules = [ "nvidia" "nvidia_modeset" "nvidia_drm" "nvidia_uvm" ];
+    kernelModules = [
+      "nvidia"
+      "nvidia_modeset"
+      "nvidia_drm"
+      "nvidia_uvm"
+    ];
     kernelParams = [ "nvidia.NVreg_PreserveVideoMemoryAllocations=1" ];
   };
 

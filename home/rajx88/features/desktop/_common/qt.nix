@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   home.sessionVariables = {
     QT_STYLE_OVERRIDE = "gtk3";
   };

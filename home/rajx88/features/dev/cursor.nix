@@ -1,5 +1,5 @@
-{pkgs, ...}: {
-  home.packages = [pkgs.cursor];
+{ pkgs, ... }: {
+  home.packages = [ pkgs.cursor ];
 
-  home.persistence."/persist".directories = [".config/Cursor"];
+  home.persistence."/persist".directories = [ ".config/Cursor" ];
 }

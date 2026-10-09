@@ -33,10 +33,15 @@ stdenv.mkDerivation rec {
     mkdir -p $out/lib $out/bin
     cp -r codegraph-linux-x64 $out/lib/codegraph
     patchelf --set-interpreter ${glibc}/lib/ld-linux-x86-64.so.2 \
-      --set-rpath ${lib.makeLibraryPath [gcc-unwrapped.lib glibc]} \
+      --set-rpath ${
+        lib.makeLibraryPath [
+          gcc-unwrapped.lib
+          glibc
+        ]
+      } \
       $out/lib/codegraph/node
     makeWrapper $out/lib/codegraph/bin/codegraph $out/bin/codegraph \
-      --prefix PATH : ${lib.makeBinPath [git]}
+      --prefix PATH : ${lib.makeBinPath [ git ]}
     runHook postInstall
   '';
 
@@ -45,6 +50,6 @@ stdenv.mkDerivation rec {
     homepage = "https://github.com/colbymchenry/codegraph";
     license = lib.licenses.mit;
     mainProgram = "codegraph";
-    platforms = ["x86_64-linux"];
+    platforms = [ "x86_64-linux" ];
   };
 }

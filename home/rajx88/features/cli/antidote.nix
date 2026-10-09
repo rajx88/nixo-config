@@ -1,4 +1,4 @@
-{config, ...}: {
+{ config, ... }: {
   home.persistence."/persist".directories = [
     ".local/share/antidote"
   ];

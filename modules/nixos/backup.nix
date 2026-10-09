@@ -3,93 +3,94 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   cfg = config.host.backup;
   credentialDir = "/persist/secrets/backup";
   backupPath = "/persist/home/${cfg.user}";
   excludeFile = pkgs.writeText "backup-exclude-patterns" (lib.concatStringsSep "\n" cfg.exclude);
   retentionArgs = "--keep-last 12 --keep-daily 7";
 
-  rback-completions = pkgs.runCommandLocal "rback-completions" {} ''
-    mkdir -p $out/share/zsh/site-functions
-    cat > $out/share/zsh/site-functions/_rback <<'ZSH'
-#compdef rback
+  rback-completions = pkgs.runCommandLocal "rback-completions" { } ''
+        mkdir -p $out/share/zsh/site-functions
+        cat > $out/share/zsh/site-functions/_rback <<'ZSH'
+    #compdef rback
 
-_rback() {
-  local -a commands
-  commands=(
-    'snapshots:List available snapshots'
-    'backup:Run a backup now (interactive)'
-    'logs:Follow hourly backup progress in journal'
-    'forget:Delete a specific snapshot and prune'
-    'restore:Restore home (default\: latest)'
-    'restore-path:Restore specific path'
-    'ls:List files in a snapshot'
-    'mount:Mount snapshots as FUSE filesystem'
-    'diff:Show diff between two snapshots'
-    'unlock:Remove stale repository locks'
-    'status:Show backup service status'
-    'check:Verify backup integrity'
-    'size:Show backup size on remote'
-    'overview:Show snapshot retention policy overview'
-    'help:Show this help'
-  )
+    _rback() {
+      local -a commands
+      commands=(
+        'snapshots:List available snapshots'
+        'backup:Run a backup now (interactive)'
+        'logs:Follow hourly backup progress in journal'
+        'forget:Delete a specific snapshot and prune'
+        'restore:Restore home (default\: latest)'
+        'restore-path:Restore specific path'
+        'ls:List files in a snapshot'
+        'mount:Mount snapshots as FUSE filesystem'
+        'diff:Show diff between two snapshots'
+        'unlock:Remove stale repository locks'
+        'status:Show backup service status'
+        'check:Verify backup integrity'
+        'size:Show backup size on remote'
+        'overview:Show snapshot retention policy overview'
+        'help:Show this help'
+      )
 
-  if (( CURRENT == 2 )); then
-    _describe -t commands 'rback command' commands
-  else
-    case "$words[2]" in
-      forget)
-        _message 'snapshot ID'
-        ;;
-      restore)
-        _message 'snapshot ID (optional, default: latest)'
-        ;;
-      restore-path)
-        if (( CURRENT == 3 )); then
-          _files
-        else
-          _message 'snapshot ID (optional, default: latest)'
-        fi
-        ;;
-      ls)
-        _message 'snapshot ID (optional, default: latest)'
-        ;;
-      mount)
-        _directories
-        ;;
-      diff)
-        _message 'snapshot ID'
-        ;;
-    esac
-  fi
-}
+      if (( CURRENT == 2 )); then
+        _describe -t commands 'rback command' commands
+      else
+        case "$words[2]" in
+          forget)
+            _message 'snapshot ID'
+            ;;
+          restore)
+            _message 'snapshot ID (optional, default: latest)'
+            ;;
+          restore-path)
+            if (( CURRENT == 3 )); then
+              _files
+            else
+              _message 'snapshot ID (optional, default: latest)'
+            fi
+            ;;
+          ls)
+            _message 'snapshot ID (optional, default: latest)'
+            ;;
+          mount)
+            _directories
+            ;;
+          diff)
+            _message 'snapshot ID'
+            ;;
+        esac
+      fi
+    }
 
-_rback "$@"
-ZSH
+    _rback "$@"
+    ZSH
 
-    mkdir -p $out/share/fish/vendor_completions.d
-    cat > $out/share/fish/vendor_completions.d/rback.fish <<'FISH'
-# Fish completions for rback
-complete -c rback -f
-complete -c rback -n "__fish_use_subcommand" -a snapshots -d "List available snapshots"
-complete -c rback -n "__fish_use_subcommand" -a backup -d "Run a backup now (interactive)"
-complete -c rback -n "__fish_use_subcommand" -a logs -d "Follow hourly backup progress in journal"
-complete -c rback -n "__fish_use_subcommand" -a forget -d "Delete a specific snapshot and prune"
-complete -c rback -n "__fish_use_subcommand" -a restore -d "Restore home (default: latest)"
-complete -c rback -n "__fish_use_subcommand" -a restore-path -d "Restore specific path"
-complete -c rback -n "__fish_use_subcommand" -a ls -d "List files in a snapshot"
-complete -c rback -n "__fish_use_subcommand" -a mount -d "Mount snapshots as FUSE filesystem"
-complete -c rback -n "__fish_use_subcommand" -a diff -d "Show diff between two snapshots"
-complete -c rback -n "__fish_use_subcommand" -a unlock -d "Remove stale repository locks"
-complete -c rback -n "__fish_use_subcommand" -a status -d "Show backup service status"
-complete -c rback -n "__fish_use_subcommand" -a check -d "Verify backup integrity"
-complete -c rback -n "__fish_use_subcommand" -a size -d "Show backup size on remote"
-complete -c rback -n "__fish_use_subcommand" -a overview -d "Show snapshot retention policy overview"
-complete -c rback -n "__fish_use_subcommand" -a help -d "Show this help"
-complete -c rback -n "__fish_seen_subcommand_from mount" -F
-complete -c rback -n "__fish_seen_subcommand_from restore-path" -F
-FISH
+        mkdir -p $out/share/fish/vendor_completions.d
+        cat > $out/share/fish/vendor_completions.d/rback.fish <<'FISH'
+    # Fish completions for rback
+    complete -c rback -f
+    complete -c rback -n "__fish_use_subcommand" -a snapshots -d "List available snapshots"
+    complete -c rback -n "__fish_use_subcommand" -a backup -d "Run a backup now (interactive)"
+    complete -c rback -n "__fish_use_subcommand" -a logs -d "Follow hourly backup progress in journal"
+    complete -c rback -n "__fish_use_subcommand" -a forget -d "Delete a specific snapshot and prune"
+    complete -c rback -n "__fish_use_subcommand" -a restore -d "Restore home (default: latest)"
+    complete -c rback -n "__fish_use_subcommand" -a restore-path -d "Restore specific path"
+    complete -c rback -n "__fish_use_subcommand" -a ls -d "List files in a snapshot"
+    complete -c rback -n "__fish_use_subcommand" -a mount -d "Mount snapshots as FUSE filesystem"
+    complete -c rback -n "__fish_use_subcommand" -a diff -d "Show diff between two snapshots"
+    complete -c rback -n "__fish_use_subcommand" -a unlock -d "Remove stale repository locks"
+    complete -c rback -n "__fish_use_subcommand" -a status -d "Show backup service status"
+    complete -c rback -n "__fish_use_subcommand" -a check -d "Verify backup integrity"
+    complete -c rback -n "__fish_use_subcommand" -a size -d "Show backup size on remote"
+    complete -c rback -n "__fish_use_subcommand" -a overview -d "Show snapshot retention policy overview"
+    complete -c rback -n "__fish_use_subcommand" -a help -d "Show this help"
+    complete -c rback -n "__fish_seen_subcommand_from mount" -F
+    complete -c rback -n "__fish_seen_subcommand_from restore-path" -F
+    FISH
   '';
 
   persist-backup = pkgs.writeShellScriptBin "rback" ''
@@ -198,145 +199,149 @@ FISH
     esac
   '';
 in
-  with lib; {
-    options.host.backup = {
-      enable = mkEnableOption "Restic backup to cloud storage via rclone";
+with lib;
+{
+  options.host.backup = {
+    enable = mkEnableOption "Restic backup to cloud storage via rclone";
 
-      user = mkOption {
-        type = types.str;
-        default = "rajx88";
-        description = "User whose home directory to back up";
-      };
-
-      rclone-remote = mkOption {
-        type = types.str;
-        default = "";
-        example = "gdrive:backups/hostname";
-        description = "Rclone remote and path for the restic repository";
-      };
-
-      exclude = mkOption {
-        type = types.listOf types.str;
-        default = [
-          # General caches
-          "**/.cache"
-          ".config/**/Cache"
-          ".config/**/Cache_Data"
-          ".config/**/Code Cache"
-          ".config/**/GPUCache"
-          ".config/**/DawnWebGPUCache"
-          ".config/**/DawnGraphiteCache"
-          ".config/**/CacheStorage"
-          ".config/**/ScriptCache"
-          ".config/**/component_crx_cache"
-          ".mozilla/**/cache2"
-
-          # Re-downloadable package/dependency trees
-          "**/node_modules"
-          "**/.gradle"
-
-          # Build output (always regenerated by build tools)
-          "**/build"
-          "**/target"
-
-          # Electron app junk (covers all current + future Electron apps)
-          "**/Session Storage"
-          "**/Shared Dictionary"
-          "**/Crashpad"
-          "**/blob_storage"
-
-          # JetBrains IDE binaries (re-downloaded by Toolbox, keeps login/state)
-          ".local/share/JetBrains/Toolbox/apps"
-          ".local/share/JetBrains/Toolbox/logs"
-          ".local/share/JetBrains/Daemon"
-          # JetBrains IDE plugin/runtime data (catches any IDE, any version)
-          ".local/share/JetBrains/*20*"
-
-          # Neovim plugins and LSP servers (re-downloaded by lazy.nvim/mason)
-          ".local/share/nvim"
-
-          # mise tool version installs (re-downloaded by mise)
-          ".local/share/mise"
-
-          # Zsh plugin git clones (re-downloaded by antidote on shell init)
-          ".local/share/antidote"
-
-          # Ferdium Electron app partition data (web storage, caches, etc.)
-          ".config/Ferdium/Partitions"
-
-          # Browser data (profiles are large and not critical config)
-          ".config/BraveSoftware"
-          ".config/zen"
-        ];
-        description = "Paths to exclude from backup (relative to backup root)";
-      };
-
-      timerConfig = mkOption {
-        type = types.attrsOf types.str;
-        default = {
-          OnCalendar = "*-*-* 00/4:00:00";
-          Persistent = "true";
-          RandomizedDelaySec = "5m";
-        };
-        description = "Systemd timer configuration for backup schedule";
-      };
+    user = mkOption {
+      type = types.str;
+      default = "rajx88";
+      description = "User whose home directory to back up";
     };
 
-    config = mkIf cfg.enable {
-      assertions = [
-        {
-          assertion = cfg.rclone-remote != "";
-          message = "host.backup.rclone-remote must be set when backup is enabled";
-        }
-      ];
+    rclone-remote = mkOption {
+      type = types.str;
+      default = "";
+      example = "gdrive:backups/hostname";
+      description = "Rclone remote and path for the restic repository";
+    };
 
-      environment.systemPackages = with pkgs; [
-        restic
-        rclone
-        persist-backup
-        rback-completions
-      ];
+    exclude = mkOption {
+      type = types.listOf types.str;
+      default = [
+        # General caches
+        "**/.cache"
+        ".config/**/Cache"
+        ".config/**/Cache_Data"
+        ".config/**/Code Cache"
+        ".config/**/GPUCache"
+        ".config/**/DawnWebGPUCache"
+        ".config/**/DawnGraphiteCache"
+        ".config/**/CacheStorage"
+        ".config/**/ScriptCache"
+        ".config/**/component_crx_cache"
+        ".mozilla/**/cache2"
 
-      environment.persistence."/persist".directories = [
-        {
-          directory = "secrets/backup";
-          mode = "0700";
-          user = cfg.user;
-          group = "users";
-        }
-      ];
+        # Re-downloadable package/dependency trees
+        "**/node_modules"
+        "**/.gradle"
 
-      services.restic.backups.persist = {
-        paths = [backupPath];
-        exclude = cfg.exclude;
-        extraBackupArgs = ["--verbose" "--one-file-system"];
-        repository = "rclone:${cfg.rclone-remote}";
-        passwordFile = "${credentialDir}/restic-password";
-        rcloneConfigFile = "${credentialDir}/rclone.conf";
+        # Build output (always regenerated by build tools)
+        "**/build"
+        "**/target"
+
+        # Electron app junk (covers all current + future Electron apps)
+        "**/Session Storage"
+        "**/Shared Dictionary"
+        "**/Crashpad"
+        "**/blob_storage"
+
+        # JetBrains IDE binaries (re-downloaded by Toolbox, keeps login/state)
+        ".local/share/JetBrains/Toolbox/apps"
+        ".local/share/JetBrains/Toolbox/logs"
+        ".local/share/JetBrains/Daemon"
+        # JetBrains IDE plugin/runtime data (catches any IDE, any version)
+        ".local/share/JetBrains/*20*"
+
+        # Neovim plugins and LSP servers (re-downloaded by lazy.nvim/mason)
+        ".local/share/nvim"
+
+        # mise tool version installs (re-downloaded by mise)
+        ".local/share/mise"
+
+        # Zsh plugin git clones (re-downloaded by antidote on shell init)
+        ".local/share/antidote"
+
+        # Ferdium Electron app partition data (web storage, caches, etc.)
+        ".config/Ferdium/Partitions"
+
+        # Browser data (profiles are large and not critical config)
+        ".config/BraveSoftware"
+        ".config/zen"
+      ];
+      description = "Paths to exclude from backup (relative to backup root)";
+    };
+
+    timerConfig = mkOption {
+      type = types.attrsOf types.str;
+      default = {
+        OnCalendar = "*-*-* 00/4:00:00";
+        Persistent = "true";
+        RandomizedDelaySec = "5m";
+      };
+      description = "Systemd timer configuration for backup schedule";
+    };
+  };
+
+  config = mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = cfg.rclone-remote != "";
+        message = "host.backup.rclone-remote must be set when backup is enabled";
+      }
+    ];
+
+    environment.systemPackages = with pkgs; [
+      restic
+      rclone
+      persist-backup
+      rback-completions
+    ];
+
+    environment.persistence."/persist".directories = [
+      {
+        directory = "secrets/backup";
+        mode = "0700";
         user = cfg.user;
-        inherit (cfg) timerConfig;
-        pruneOpts = [retentionArgs];
-        backupPrepareCommand = ''
-          # Remove stale locks left by crashed previous runs (safe: only removes locks where PID is dead)
-          ${pkgs.restic}/bin/restic \
-            -r "rclone:${cfg.rclone-remote}" \
-            --password-file "${credentialDir}/restic-password" \
-            -o rclone.config="${credentialDir}/rclone.conf" \
-            unlock || true
+        group = "users";
+      }
+    ];
 
-          # Ensure backup credentials exist
-          if [ ! -f ${credentialDir}/restic-password ]; then
-            echo "ERROR: ${credentialDir}/restic-password not found. Create it with:"
-            echo "  echo -n 'your-passphrase' > ${credentialDir}/restic-password"
-            echo "  chmod 600 ${credentialDir}/restic-password"
-            exit 1
-          fi
-          if [ ! -f ${credentialDir}/rclone.conf ]; then
-            echo "ERROR: ${credentialDir}/rclone.conf not found. Create it with:"
-            echo "  rclone config --config ${credentialDir}/rclone.conf"
-            exit 1
-          fi
-        '';
-      };
+    services.restic.backups.persist = {
+      paths = [ backupPath ];
+      exclude = cfg.exclude;
+      extraBackupArgs = [
+        "--verbose"
+        "--one-file-system"
+      ];
+      repository = "rclone:${cfg.rclone-remote}";
+      passwordFile = "${credentialDir}/restic-password";
+      rcloneConfigFile = "${credentialDir}/rclone.conf";
+      user = cfg.user;
+      inherit (cfg) timerConfig;
+      pruneOpts = [ retentionArgs ];
+      backupPrepareCommand = ''
+        # Remove stale locks left by crashed previous runs (safe: only removes locks where PID is dead)
+        ${pkgs.restic}/bin/restic \
+          -r "rclone:${cfg.rclone-remote}" \
+          --password-file "${credentialDir}/restic-password" \
+          -o rclone.config="${credentialDir}/rclone.conf" \
+          unlock || true
+
+        # Ensure backup credentials exist
+        if [ ! -f ${credentialDir}/restic-password ]; then
+          echo "ERROR: ${credentialDir}/restic-password not found. Create it with:"
+          echo "  echo -n 'your-passphrase' > ${credentialDir}/restic-password"
+          echo "  chmod 600 ${credentialDir}/restic-password"
+          exit 1
+        fi
+        if [ ! -f ${credentialDir}/rclone.conf ]; then
+          echo "ERROR: ${credentialDir}/rclone.conf not found. Create it with:"
+          echo "  rclone config --config ${credentialDir}/rclone.conf"
+          exit 1
+        fi
+      '';
     };
-  }
+  };
+}

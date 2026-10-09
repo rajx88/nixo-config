@@ -3,7 +3,8 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   cfg = config.monitorProfiles;
 
   profileNames = builtins.attrNames cfg.profiles;
@@ -11,75 +12,143 @@
   wsToKey = ws: if ws == 10 then "0" else toString ws;
 
   # Generate a config snippet for a given profile
-  mkProfileSnippet = name: profile: let
-    enabledMonitors = lib.filter (m: m.enabled) profile.monitors;
+  mkProfileSnippet =
+    name: profile:
+    let
+      enabledMonitors = lib.filter (m: m.enabled) profile.monitors;
 
-    # Compute logical dimensions for a monitor
-    logicalW = m: m.width / m.scale;
-    logicalH = m: m.height / m.scale;
+      # Compute logical dimensions for a monitor
+      logicalW = m: m.width / m.scale;
+      logicalH = m: m.height / m.scale;
 
-    # Compute positions for all monitors.
-    # First monitor is always at 0,0.
-    # Subsequent monitors use directional placement relative to previous:
-    #   "auto" / "auto-right" → right of previous
-    #   "auto-left"           → left of previous
-    #   "auto-above"          → above previous
-    #   "auto-below"          → below previous
-    #   "center-below"        → centered below previous
-    #   "center-above"        → centered above previous
-    #   "NxN"                 → explicit logical coordinates
-    computePositions = let
-      step = acc: m: let
-        prev = if acc == [] then { x = 0; y = 0; w = 0; h = 0; } else lib.last acc;
-        thisW = logicalW m;
-        thisH = logicalH m;
-        pos =
-          if acc == [] then
-            (if m.position != "auto" && !lib.hasPrefix "auto-" m.position && !lib.hasPrefix "center-" m.position
-            then let parts = lib.splitString "x" m.position; in { x = lib.toInt (builtins.elemAt parts 0); y = lib.toInt (builtins.elemAt parts 1); }
-            else { x = 0; y = 0; })  # first monitor defaults to 0,0 unless explicit
-          else if m.position == "auto" || m.position == "auto-right" then
-            { x = prev.x + prev.w; y = prev.y; }
-          else if m.position == "auto-left" then
-            { x = prev.x - thisW; y = prev.y; }
-          else if m.position == "auto-above" then
-            { x = prev.x; y = prev.y - thisH; }
-          else if m.position == "auto-below" then
-            { x = prev.x; y = prev.y + prev.h; }
-          else if m.position == "center-below" then
-            { x = prev.x + (prev.w - thisW) / 2.0; y = prev.y + prev.h; }
-          else if m.position == "center-above" then
-            { x = prev.x + (prev.w - thisW) / 2.0; y = prev.y - thisH; }
-          else let
-            parts = lib.splitString "x" m.position;
-          in { x = lib.toInt (builtins.elemAt parts 0); y = lib.toInt (builtins.elemAt parts 1); };
-      in acc ++ [{ inherit (pos) x y; w = thisW; h = thisH; }];
-    in lib.foldl' step [] enabledMonitors;
+      # Compute positions for all monitors.
+      # First monitor is always at 0,0.
+      # Subsequent monitors use directional placement relative to previous:
+      #   "auto" / "auto-right" → right of previous
+      #   "auto-left"           → left of previous
+      #   "auto-above"          → above previous
+      #   "auto-below"          → below previous
+      #   "center-below"        → centered below previous
+      #   "center-above"        → centered above previous
+      #   "NxN"                 → explicit logical coordinates
+      computePositions =
+        let
+          step =
+            acc: m:
+            let
+              prev =
+                if acc == [ ] then
+                  {
+                    x = 0;
+                    y = 0;
+                    w = 0;
+                    h = 0;
+                  }
+                else
+                  lib.last acc;
+              thisW = logicalW m;
+              thisH = logicalH m;
+              pos =
+                if acc == [ ] then
+                  (
+                    if
+                      m.position != "auto" && !lib.hasPrefix "auto-" m.position && !lib.hasPrefix "center-" m.position
+                    then
+                      let
+                        parts = lib.splitString "x" m.position;
+                      in
+                      {
+                        x = lib.toInt (builtins.elemAt parts 0);
+                        y = lib.toInt (builtins.elemAt parts 1);
+                      }
+                    else
+                      {
+                        x = 0;
+                        y = 0;
+                      }
+                  ) # first monitor defaults to 0,0 unless explicit
+                else if m.position == "auto" || m.position == "auto-right" then
+                  {
+                    x = prev.x + prev.w;
+                    y = prev.y;
+                  }
+                else if m.position == "auto-left" then
+                  {
+                    x = prev.x - thisW;
+                    y = prev.y;
+                  }
+                else if m.position == "auto-above" then
+                  {
+                    x = prev.x;
+                    y = prev.y - thisH;
+                  }
+                else if m.position == "auto-below" then
+                  {
+                    x = prev.x;
+                    y = prev.y + prev.h;
+                  }
+                else if m.position == "center-below" then
+                  {
+                    x = prev.x + (prev.w - thisW) / 2.0;
+                    y = prev.y + prev.h;
+                  }
+                else if m.position == "center-above" then
+                  {
+                    x = prev.x + (prev.w - thisW) / 2.0;
+                    y = prev.y - thisH;
+                  }
+                else
+                  let
+                    parts = lib.splitString "x" m.position;
+                  in
+                  {
+                    x = lib.toInt (builtins.elemAt parts 0);
+                    y = lib.toInt (builtins.elemAt parts 1);
+                  };
+            in
+            acc
+            ++ [
+              {
+                inherit (pos) x y;
+                w = thisW;
+                h = thisH;
+              }
+            ];
+        in
+        lib.foldl' step [ ] enabledMonitors;
 
-    positions = computePositions;
+      positions = computePositions;
 
-    # monitor_rule lines
-    monitorrules = lib.imap0 (idx: m: let
-      pos = builtins.elemAt positions idx;
-      posStr = ",x:${toString (builtins.floor pos.x)},y:${toString (builtins.floor pos.y)}";
-    in "monitor_rule = name:^${m.name}$,width:${toString m.width},height:${toString m.height},refresh:${toString m.refreshRate}${posStr},scale:${toString m.scale}" + (lib.optionalString (m.vertical != "0") ",rr:${m.vertical}") + (lib.optionalString (m.primary or false) ",primary:1")
-    ) enabledMonitors;
+      # monitor_rule lines
+      monitorrules = lib.imap0 (
+        idx: m:
+        let
+          pos = builtins.elemAt positions idx;
+          posStr = ",x:${toString (builtins.floor pos.x)},y:${toString (builtins.floor pos.y)}";
+        in
+        "monitor_rule = name:^${m.name}$,width:${toString m.width},height:${toString m.height},refresh:${toString m.refreshRate}${posStr},scale:${toString m.scale}"
+        + (lib.optionalString (m.vertical != "0") ",rr:${m.vertical}")
+        + (lib.optionalString (m.primary or false) ",primary:1")
+      ) enabledMonitors;
 
-    # workspace bind lines
-    wsBinds = lib.concatMap (m:
-      map (ws: "bind = SUPER,${wsToKey ws},viewcrossmon,${toString ws},^${m.name}$") m.workspaces
-      ++ map (ws: "bind = SUPER+SHIFT,${wsToKey ws},tagcrossmon,${toString ws},^${m.name}$") m.workspaces
-    ) (lib.filter (m: m.workspaces != []) enabledMonitors);
+      # workspace bind lines
+      wsBinds = lib.concatMap (
+        m:
+        map (ws: "bind = SUPER,${wsToKey ws},viewcrossmon,${toString ws},^${m.name}$") m.workspaces
+        ++ map (ws: "bind = SUPER+SHIFT,${wsToKey ws},tagcrossmon,${toString ws},^${m.name}$") m.workspaces
+      ) (lib.filter (m: m.workspaces != [ ]) enabledMonitors);
 
-    # tag_rule lines
-    tagrules = lib.concatMap (m:
-      map (ws: "tag_rule = id:${toString ws},layout_name:${m.layout}") m.workspaces
-    ) (lib.filter (m: m.workspaces != [] && m.layout != "") enabledMonitors);
+      # tag_rule lines
+      tagrules = lib.concatMap (
+        m: map (ws: "tag_rule = id:${toString ws},layout_name:${m.layout}") m.workspaces
+      ) (lib.filter (m: m.workspaces != [ ] && m.layout != "") enabledMonitors);
 
-  in builtins.concatStringsSep "\n" (monitorrules ++ wsBinds ++ tagrules);
+    in
+    builtins.concatStringsSep "\n" (monitorrules ++ wsBinds ++ tagrules);
 
   # Write snippet files
-  snippetFiles = lib.mapAttrs' (name: profile:
+  snippetFiles = lib.mapAttrs' (
+    name: profile:
     lib.nameValuePair "mango/profiles/${name}.conf" {
       text = mkProfileSnippet name profile;
     }
@@ -140,19 +209,27 @@
       local external_modes
       external_modes=$(echo "$randr_output" | $JQ -r '[.[] | select(.name | startswith("eDP") | not) | select(.enabled) | .modes[] | select(.current) | "\(.width)x\(.height)@\(.refresh | round)"] | .[]')
 
-      ${builtins.concatStringsSep "\n" (map (name: let
-        profile = cfg.profiles.${name};
-        countCheck = if profile.detect.externalCount != null
-          then "[ \"$external_count\" = \"${toString profile.detect.externalCount}\" ]"
-          else "true";
-        resChecks = map (r: "echo \"$external_modes\" | grep -qF \"${r}\"") profile.detect.resolutions;
-        allChecks = builtins.concatStringsSep " && " ([countCheck] ++ resChecks);
-      in ''
-        if ${allChecks}; then
-          apply_profile "${name}"
-          exit 0
-        fi
-      '') profileNames)}
+      ${builtins.concatStringsSep "\n" (
+        map (
+          name:
+          let
+            profile = cfg.profiles.${name};
+            countCheck =
+              if profile.detect.externalCount != null then
+                "[ \"$external_count\" = \"${toString profile.detect.externalCount}\" ]"
+              else
+                "true";
+            resChecks = map (r: "echo \"$external_modes\" | grep -qF \"${r}\"") profile.detect.resolutions;
+            allChecks = builtins.concatStringsSep " && " ([ countCheck ] ++ resChecks);
+          in
+          ''
+            if ${allChecks}; then
+              apply_profile "${name}"
+              exit 0
+            fi
+          ''
+        ) profileNames
+      )}
 
       # Fallback to default
       apply_profile "${cfg.default}"
@@ -182,8 +259,8 @@
     esac
   '';
 
-
-in lib.mkIf (cfg.enable or false) {
+in
+lib.mkIf (cfg.enable or false) {
   xdg.configFile = snippetFiles;
 
   home.packages = [
@@ -225,7 +302,7 @@ in lib.mkIf (cfg.enable or false) {
     complete -c mprofile -n "__fish_seen_subcommand_from set" -a "(mprofile list 2>/dev/null)" -d "Profile"
   '';
 
-  home.activation.monitorProfileDefault = lib.hm.dag.entryAfter ["writeBoundary"] ''
+  home.activation.monitorProfileDefault = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     ln -sf profiles/${cfg.default}.conf "''${XDG_CONFIG_HOME:-$HOME/.config}/mango/active-profile.conf"
   '';
 }

@@ -2,7 +2,8 @@
   pkgs,
   lib,
   ...
-}: {
+}:
+{
   # Enable the unfree 1Password packages
 
   environment.etc = {
@@ -21,7 +22,7 @@
     _1password.enable = true;
     _1password-gui = {
       enable = true;
-      polkitPolicyOwners = ["rajx88"];
+      polkitPolicyOwners = [ "rajx88" ];
       # package = pkgs._1password-gui-beta;
     };
   };

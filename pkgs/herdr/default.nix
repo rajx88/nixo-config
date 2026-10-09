@@ -28,6 +28,6 @@ stdenv.mkDerivation rec {
     homepage = "https://herdr.dev";
     license = lib.licenses.mit;
     mainProgram = "herdr";
-    platforms = ["x86_64-linux"];
+    platforms = [ "x86_64-linux" ];
   };
 }
