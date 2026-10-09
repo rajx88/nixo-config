@@ -22,6 +22,7 @@
   libdrm,
   libgbm,
   libGL,
+  libglvnd,
   libkrb5,
   libpulseaudio,
   libuuid,
@@ -110,6 +111,7 @@ stdenv.mkDerivation {
     libkrb5
     libxkbfile
     libGL
+    libglvnd
     libpulseaudio
   ];
 
@@ -137,8 +139,14 @@ stdenv.mkDerivation {
     cp -r usr/share/applications $out/share/applications
 
     # Nix cannot carry a setuid chrome-sandbox, so launch with --no-sandbox.
+    # The upstream .deb ships no bundled ANGLE (libEGL.so/libGLESv2.so), so
+    # Electron falls back to native EGL. Put libglvnd's libEGL.so.1 (vendor
+    # dispatch) and the NixOS driver libs on the loader path, otherwise EGL
+    # init fails and Chromium silently switches to software rendering (laggy).
     makeWrapper $out/lib/t3code/t3code $out/bin/t3code-desktop \
       --add-flags "--no-sandbox" \
+      --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath [ libglvnd ]}" \
+      --suffix LD_LIBRARY_PATH : "/run/opengl-driver/lib" \
       --inherit-argv0
 
     substituteInPlace $out/share/applications/t3code.desktop \
