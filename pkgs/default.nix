@@ -13,4 +13,5 @@
   radar = pkgs.callPackage ./radar {};
   radar-desktop = pkgs.callPackage ./radar-desktop {};
   twg = pkgs.callPackage ./twg {};
+  switchyard = pkgs.callPackage ./switchyard {};
 }
