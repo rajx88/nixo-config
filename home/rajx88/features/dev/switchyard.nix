@@ -17,6 +17,12 @@
 
   model = name: "github_copilot/${name}";
 
+  # Verified against the upstream Copilot gateway: Haiku accepted ~700k input
+  # tokens, Opus ~700k, Sonnet ~840k (rejected at ~1.26M, max 1M). 400k sits
+  # below the lowest verified limit, so it is safe for both routes.
+  contextWindow = 400000;
+  maxOutput = 32000;
+
   routeNames = {
     "sy/claude-auto" = "Switchyard auto (Haiku ↔ Sonnet)";
     "sy/claude-heavy" = "Switchyard heavy (Sonnet ↔ Opus)";
@@ -32,6 +38,7 @@
     tool_calling = true;
     reasoning = true;
     vision = true;
+    context_window = contextWindow;
   };
 
   # base_url is filled in at service start from ~/.local/share/litellm/base-url
@@ -126,8 +133,8 @@ in {
         tool_call = true;
         attachment = true;
         limit = {
-          context = 200000;
-          output = 32000;
+          context = contextWindow;
+          output = maxOutput;
         };
       })
       routeNames;
@@ -145,8 +152,8 @@ in {
           inherit id name;
           reasoning = true;
           input = ["text" "image"];
-          contextWindow = 200000;
-          maxTokens = 32000;
+          contextWindow = contextWindow;
+          maxTokens = maxOutput;
           thinking = {
             mode = "anthropic-adaptive";
             efforts = ["low" "medium" "high"];
