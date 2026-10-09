@@ -50,6 +50,7 @@
     ./features/dev/cursor.nix
     ./features/dev/bruno.nix
     ./features/dev/twg.nix
+    ./features/dev/switchyard.nix
   ];
 
   programs.proxy.pac.enable = true;
