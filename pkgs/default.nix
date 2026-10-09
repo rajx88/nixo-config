@@ -14,4 +14,7 @@
   radar-desktop = pkgs.callPackage ./radar-desktop {};
   twg = pkgs.callPackage ./twg {};
   switchyard = pkgs.callPackage ./switchyard {};
+  ao = pkgs.callPackage ./ao {};
+  t3code = pkgs.callPackage ./t3code {};
+  t3code-cli = pkgs.callPackage ./t3code-cli {};
 }

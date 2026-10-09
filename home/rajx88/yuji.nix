@@ -51,6 +51,8 @@
     ./features/dev/bruno.nix
     ./features/dev/twg.nix
     ./features/dev/switchyard.nix
+    ./features/dev/ao.nix
+    ./features/dev/t3code.nix
   ];
 
   programs.proxy.pac.enable = true;
