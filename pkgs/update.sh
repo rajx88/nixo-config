@@ -344,11 +344,51 @@ if in_filter "twg"; then
   fi
 fi
 
+# ── Orca (non-table: the repo also publishes mobile-* releases) ───────────────
+if in_filter "orca-ide"; then
+  pkg="orca-ide"
+  repo="stablyai/orca"
+  PKG_FILE="$PKGS_DIR/$pkg/default.nix"
+
+  CURRENT=$(grep 'version = ' "$PKG_FILE" | head -1 | sed 's/.*"\(.*\)".*/\1/')
+
+  # stablyai/orca tags desktop builds v<semver> and also ships unrelated tags
+  # (e.g. mobile-android-v0.0.52), so releases/latest can point at the wrong
+  # stream. Pick the newest tag that is exactly v<major>.<minor>.<patch>.
+  LATEST=$(curl -sfL "https://api.github.com/repos/${repo}/releases?per_page=30" \
+    | jq -r '[.[].tag_name | select(test("^v[0-9]+\\.[0-9]+\\.[0-9]+$"))][0] // empty' 2>/dev/null \
+    | sed 's/^v//') || LATEST=""
+
+  if [[ -z "$LATEST" ]]; then
+    log_err "$pkg" "failed to find a v<semver> release in $repo"
+    (( FAILED++ )) || true
+  elif [[ "$CURRENT" == "$LATEST" ]]; then
+    log_ok "$pkg" "up-to-date ($CURRENT)"
+    (( SKIPPED++ )) || true
+  else
+    log_warn "$pkg" "$CURRENT → $LATEST"
+    if ! $CHECK_ONLY; then
+      URL="https://github.com/${repo}/releases/download/v${LATEST}/orca-ide_${LATEST}_amd64.deb"
+      log_info "$pkg" "fetching hash..."
+      SRI=$(nix_sri "$URL") || {
+        log_err "$pkg" "failed to hash $URL"
+        (( FAILED++ )) || true; SRI=""
+      }
+      if [[ -n "$SRI" ]]; then
+        sed -i "s/version = \"$CURRENT\"/version = \"$LATEST\"/" "$PKG_FILE"
+        sed -i "s|hash = \"sha256-.*\"|hash = \"$SRI\"|"           "$PKG_FILE"
+        log_ok "$pkg" "updated to $LATEST"
+        (( UPDATED++ )) || true
+      fi
+    fi
+  fi
+fi
+
 # ── Summary ───────────────────────────────────────────────────────────────────
 echo ""
 echo -e "  ${GREEN}${UPDATED} updated${RESET}  ${CYAN}${SKIPPED} up-to-date${RESET}  ${RED}${FAILED} failed${RESET}"
 
-ALL_PKGS=("${PKG_DIRS[@]}" "worktrunk" "icm" "cursor" "twg")
+ALL_PKGS=("${PKG_DIRS[@]}" "worktrunk" "icm" "cursor" "twg" "orca-ide")
 if [[ $UPDATED -gt 0 ]]; then
   echo -e "\nVerify: ${CYAN}nix build $(printf '.#%s ' "${ALL_PKGS[@]}")${RESET}"
 fi
