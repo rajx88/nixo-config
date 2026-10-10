@@ -25,7 +25,6 @@ PKG_DIRS=(
   "herdr"
   "radar-desktop"
   "radar"
-  "ao"
   "t3code"
   "t3code-cli"
 )
@@ -37,7 +36,6 @@ PKG_REPOS=(
   "herdrdev/herdr"
   "skyhook-io/radar"
   "skyhook-io/radar"
-  "OrchestratorInc/agent-orchestrator"
   "pingdotgg/t3code"
   "pingdotgg/t3code"
 )
@@ -49,7 +47,6 @@ PKG_URLS=(
   "https://github.com/herdrdev/herdr/releases/download/v{VERSION}/herdr-linux-x86_64"
   "https://github.com/skyhook-io/radar/releases/download/v{VERSION}/radar-desktop_v{VERSION}_linux_amd64.tar.gz"
   "https://github.com/skyhook-io/radar/releases/download/v{VERSION}/radar_v{VERSION}_linux_amd64.tar.gz"
-  "https://github.com/OrchestratorInc/agent-orchestrator/releases/download/v{VERSION}/agent-orchestrator-linux-x64.deb"
   "https://github.com/pingdotgg/t3code/releases/download/v{VERSION}/T3-Code-{VERSION}-amd64.deb"
   "https://github.com/pingdotgg/t3code/releases/download/v{VERSION}/t3-{VERSION}-linux-x64.tar.gz"
 )

@@ -47,8 +47,8 @@
 
     ./features/dev/bruno.nix
 
-    ./features/dev/ao.nix
     ./features/dev/t3code.nix
+    ./features/dev/orca.nix
   ];
 
   #  ------   -----   ------
