@@ -40,6 +40,7 @@
     ./features/dev/radar.nix
     ./features/dev/postman.nix
     ./features/dev/zed.nix
+    ./features/dev/coding-agents.nix
     ./features/dev/opencode.nix
     ./features/dev/opencommit.nix
     ./features/dev/omp.nix

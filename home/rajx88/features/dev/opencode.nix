@@ -54,10 +54,10 @@ in
 
   home.sessionVariables.OPENCODE_CONFIG = "$HOME/.config/opencode/overrides.json";
 
+  # Shared agent state (~/.hindsight, ~/.agents, the skills CLI registry) is
+  # persisted in features/dev/coding-agents.nix — not tied to this harness.
   home.persistence."/persist".directories = [
     ".local/share/opencode"
     ".config/opencode"
-    ".hindsight"
-    ".agents"
   ];
 }
