@@ -36,7 +36,7 @@
     ./features/dev/python.nix
 
     ./features/dev/codegraph.nix
-    ./features/dev/codex.nix
+    # ./features/dev/codex.nix  # codex had no caller but the ICM summarizer, retired 2026-10-07
 
     ./features/dev/cursor.nix
     ./features/dev/opencode.nix
