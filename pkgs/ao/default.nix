@@ -49,14 +49,14 @@
 }:
 let
   pname = "ao";
-  version = "0.13.5";
+  version = "0.13.7";
 in
 stdenv.mkDerivation {
   inherit pname version;
 
   src = fetchurl {
     url = "https://github.com/OrchestratorInc/agent-orchestrator/releases/download/v${version}/agent-orchestrator-linux-x64.deb";
-    hash = "sha256-M22K7yuBL0O8r4ipeaKasi9SaMdz1o/jXMWnCPVkhxY=";
+    hash = "sha256-lKUGQM8i3v0flybQWa9FE9rBt6gqIb0L+hxizXyh/mw=";
   };
 
   sourceRoot = ".";
