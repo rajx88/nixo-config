@@ -84,6 +84,15 @@ let
   # bundled ANGLE (libEGL.so/libGLESv2.so) reaches the real driver instead of
   # falling back to swiftshader.
   gpuLibPath = "${lib.makeLibraryPath [ libglvnd ]}:/run/opengl-driver/lib";
+
+  # Electron's Linux notification backend dlopen()s libnotify at runtime
+  # (shell/browser/notifications/linux/libnotify_notification.cc). autoPatchelfHook
+  # only sees DT_NEEDED entries, so a dlopen() target is never recorded and must be
+  # put on the loader search path by hand: without it dlopen fails, Electron logs
+  # "Unable to find libnotify; notifications disabled", Notification.isSupported()
+  # returns false, and Orca reports "this system does not support notifications" —
+  # no agent-completion notification and no notification sound.
+  notificationLibPath = "${lib.getLib libnotify}/lib";
 in
 stdenv.mkDerivation {
   inherit pname version;
@@ -184,6 +193,7 @@ stdenv.mkDerivation {
       --add-flags "--no-sandbox" \
       --inherit-argv0 \
       --prefix LD_LIBRARY_PATH : "${gpuLibPath}" \
+      --prefix LD_LIBRARY_PATH : "${notificationLibPath}" \
       --prefix GI_TYPELIB_PATH : "${lib.getLib at-spi2-core}/lib/girepository-1.0" \
       --prefix PATH : "${runtimePath}"
 
@@ -194,6 +204,7 @@ stdenv.mkDerivation {
     # display and no sandbox flags.
     makeWrapper $out/lib/orca-ide/resources/bin/orca-ide $out/bin/orca-ide \
       --prefix LD_LIBRARY_PATH : "${gpuLibPath}" \
+      --prefix LD_LIBRARY_PATH : "${notificationLibPath}" \
       --prefix PATH : "${runtimePath}"
 
     substituteInPlace $out/share/applications/orca-ide.desktop \
