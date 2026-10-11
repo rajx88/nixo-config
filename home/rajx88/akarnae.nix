@@ -9,9 +9,9 @@ let
   #  ------   -----   ------
   #
   # Dual-4K layout, parameterised by UI scale.
-  #   desktop      → 100% (native 1:1), the default
-  #   desktop-120  → the previous 120% UI, kept so it can be switched back
-  #                  live with `mprofile set desktop-120` (or SUPER+SHIFT,D)
+  #   desktop-120  → 120% UI, the default
+  #   desktop      → native 1:1 (100%), kept so it can be switched back
+  #                  live with `mprofile set desktop` (or SUPER+SHIFT,D)
   dualDisplay = scale: [
     {
       name = "DP-2";
@@ -101,11 +101,11 @@ in
 
   monitorProfiles = {
     enable = true;
-    default = "desktop";
+    default = "desktop-120";
 
     profiles = {
-      desktop.monitors = dualDisplay 1.0;
       desktop-120.monitors = dualDisplay 1.2;
+      desktop.monitors = dualDisplay 1.0;
     };
   };
 }

@@ -9,6 +9,21 @@ let
 
   profileNames = builtins.attrNames cfg.profiles;
 
+  # Profiles that declare at least one auto-detection constraint
+  # (externalCount and/or resolutions). A profile with neither cannot be told
+  # apart from any other by inspecting the connected outputs — akarnae's scale
+  # variants, for instance, see identical resolutions — so it is reachable only
+  # through `mprofile set` or as the `monitorProfiles.default` fallback. Were
+  # such a profile left in the `auto` chain it would match unconditionally and
+  # silently override the configured default.
+  detectableProfiles = lib.filter (
+    name:
+    let
+      detect = cfg.profiles.${name}.detect;
+    in
+    detect.externalCount != null || detect.resolutions != [ ]
+  ) profileNames;
+
   wsToKey = ws: if ws == 10 then "0" else toString ws;
 
   # Generate a config snippet for a given profile
@@ -228,7 +243,7 @@ let
               exit 0
             fi
           ''
-        ) profileNames
+        ) detectableProfiles
       )}
 
       # Fallback to default
