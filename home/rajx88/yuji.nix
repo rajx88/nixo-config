@@ -47,7 +47,6 @@
     ./features/dev/rtk.nix
     ./features/dev/aws.nix
     ./features/dev/python.nix
-    ./features/dev/worktrunk.nix
     ./features/dev/codegraph.nix
     ./features/dev/cursor.nix
     ./features/dev/bruno.nix

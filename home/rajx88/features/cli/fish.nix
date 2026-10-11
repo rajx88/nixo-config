@@ -39,9 +39,6 @@ in
       # gradle
       gw = "./gradlew";
       gwp = "./gradlew --no-configuration-cache clean publishToMavenLocal";
-
-      # worktrunk
-      wso = "wt switch --create --execute=opencode";
     };
 
     shellAliases = {

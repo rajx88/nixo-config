@@ -5,7 +5,7 @@
 #
 # Usage:
 #   ./pkgs/update.sh              # update all packages
-#   ./pkgs/update.sh omp opencode worktrunk # update specific packages
+#   ./pkgs/update.sh omp opencode # update specific packages
 #   ./pkgs/update.sh --check      # print outdated without updating
 
 set -euo pipefail
@@ -14,7 +14,6 @@ PKGS_DIR="$(realpath "$(dirname "${BASH_SOURCE[0]}")")"
 REPO_ROOT="$(realpath "$PKGS_DIR/..")"
 
 # ── Package table ─────────────────────────────────────────────────────────────
-# worktrunk: fetchFromGitHub + cargoHash — handled in the dedicated section below.
 # twg: Atlassian publishes no GitHub releases — handled in the dedicated section below.
 
 PKG_DIRS=(
@@ -166,54 +165,6 @@ for i in "${!PKG_DIRS[@]}"; do
   log_ok "$pkg" "updated to $LATEST"
   (( UPDATED++ )) || true
 done
-
-# ── Worktrunk (fetchFromGitHub + cargoHash) ───────────────────────────────────
-if in_filter "worktrunk"; then
-  pkg="worktrunk"
-  repo="max-sixty/worktrunk"
-  PKG_FILE="$PKGS_DIR/$pkg/default.nix"
-
-  CURRENT=$(grep 'version = ' "$PKG_FILE" | head -1 | sed 's/.*"\(.*\)".*/\1/')
-  LATEST=$(github_latest "$repo") || { log_err "$pkg" "failed to fetch latest"; (( FAILED++ )) || true; LATEST=""; }
-
-  if [[ -z "$LATEST" ]]; then
-    : # error already counted
-  elif [[ "$CURRENT" == "$LATEST" ]]; then
-    log_ok "$pkg" "up-to-date ($CURRENT)"
-    (( SKIPPED++ )) || true
-  else
-    log_warn "$pkg" "$CURRENT → $LATEST"
-    if ! $CHECK_ONLY; then
-      log_info "$pkg" "fetching source hash..."
-      SRC_SRI=$(nix_sri_unpack \
-        "https://github.com/${repo}/archive/refs/tags/v${LATEST}.tar.gz") || {
-        log_err "$pkg" "failed to fetch source hash"
-        (( FAILED++ )) || true; SRC_SRI=""
-      }
-      if [[ -n "$SRC_SRI" ]]; then
-        BOGUS="sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
-        sed -i "s/version = \"$CURRENT\"/version = \"$LATEST\"/g"          "$PKG_FILE"
-        sed -i "s|rev = \"v$CURRENT\"|rev = \"v$LATEST\"|"                  "$PKG_FILE"
-        sed -i "s|VERGEN_GIT_DESCRIBE = \"v$CURRENT\"|VERGEN_GIT_DESCRIBE = \"v$LATEST\"|" "$PKG_FILE"
-        sed -i "s|hash = \"sha256-.*\"|hash = \"$SRC_SRI\"|"                "$PKG_FILE"
-        sed -i "s|cargoHash = \"sha256-.*\"|cargoHash = \"$BOGUS\"|"        "$PKG_FILE"
-
-        log_info "$pkg" "resolving cargoHash (downloads dependencies)..."
-        BUILD_OUT=$(cd "$REPO_ROOT" && nix build .#worktrunk 2>&1 || true)
-        CARGO_SRI=$(printf '%s' "$BUILD_OUT" | sed -n 's/.*got:[[:space:]]*\(sha256-[^[:space:]]*\).*/\1/p' | head -1)
-
-        if [[ -z "$CARGO_SRI" ]]; then
-          log_err "$pkg" "could not determine cargoHash — fix manually in $PKG_FILE"
-          (( FAILED++ )) || true
-        else
-          sed -i "s|cargoHash = \"$BOGUS\"|cargoHash = \"$CARGO_SRI\"|" "$PKG_FILE"
-          log_ok "$pkg" "updated to $LATEST"
-          (( UPDATED++ )) || true
-        fi
-      fi
-    fi
-  fi
-fi
 
 # ── ICM (fetchFromGitHub + cargoHash, tag icm-v*) ─────────────────────────
 if in_filter "icm"; then
@@ -388,7 +339,7 @@ fi
 echo ""
 echo -e "  ${GREEN}${UPDATED} updated${RESET}  ${CYAN}${SKIPPED} up-to-date${RESET}  ${RED}${FAILED} failed${RESET}"
 
-ALL_PKGS=("${PKG_DIRS[@]}" "worktrunk" "icm" "cursor" "twg" "orca-ide")
+ALL_PKGS=("${PKG_DIRS[@]}" "icm" "cursor" "twg" "orca-ide")
 if [[ $UPDATED -gt 0 ]]; then
   echo -e "\nVerify: ${CYAN}nix build $(printf '.#%s ' "${ALL_PKGS[@]}")${RESET}"
 fi
