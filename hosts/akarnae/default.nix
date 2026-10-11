@@ -51,6 +51,13 @@
     networkmanager.enable = true;
     hostName = "akarnae";
     useDHCP = lib.mkForce true;
+
+    # Orca mobile pairing in LAN mode: the phone dials the desktop runtime's
+    # WebSocket listener directly. Orca widens that listener to 0.0.0.0 itself
+    # when a pairing offer is made, and it listens on wsPort 6768 by default
+    # (see ~/.config/orca/orca-runtime.json); only the firewall is in the way.
+    # Scoped to the LAN NIC so the runtime is not reachable from virbr0/docker0.
+    firewall.interfaces.enp0s31f6.allowedTCPPorts = [ 6768 ];
   };
 
   boot = {
