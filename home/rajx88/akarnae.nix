@@ -3,6 +3,53 @@
   outputs,
   ...
 }:
+let
+  #  ------   -----   ------
+  # | HDMI | | DP-1| | DP-2 |
+  #  ------   -----   ------
+  #
+  # Dual-4K layout, parameterised by UI scale.
+  #   desktop      → 100% (native 1:1), the default
+  #   desktop-120  → the previous 120% UI, kept so it can be switched back
+  #                  live with `mprofile set desktop-120` (or SUPER+SHIFT,D)
+  dualDisplay = scale: [
+    {
+      name = "DP-2";
+      width = 3840;
+      height = 2160;
+      refreshRate = 120;
+      bitdepth = 10;
+      inherit scale;
+      position = "0x0";
+      workspaces = [
+        1
+        2
+        3
+        4
+        5
+      ];
+      layout = "scroller";
+      primary = true;
+    }
+    {
+      name = "DP-1";
+      width = 3840;
+      height = 2160;
+      refreshRate = 120;
+      bitdepth = 10;
+      inherit scale;
+      workspaces = [
+        6
+        7
+        8
+        9
+        10
+      ];
+      layout = "tile";
+      position = "auto-right";
+    }
+  ];
+in
 {
   imports = [
     ./global
@@ -36,7 +83,7 @@
     ./features/dev/python.nix
 
     ./features/dev/codegraph.nix
-    # ./features/dev/codex.nix  
+    # ./features/dev/codex.nix
 
     ./features/dev/coding-agents.nix
     ./features/dev/cursor.nix
@@ -52,51 +99,13 @@
     ./features/dev/orca.nix
   ];
 
-  #  ------   -----   ------
-  # | HDMI | | DP-1| | DP-2 |
-  #  ------   -----   ------
   monitorProfiles = {
     enable = true;
     default = "desktop";
 
-    profiles.desktop = {
-      monitors = [
-        {
-          name = "DP-2";
-          width = 3840;
-          height = 2160;
-          refreshRate = 120;
-          bitdepth = 10;
-          scale = 1.2;
-          position = "0x0";
-          workspaces = [
-            1
-            2
-            3
-            4
-            5
-          ];
-          layout = "scroller";
-          primary = true;
-        }
-        {
-          name = "DP-1";
-          width = 3840;
-          height = 2160;
-          refreshRate = 120;
-          bitdepth = 10;
-          scale = 1.2;
-          workspaces = [
-            6
-            7
-            8
-            9
-            10
-          ];
-          layout = "tile";
-          position = "auto-right";
-        }
-      ];
+    profiles = {
+      desktop.monitors = dualDisplay 1.0;
+      desktop-120.monitors = dualDisplay 1.2;
     };
   };
 }
