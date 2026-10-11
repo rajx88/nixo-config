@@ -14,7 +14,7 @@ in
   users.mutableUsers = false;
   users.users.rajx88 = {
     isNormalUser = true;
-    shell = pkgs.fish;
+    shell = pkgs.zsh;
     linger = true; # keep the user systemd instance alive across logout/boot so
     # calendar-scheduled user timers (e.g. codegraph-reindex) can actually fire
     # instead of only running while a session happens to be open.
