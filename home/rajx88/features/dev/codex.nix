@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 let
   # Non-interactive `codex exec` refuses to run outside a git repo (e.g. from
   # ~) unless --skip-git-repo-check is passed. This wrapper adds the flag to
@@ -24,10 +24,10 @@ in
   # the persisted ~/.codex directory instead.
 
   # Reuse opencode's persisted Go API key instead of duplicating the secret.
-  programs.fish.interactiveShellInit = ''
-    if not set -q OPENCODE_GO_API_KEY; and test -f $HOME/.local/share/opencode/auth.json
-        set -gx OPENCODE_GO_API_KEY (jq -r '.["opencode-go"].key' $HOME/.local/share/opencode/auth.json)
-    end
+  programs.zsh.initContent = lib.mkAfter ''
+    if [[ -z "$OPENCODE_GO_API_KEY" && -f "$HOME/.local/share/opencode/auth.json" ]]; then
+      export OPENCODE_GO_API_KEY="$(jq -r '.["opencode-go"].key' "$HOME/.local/share/opencode/auth.json")"
+    fi
   '';
 
   home.persistence."/persist".directories = [

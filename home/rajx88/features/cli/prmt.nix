@@ -33,34 +33,4 @@
     '';
   };
 
-  programs.fish.functions = {
-    _prmt_git_sync = {
-      body = ''
-        set -gx PRMT_GIT_SYNC ""
-        if git rev-parse --is-inside-work-tree &>/dev/null
-          set -l output (git rev-list --left-right --count HEAD...@{upstream} 2>/dev/null)
-          if test $status -eq 0 -a -n "$output"
-            set -l ahead (echo $output | cut -f1)
-            set -l behind (echo $output | cut -f2)
-            set -l sync ""
-            if test $ahead -gt 0
-              set sync "$ahead⇡"
-            end
-            if test $behind -gt 0
-              set sync "$sync$behind⇣"
-            end
-            set -gx PRMT_GIT_SYNC $sync
-          end
-        end
-      '';
-    };
-
-    fish_prompt = {
-      body = ''
-        set -l last_status $status
-        _prmt_git_sync
-        prmt --shell none --code $last_status "{path:#a277ff} {git:#61ffca:f: } {env:#ff6767:PRMT_GIT_SYNC} {time:#82e2ff:24hs} {ok:#61ffca:>}{fail:#ff6767:>} "
-      '';
-    };
-  };
 }

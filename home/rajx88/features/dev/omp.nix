@@ -45,8 +45,8 @@ in
   home.file.".omp/agent/extensions/hindsight.js".source =
     config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.hindsight/coding-agents/dist/pi.js";
 
-  programs.fish.interactiveShellInit = ''
-    omp completions fish | source
+  programs.zsh.initContent = lib.mkAfter ''
+    omp completions zsh | source
   '';
 
   home.persistence."/persist".directories = [

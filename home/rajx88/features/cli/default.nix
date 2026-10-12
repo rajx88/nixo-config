@@ -4,7 +4,6 @@
     ./bat.nix
     ./devbox.nix
     ./direnv.nix
-    ./fish.nix
     ./git.nix
     ./gpg.nix
     ./just.nix
@@ -55,5 +54,8 @@
     tldr
 
     nodejs
+
+    # Stock fish, available on demand (no managed config — launches with defaults)
+    fish
   ];
 }
