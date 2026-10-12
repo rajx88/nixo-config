@@ -95,7 +95,6 @@ let
     set -euo pipefail
     dir=${litellmDir}
     key=$dir/switchyard-key
-    [ -s "$key" ] || key=$dir/master-key
     LITELLM_API_KEY=$(cat "$key")
     export LITELLM_API_KEY
     base=$(cat "$dir/base-url")
@@ -180,7 +179,7 @@ in
   };
 
   home.persistence."/persist".directories = [
-    ".local/share/litellm" # base-url, master-key, switchyard-key (not in git)
+    ".local/share/litellm" # base-url, switchyard-key (not in git)
     ".local/state/switchyard" # routing.jsonl
   ];
 }
