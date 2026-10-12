@@ -46,7 +46,7 @@ in
     config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.hindsight/coding-agents/dist/pi.js";
 
   programs.zsh.initContent = lib.mkAfter ''
-    omp completions zsh | source
+    source <(omp completions zsh)
   '';
 
   home.persistence."/persist".directories = [
