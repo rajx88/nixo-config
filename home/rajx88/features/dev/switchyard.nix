@@ -134,18 +134,23 @@ in
   # Contributed to the Nix-owned overrides.json (see features/dev/opencode.nix)
   # rather than programs.opencode.settings, so opencode.json stays unmanaged
   # and writable by tooling.
-  opencodeOverrides.provider.switchyard = {
-    npm = "@ai-sdk/anthropic";
+  # Native v2 provider shape: `providers` (not `provider`), `package` with the
+  # `aisdk:` prefix, request settings under `settings`, and model capabilities
+  # under `capabilities` (v2 has no `reasoning`/`attachment` model fields).
+  opencodeOverrides.providers.switchyard = {
+    package = "aisdk:@ai-sdk/anthropic";
     name = "Switchyard";
-    options = {
+    settings = {
       baseURL = "http://127.0.0.1:${toString port}/v1";
       apiKey = "switchyard-local";
     };
     models = lib.mapAttrs (_: name: {
       inherit name;
-      reasoning = true;
-      tool_call = true;
-      attachment = true;
+      capabilities = {
+        tools = true;
+        input = [ "text" "image" ];
+        output = [ "text" ];
+      };
       limit = {
         context = contextWindow;
         output = maxOutput;

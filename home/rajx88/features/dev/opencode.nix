@@ -34,12 +34,11 @@ in
     opencodeOverrides = {
       "$schema" = "https://opencode.ai/config.json";
       default_agent = "plan";
-      plugin = [
-        "@simonwjackson/opencode-direnv"
-        "@franlol/opencode-md-table-formatter@latest"
-        "opencode-mermaid-renderer@latest"
-      ] ++ lib.optional config.hindsight.enable "${config.home.homeDirectory}/.hindsight/coding-agents";
-      mcp = {
+      # Nix owns the binary, so never let opencode self-update.
+      update = "disable";
+      # v2 nests servers under mcp.servers and uses `disabled` (inverse of v1
+      # `enabled`); servers connect by default when `disabled` is absent.
+      mcp.servers = {
         codegraph = {
           type = "local";
           command = [
@@ -47,25 +46,37 @@ in
             "serve"
             "--mcp"
           ];
-          enabled = true;
         };
       } // lib.optionalAttrs hasRadar {
         radar = {
           type = "remote";
           url = "http://localhost:9280/mcp";
-          enabled = true;
         };
       };
-      permission = {
-        bash = {
-          "rm *" = "ask";
-        };
-        external_directory = {
-          "${config.xdg.configHome}/opencode/**" = "allow";
-          "/tmp/**" = "allow";
-          "${config.home.homeDirectory}/code/**" = "allow";
-        };
-      };
+      # v2 uses one ordered permissions array; the last matching rule wins.
+      # v1 `bash` action is now `shell`.
+      permissions = [
+        {
+          action = "shell";
+          resource = "rm *";
+          effect = "ask";
+        }
+        {
+          action = "external_directory";
+          resource = "${config.xdg.configHome}/opencode/*";
+          effect = "allow";
+        }
+        {
+          action = "external_directory";
+          resource = "/tmp/*";
+          effect = "allow";
+        }
+        {
+          action = "external_directory";
+          resource = "${config.home.homeDirectory}/code/*";
+          effect = "allow";
+        }
+      ];
     };
 
     xdg.configFile."opencode/overrides.json".text = builtins.toJSON config.opencodeOverrides;
@@ -76,6 +87,7 @@ in
     # persisted in features/dev/coding-agents.nix — not tied to this harness.
     home.persistence."/persist".directories = [
       ".local/share/opencode"
+      ".local/state/opencode"
       ".config/opencode"
     ];
   };

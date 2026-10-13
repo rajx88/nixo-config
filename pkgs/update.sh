@@ -16,9 +16,10 @@ REPO_ROOT="$(realpath "$PKGS_DIR/..")"
 # ── Package table ─────────────────────────────────────────────────────────────
 # twg: Atlassian publishes no GitHub releases — handled in the dedicated section below.
 
+# opencode is handled in the dedicated section below: v2 publishes no GitHub
+# release assets, so it tracks opencode.ai's CDN manifest instead.
 PKG_DIRS=(
   "pi-coding-agent"
-  "opencode"
   "omp"
   "codegraph"
   "herdr"
@@ -29,7 +30,6 @@ PKG_DIRS=(
 )
 PKG_REPOS=(
   "earendil-works/pi"
-  "anomalyco/opencode"
   "can1357/oh-my-pi"
   "colbymchenry/codegraph"
   "herdrdev/herdr"
@@ -40,7 +40,6 @@ PKG_REPOS=(
 )
 PKG_URLS=(
   "https://github.com/earendil-works/pi/releases/download/v{VERSION}/pi-linux-x64.tar.gz"
-  "https://github.com/anomalyco/opencode/releases/download/v{VERSION}/opencode-linux-x64.tar.gz"
   "https://github.com/can1357/oh-my-pi/releases/download/v{VERSION}/omp-linux-x64"
   "https://github.com/colbymchenry/codegraph/releases/download/v{VERSION}/codegraph-linux-x64.tar.gz"
   "https://github.com/herdrdev/herdr/releases/download/v{VERSION}/herdr-linux-x86_64"
@@ -165,6 +164,43 @@ for i in "${!PKG_DIRS[@]}"; do
   log_ok "$pkg" "updated to $LATEST"
   (( UPDATED++ )) || true
 done
+
+# ── opencode (non-GitHub: opencode.ai CDN manifest) ───────────────────────
+if in_filter "opencode"; then
+  pkg="opencode"
+  PKG_FILE="$PKGS_DIR/$pkg/default.nix"
+
+  CURRENT=$(grep 'version = ' "$PKG_FILE" | head -1 | sed 's/.*"\(.*\)".*/\1/')
+
+  # v2 ships no GitHub release assets. The stable channel record is the CDN
+  # manifest, whose per-file entry is version-stamped and carries the sha256,
+  # so the artifact URL stays content-addressed.
+  MANIFEST=$(curl -sfL https://opencode.ai/update/api/latest/cli/opencode) || MANIFEST=""
+  LATEST=$(jq -r '.version // empty' <<<"$MANIFEST" 2>/dev/null) || LATEST=""
+  SHA=$(jq -r '.metadata.files["opencode-linux-x64.tar.gz"].sha256 // empty' <<<"$MANIFEST" 2>/dev/null) || SHA=""
+
+  if [[ -z "$LATEST" || -z "$SHA" ]]; then
+    log_err "$pkg" "failed to read version/sha256 from the opencode CDN manifest"
+    (( FAILED++ )) || true
+  elif [[ "$CURRENT" == "$LATEST" ]]; then
+    log_ok "$pkg" "up-to-date ($CURRENT)"
+    (( SKIPPED++ )) || true
+  else
+    log_warn "$pkg" "$CURRENT → $LATEST"
+    if ! $CHECK_ONLY; then
+      SRI=$(nix hash convert --hash-algo sha256 --from base16 --to sri "$SHA") || {
+        log_err "$pkg" "failed to convert sha256 to SRI"
+        (( FAILED++ )) || true; SRI=""
+      }
+      if [[ -n "$SRI" ]]; then
+        sed -i "s/version = \"$CURRENT\"/version = \"$LATEST\"/" "$PKG_FILE"
+        sed -i "s|hash = \"sha256-.*\"|hash = \"$SRI\"|"          "$PKG_FILE"
+        log_ok "$pkg" "updated to $LATEST"
+        (( UPDATED++ )) || true
+      fi
+    fi
+  fi
+fi
 
 # ── ICM (fetchFromGitHub + cargoHash, tag icm-v*) ─────────────────────────
 if in_filter "icm"; then
@@ -339,7 +375,7 @@ fi
 echo ""
 echo -e "  ${GREEN}${UPDATED} updated${RESET}  ${CYAN}${SKIPPED} up-to-date${RESET}  ${RED}${FAILED} failed${RESET}"
 
-ALL_PKGS=("${PKG_DIRS[@]}" "icm" "cursor" "twg" "orca-ide")
+ALL_PKGS=("${PKG_DIRS[@]}" "opencode" "icm" "cursor" "twg" "orca-ide")
 if [[ $UPDATED -gt 0 ]]; then
   echo -e "\nVerify: ${CYAN}nix build $(printf '.#%s ' "${ALL_PKGS[@]}")${RESET}"
 fi
