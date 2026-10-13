@@ -15,12 +15,11 @@ in
     package = pkgs.opencode;
     settings = {
       default_agent = "plan";
-      plugin = [
-        "@simonwjackson/opencode-direnv"
-        "@franlol/opencode-md-table-formatter@latest"
-        "opencode-mermaid-renderer@latest"
-        "${config.home.homeDirectory}/.hindsight/coding-agents"
-      ];
+        plugin = [
+          "@simonwjackson/opencode-direnv"
+          "@franlol/opencode-md-table-formatter@latest"
+          "opencode-mermaid-renderer@latest"
+        ] ++ lib.optional config.hindsight.enable "${config.home.homeDirectory}/.hindsight/coding-agents";
       mcp = {
         codegraph = {
           type = "local";
