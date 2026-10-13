@@ -96,6 +96,7 @@ in
   services.resolved.settings.Resolve = {
     DNS = "192.168.1.100";
     Domains = "~lan";
+    ResolveUnicastSingleLabel = true;
   };
 
   # IPv6 enabled. With dhcpcd gone (useDHCP=false), NM is sole DHCP client
