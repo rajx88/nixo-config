@@ -1,8 +1,4 @@
 { pkgs, ... }:
-let
-  # v2 joins the variant to the model with '#'; there is no --variant flag.
-  aiCommand = "opencode run -m github-copilot/claude-sonnet-4.6#fast";
-in
 {
   programs.fzf = {
     enable = true;
@@ -53,7 +49,6 @@ in
       # Session management
       bind n new-session
       bind r command-prompt -I "#S" "rename-session '%%'"
-      bind a run-shell '${aiCommand} "You are inside a tmux session. Inspect the session context using tmux commands (list-panes, current paths, running commands, git repos). Also check existing session names with tmux list-sessions to avoid duplicates. Then rename the current tmux session using tmux rename-session with a short kebab-case name (1-3 words) that describes the WORK being done. The name MUST be unique across all existing sessions. Do not explain, just do it." || tmux display-message "AI rename failed"'
       set -g base-index 1
 
       set-window-option -g mode-keys vi
