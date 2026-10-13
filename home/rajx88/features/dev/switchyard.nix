@@ -131,7 +131,10 @@ in
 
   # opencode: Anthropic-compatible provider pointing at the local router.
   # Switchyard holds the LiteLLM key itself, so the client key is a dummy.
-  programs.opencode.settings.provider.switchyard = {
+  # Contributed to the Nix-owned overrides.json (see features/dev/opencode.nix)
+  # rather than programs.opencode.settings, so opencode.json stays unmanaged
+  # and writable by tooling.
+  opencodeOverrides.provider.switchyard = {
     npm = "@ai-sdk/anthropic";
     name = "Switchyard";
     options = {
