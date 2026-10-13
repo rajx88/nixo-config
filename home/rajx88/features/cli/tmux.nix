@@ -1,6 +1,7 @@
 { pkgs, ... }:
 let
-  aiCommand = "opencode run -m github-copilot/claude-sonnet-4.6 --variant fast";
+  # v2 joins the variant to the model with '#'; there is no --variant flag.
+  aiCommand = "opencode run -m github-copilot/claude-sonnet-4.6#fast";
 in
 {
   programs.fzf = {

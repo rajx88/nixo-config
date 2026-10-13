@@ -7,7 +7,9 @@
     # Hindsight backend on/off switch. coding-agents.nix is imported by both
     # yuji and akarnae, so setting it here toggles Hindsight for both hosts at
     # once. The option itself is declared in features/dev/hindsight.nix.
-    # Flip to true to re-enable the opencode plugin + omp extension.
+    # Flip to true to re-enable the omp extension (opencode's Hindsight plugin
+    # was dropped in the v2 config migration and needs porting to the new
+    # plugin API before it can be re-wired).
     hindsight.enable = false;
 
     # Shared coding-agent state that no single harness owns, so it lives outside
