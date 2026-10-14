@@ -23,12 +23,17 @@
   home.packages = [ pkgs.orca-ide ];
 
   # Electron reads its own userData from $XDG_CONFIG_HOME/<package name>; the
-  # packaged app.asar has no productName, so that directory is `orca`.
-  # ~/.orca is the runtime home (runtime keys, keybindings.json, orcad pid and
-  # readiness files); the account homes hold the managed claude/codex logins.
+  # packaged app.asar has no productName, so that directory is `orca` (and the
+  # pid/lock/runtime handshake files — orcad.lock, orca-runtime.json, daemon/ —
+  # live there too). ~/.orca is the CLI home: keybindings.json, saved Bitbucket/
+  # Linear/Jira credentials, managed hook installs. $HOME/orca is the workspace
+  # root, where the cloned repos and the per-branch worktrees the agents work in
+  # actually live (~/orca/workspaces/<repo>/<branch>@@<hash>) — distinct from
+  # ~/.orca, so it must be persisted as well or every worktree is lost.
   home.persistence."/persist".directories = [
-    ".config/orca" # Electron userData: settings, sign-in, browser profiles
-    ".orca" # runtime home: keys, keybindings.json, orcad state
+    ".config/orca" # Electron userData: settings, sign-in, browser profiles, orcad state
+    ".orca" # CLI home: keybindings.json, saved credentials, hook installs
+    "orca" # workspace root: cloned repos + agent worktrees (orca/workspaces/…)
     ".local/share/orca" # claude-accounts/ and codex-accounts/ account homes
     ".cache/orca" # downloaded runtimes and helpers
     ".cache/orca-updater" # electron-updater cache
