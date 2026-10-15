@@ -1,5 +1,5 @@
 #!/usr/bin/env nix-shell
-#!nix-shell -i bash -p curl jq
+#!nix-shell -i bash -p curl jq gh
 
 # update.sh — unified updater for self-maintained binary packages
 #
@@ -70,9 +70,27 @@ log_ok()   { echo -e "${GREEN}[${1}]${RESET} ${2}"; }
 log_warn() { echo -e "${YELLOW}[${1}]${RESET} ${2}"; }
 log_err()  { echo -e "${RED}[${1}]${RESET} ${2}" >&2; }
 
+# ── GitHub API auth ───────────────────────────────────────────────────────────
+# Unauthenticated api.github.com requests share a 60-per-hour quota per source
+# IP — a single run of this script (plus any other GitHub client on the
+# machine) exhausts it, after which every lookup returns HTTP 403 and each
+# package reports "failed to fetch latest". Authenticate with
+# $GITHUB_TOKEN/$GH_TOKEN, else with the credential the gh CLI already stores
+# (~5000 req/hour).
+GH_AUTH=()
+GH_TOKEN_VALUE="${GITHUB_TOKEN:-${GH_TOKEN:-}}"
+if [[ -z "$GH_TOKEN_VALUE" ]] && command -v gh >/dev/null 2>&1; then
+  GH_TOKEN_VALUE=$(gh auth token 2>/dev/null) || GH_TOKEN_VALUE=""
+fi
+if [[ -n "$GH_TOKEN_VALUE" ]]; then
+  GH_AUTH=(-H "Authorization: Bearer ${GH_TOKEN_VALUE}")
+else
+  log_warn "github" "no API token (GITHUB_TOKEN/GH_TOKEN or 'gh auth login') — the shared 60 req/hour unauthenticated quota will make lookups fail"
+fi
+
 github_latest() {
   local tag
-  tag=$(curl -sfL "https://api.github.com/repos/${1}/releases/latest" | jq -r '.tag_name') || return 1
+  tag=$(curl -sfL "${GH_AUTH[@]}" "https://api.github.com/repos/${1}/releases/latest" | jq -r '.tag_name') || return 1
   [[ -n "$tag" && "$tag" != "null" ]] || return 1
   printf '%s\n' "${tag#v}"
 }
@@ -81,7 +99,7 @@ github_latest_strip() {
   local repo="$1"
   local prefix="$2"
   local tag
-  tag=$(curl -sfL "https://api.github.com/repos/${repo}/releases/latest" | jq -r '.tag_name') || return 1
+  tag=$(curl -sfL "${GH_AUTH[@]}" "https://api.github.com/repos/${repo}/releases/latest" | jq -r '.tag_name') || return 1
   [[ -n "$tag" && "$tag" != "null" ]] || return 1
   tag="${tag#${prefix}}"
   printf '%s\n' "${tag#v}"
@@ -342,7 +360,7 @@ if in_filter "orca-ide"; then
   # stablyai/orca tags desktop builds v<semver> and also ships unrelated tags
   # (e.g. mobile-android-v0.0.52), so releases/latest can point at the wrong
   # stream. Pick the newest tag that is exactly v<major>.<minor>.<patch>.
-  LATEST=$(curl -sfL "https://api.github.com/repos/${repo}/releases?per_page=30" \
+  LATEST=$(curl -sfL "${GH_AUTH[@]}" "https://api.github.com/repos/${repo}/releases?per_page=30" \
     | jq -r '[.[].tag_name | select(test("^v[0-9]+\\.[0-9]+\\.[0-9]+$"))][0] // empty' 2>/dev/null \
     | sed 's/^v//') || LATEST=""
 

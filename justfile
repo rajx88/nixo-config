@@ -30,13 +30,22 @@ wsl:
 hm $MACHINE:
 	nh os switch
 
+# Flake refs resolve through api.github.com (commits/<ref>), which allows only 60
+# unauthenticated requests/hour per IP — shared with pkgs/update.sh (~10 per run),
+# gh itself and every other client on this IP, so one uncached run can 403 (and
+# then silently reuse cached revisions). This shell prefix authenticates those
+# requests with the gh CLI credential, read *inside* the shell: the token never
+# appears in this file, in just's echo/verbose/dry-run output, or as an argument
+# to nix. Without a gh credential the prefix is a no-op (nix stays anonymous).
+nix-auth := 't=$(gh auth token 2>/dev/null); if [ -n "$t" ]; then export NIX_CONFIG="$(printf "%s\naccess-tokens = github.com=%s" "${NIX_CONFIG:-}" "$t")"; fi;'
+
 up:
-  nix flake update
+  @{{nix-auth}} nix flake update
 
 # Update specific input
 # usage: just upp home-manager
 upp i:
-  nix flake update {{i}}
+  @{{nix-auth}} nix flake update {{i}}
 
 ####
 # installation stuff
