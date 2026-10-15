@@ -43,11 +43,6 @@
       inputs.home-manager.follows = "home-manager";
     };
 
-    spicetify-nix = {
-      url = "github:Gerg-L/spicetify-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     nix-barracudavpn = {
       url = "git+ssh://git@github.com/rajx88/nix-barracudavpn";
       inputs.nixpkgs.follows = "nixpkgs";
