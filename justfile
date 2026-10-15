@@ -34,9 +34,9 @@ up:
   nix flake update
 
 # Update specific input
-# usage: make upp i=home-manager
-upp:
-  nix flake update $(i)
+# usage: just upp home-manager
+upp i:
+  nix flake update {{i}}
 
 ####
 # installation stuff
