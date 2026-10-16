@@ -220,13 +220,14 @@ if in_filter "opencode"; then
   fi
 fi
 
-# ── ICM (fetchFromGitHub + cargoHash, tag icm-v*) ─────────────────────────
+# ── ICM (non-table: tag is icm-v*, asset is a prebuilt glibc tarball) ────────
 if in_filter "icm"; then
   pkg="icm"
   repo="rtk-ai/icm"
   PKG_FILE="$PKGS_DIR/$pkg/default.nix"
 
   CURRENT=$(grep 'version = ' "$PKG_FILE" | head -1 | sed 's/.*"\(.*\)".*/\1/')
+  # releases/latest skips the repo's icm-dev-v*-rc* prereleases.
   LATEST=$(github_latest_strip "$repo" "icm-") || { log_err "$pkg" "failed to fetch latest"; (( FAILED++ )) || true; LATEST=""; }
 
   if [[ -z "$LATEST" ]]; then
@@ -237,31 +238,21 @@ if in_filter "icm"; then
   else
     log_warn "$pkg" "$CURRENT → $LATEST"
     if ! $CHECK_ONLY; then
-      log_info "$pkg" "fetching source hash..."
-      SRC_SRI=$(nix_sri_unpack \
-        "https://github.com/${repo}/archive/refs/tags/icm-v${LATEST}.tar.gz") || {
-        log_err "$pkg" "failed to fetch source hash"
-        (( FAILED++ )) || true; SRC_SRI=""
+      # fetchurl hashes the downloaded archive, so this must be the file hash
+      # (nix_sri) — nix_sri_unpack yields a different value and would fail to build.
+      # The glibc asset, not -musl: the embeddings feature dlopens onnxruntime,
+      # which a static musl binary cannot do.
+      URL="https://github.com/${repo}/releases/download/icm-v${LATEST}/icm-x86_64-unknown-linux-gnu.tar.gz"
+      log_info "$pkg" "fetching hash..."
+      SRI=$(nix_sri "$URL") || {
+        log_err "$pkg" "failed to hash $URL"
+        (( FAILED++ )) || true; SRI=""
       }
-      if [[ -n "$SRC_SRI" ]]; then
-        BOGUS="sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
-        sed -i "s/version = \"$CURRENT\"/version = \"$LATEST\"/g"   "$PKG_FILE"
-        sed -i "s|rev = \"icm-v$CURRENT\"|rev = \"icm-v$LATEST\"|" "$PKG_FILE"
-        sed -i "s|hash = \"sha256-.*\"|hash = \"$SRC_SRI\"|"       "$PKG_FILE"
-        sed -i "s|cargoHash = \"sha256-.*\"|cargoHash = \"$BOGUS\"|" "$PKG_FILE"
-
-        log_info "$pkg" "resolving cargoHash (downloads dependencies)..."
-        BUILD_OUT=$(cd "$REPO_ROOT" && nix build .#icm 2>&1 || true)
-        CARGO_SRI=$(printf '%s' "$BUILD_OUT" | sed -n 's/.*got:[[:space:]]*\(sha256-[^[:space:]]*\).*/\1/p' | head -1)
-
-        if [[ -z "$CARGO_SRI" ]]; then
-          log_err "$pkg" "could not determine cargoHash — fix manually"
-          (( FAILED++ )) || true
-        else
-          sed -i "s|cargoHash = \"$BOGUS\"|cargoHash = \"$CARGO_SRI\"|" "$PKG_FILE"
-          log_ok "$pkg" "updated to $LATEST"
-          (( UPDATED++ )) || true
-        fi
+      if [[ -n "$SRI" ]]; then
+        sed -i "s/version = \"$CURRENT\"/version = \"$LATEST\"/" "$PKG_FILE"
+        sed -i "s|hash = \"sha256-.*\"|hash = \"$SRI\"|"           "$PKG_FILE"
+        log_ok "$pkg" "updated to $LATEST"
+        (( UPDATED++ )) || true
       fi
     fi
   fi
