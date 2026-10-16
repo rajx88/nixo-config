@@ -51,14 +51,14 @@
 }:
 let
   pname = "t3code";
-  version = "0.0.45";
+  version = "0.1.0";
 in
 stdenv.mkDerivation {
   inherit pname version;
 
   src = fetchurl {
     url = "https://github.com/pingdotgg/t3code/releases/download/v${version}/T3-Code-${version}-amd64.deb";
-    hash = "sha256-aEvJF5EaW9lK56Hjczg4S69yx66r648RyWqcY1sp43U=";
+    hash = "sha256-NZCmPC61vuIbcLIppFhjIu2CFArs2Mf+sJqoAXj4Y5w=";
   };
 
   sourceRoot = ".";
@@ -134,7 +134,7 @@ stdenv.mkDerivation {
     runHook preInstall
 
     mkdir -p $out/lib $out/bin $out/share
-    cp -r "opt/T3 Code (Alpha)" $out/lib/t3code
+    cp -r "opt/T3 Code (Beta)" $out/lib/t3code
     cp -r usr/share/icons $out/share/icons
     cp -r usr/share/applications $out/share/applications
 
@@ -150,8 +150,8 @@ stdenv.mkDerivation {
       --inherit-argv0
 
     substituteInPlace $out/share/applications/t3code.desktop \
-      --replace-fail '"/opt/T3 Code (Alpha)/t3code"' "t3code-desktop" \
-      --replace-fail "Name=T3 Code (Alpha)" "Name=T3 Code"
+      --replace-fail '"/opt/T3 Code (Beta)/t3code"' "t3code-desktop" \
+      --replace-fail "Name=T3 Code (Beta)" "Name=T3 Code"
 
     runHook postInstall
   '';
