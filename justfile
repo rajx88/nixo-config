@@ -24,9 +24,6 @@ clean:
 arch:
 	just rb
 
-wsl:
-	just rb
-
 hm $MACHINE:
 	nh os switch
 
