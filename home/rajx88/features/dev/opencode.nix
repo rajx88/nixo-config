@@ -47,7 +47,8 @@ in
             "--mcp"
           ];
         };
-      } // lib.optionalAttrs hasRadar {
+      }
+      // lib.optionalAttrs hasRadar {
         radar = {
           type = "remote";
           url = "http://localhost:9280/mcp";

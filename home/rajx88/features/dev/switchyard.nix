@@ -148,7 +148,10 @@ in
       inherit name;
       capabilities = {
         tools = true;
-        input = [ "text" "image" ];
+        input = [
+          "text"
+          "image"
+        ];
         output = [ "text" ];
       };
       limit = {

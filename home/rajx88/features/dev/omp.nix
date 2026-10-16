@@ -38,7 +38,8 @@ in
         }
       }
     '';
-  } // lib.optionalAttrs config.hindsight.enable {
+  }
+  // lib.optionalAttrs config.hindsight.enable {
     # Hindsight memory: omp loads the pi bundle of the shared coding-agents
     # runtime (staged by `npx @vectorize-io/hindsight-coding-agents install`
     # into the persisted ~/.hindsight). Kept as an out-of-store symlink so the
