@@ -46,6 +46,13 @@ in
             "serve"
             "--mcp"
           ];
+          disabled = false;
+          # v2 routes MCP tools through Code Mode by default, which hides them
+          # from the native tool list (only reachable as tools.<server>.* inside
+          # `execute`). That is why agents kept grepping instead of using
+          # codegraph_explore. `codegraph install` writes this flag for exactly
+          # this reason (codegraph #1698); we hand-wire the entry, so set it here.
+          codemode = false;
         };
       }
       // lib.optionalAttrs hasRadar {
