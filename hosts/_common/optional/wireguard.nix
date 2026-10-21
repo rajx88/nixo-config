@@ -70,6 +70,15 @@ let
     set -u
     state=/run/wg-health.state
     netfile=/run/wg-health.net
+
+    # Don't fight an in-flight nixos activation: switch-to-configuration
+    # stops/starts wg-quick-wg0 itself (the unit may have changed), and a
+    # racing stop from here makes the activation fail with exit 4
+    # ("Failed to start wg-quick-wg0.service").
+    if ${pkgs.procps}/bin/pgrep -f switch-to-configuration >/dev/null 2>&1; then
+      exit 0
+    fi
+
     note() {
       ${logger} -t wg-health "WireGuard DOWN — using direct connection: $1"
       ${pkgs.util-linux}/bin/wall "WireGuard DOWN — using direct connection: $1" 2>/dev/null || true
