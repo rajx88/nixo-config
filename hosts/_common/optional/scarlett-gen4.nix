@@ -17,6 +17,13 @@
         $AMIXER -c Gen scontrols >/dev/null 2>&1 && break
         ${pkgs.coreutils}/bin/sleep 1
       done
+      # Away from the dock the card never appears: skip cleanly instead of
+      # failing (a failed unit makes every switch-to-configuration report
+      # "Activation failed", exit 4).
+      if ! $AMIXER -c Gen scontrols >/dev/null 2>&1; then
+        echo "scarlett-gen4: interface not present — skipping mixer setup"
+        exit 0
+      fi
       # Rode PodMic is a dynamic mic: no phantom power.
       $AMIXER -c Gen cset name="Line In 1-2 Phantom Power Capture Switch" off
       # Input 1 (PodMic): line/mic level, and enough gain for a low-output dynamic.

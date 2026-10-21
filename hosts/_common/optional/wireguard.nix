@@ -5,6 +5,11 @@ let
   ping = "${pkgs.iputils}/bin/ping";
   logger = "${pkgs.util-linux}/bin/logger";
   sleep = "${pkgs.coreutils}/bin/sleep";
+  date = "${pkgs.coreutils}/bin/date";
+  dig = "${pkgs.dnsutils}/bin/dig";
+  wg = "${pkgs.wireguard-tools}/bin/wg";
+  ip = "${pkgs.iproute2}/bin/ip";
+  awk = "${pkgs.gawk}/bin/awk";
 
   wgSwitch = pkgs.writeShellScript "wg-switch" ''
     # runs as root via pkexec — stop $1, start $2
@@ -12,64 +17,106 @@ let
     [ -n "$2" ] && ${systemctl} start "$2"
   '';
 
-  # Probe pihole on ALL up physical interfaces to detect home LAN.
-  # We exclude wg0/virtual interfaces so the probe never goes through the
-  # tunnel (which would falsely confirm "home"). Probing all physical NICs
-  # avoids the race where WiFi triggers an event before it can route, even
-  # though ethernet is already proving we're home.
-  homeProbe = pkgs.writeShellScript "wg-home-away-dispatcher" ''
+  # WiFi networks that mean "home". Everything else is "away" -> tunnel up.
+  homeSsids = [ "vanbanninglan" ];
+
+  # "Am I at home?"
+  #   WiFi  -> exact match on the active connection's SSID. Deterministic, no
+  #            pings, no races, and immune to "pihole is down so I look away".
+  #   Wired -> a dock can be plugged in anywhere, so we can't trust the link
+  #            alone; fall back to probing the LAN gateway / pihole.
+  atHome = pkgs.writeShellScript "wg-at-home" ''
     set -u
-    iface="$1"
-    status="$2"
-
-    # Only react to relevant NM events on real physical interfaces.
-    case "$status" in up|dhcp4-change|connectivity-change|down) ;; *) exit 0 ;; esac
-    case "$iface"  in
-      wg0|lo|docker*|veth*|br-*|virbr*|tailscale*) exit 0 ;;
-      "")                                           exit 0 ;;
-    esac
-
-    # Serialize: avoid two dispatcher instances racing each other.
-    exec 9>/run/wg-home-away.lock
-    ${pkgs.util-linux}/bin/flock -w 10 9 || exit 0
-
-    at_home() {
-      # Probe pihole on ALL up physical interfaces, not just the trigger.
-      # Prevents race where WiFi event fires before WiFi can route, even
-      # though ethernet is already connected and proving we're home.
-      # wg0/lo/virtual interfaces are excluded so we never probe through the tunnel.
-      for ifc in $(${pkgs.iproute2}/bin/ip -o link show up | ${pkgs.gawk}/bin/awk -F': ' '{print $2}' | ${pkgs.gnugrep}/bin/grep -v -E '^(wg|lo|docker|veth|br-|virbr|tailscale)'); do
-        # Probe the LAN gateway as well as pihole. pihole lives on the same
-        # host as the WireGuard server, so if that host is down/rebooting we
-        # would otherwise misdetect "away", raise a full tunnel to a dead
-        # endpoint, and blackhole ALL traffic while sitting at home.
-        for host in 192.168.1.1 192.168.1.100; do
-          ${ping} -c1 -W1 -I "$ifc" -n "$host" >/dev/null 2>&1 && return 0
-        done
-        ${sleep} 0.3
+    if ${pkgs.networkmanager}/bin/nmcli -t -f NAME,TYPE connection show --active 2>/dev/null \
+      | ${pkgs.gnugrep}/bin/grep -qE "^(${pkgs.lib.concatStringsSep "|" homeSsids}):802-11-wireless"; then
+      exit 0
+    fi
+    for ifc in $(${pkgs.iproute2}/bin/ip -o link show up \
+      | ${pkgs.gawk}/bin/awk -F': ' '{print $2}' \
+      | ${pkgs.gnugrep}/bin/grep -v -E '^(wg|lo|docker|veth|br-|virbr|tailscale|wl)'); do
+      for host in 192.168.1.1 192.168.1.100; do
+        ${ping} -c1 -W1 -I "$ifc" -n "$host" >/dev/null 2>&1 && exit 0
       done
-      return 1
+      ${sleep} 0.3
+    done
+    exit 1
+  '';
+
+  # Resolve the endpoint from /persist. That file holds a HOSTNAME (kept current
+  # by the home router's DDNS client on vpn.rx88.ws), not a hardcoded IP, so a
+  # changing home IP no longer silently breaks the tunnel. Resolution goes to a
+  # public resolver DIRECTLY — never via wg0, whose `~.` DNS hangs when the
+  # tunnel is dead (that would turn "home IP changed" into "can't find home").
+  # A bare IP in the file still works.
+  resolveEndpoint = pkgs.writeShellScript "wg-endpoint-resolve" ''
+    set -eu
+    endpoint="$(cat /persist/secrets/wireguard/endpoint)"
+    host="''${endpoint%:*}"
+    port="''${endpoint##*:}"
+    case "$host" in *[!0-9.]*) ;; *) echo "$endpoint"; exit 0 ;; esac
+    for ns in 9.9.9.9 1.1.1.1; do
+      ip="$(${dig} +short +time=3 +tries=1 A "$host" "@$ns" 2>/dev/null \
+        | ${pkgs.gnugrep}/bin/grep -E '^[0-9]+\.' | head -1 || true)"
+      [ -n "$ip" ] && { echo "$ip:$port"; exit 0; }
+    done
+    echo "wg-endpoint-resolve: cannot resolve $host" >&2
+    exit 1
+  '';
+
+  # Runs every minute and on NM link events. Keeps the tunnel up when away and
+  # down when home — and if it cannot connect, FALLS BACK to a direct
+  # connection and notifies, instead of silently blackholing everything.
+  wgHealth = pkgs.writeShellScript "wg-health" ''
+    set -u
+    state=/run/wg-health.state
+    netfile=/run/wg-health.net
+    note() {
+      ${logger} -t wg-health "WireGuard DOWN — using direct connection: $1"
+      ${pkgs.util-linux}/bin/wall "WireGuard DOWN — using direct connection: $1" 2>/dev/null || true
+      for bus in /run/user/*/bus; do
+        [ -S "$bus" ] || continue
+        DBUS_SESSION_BUS_ADDRESS="unix:path=$bus" \
+          ${pkgs.libnotify}/bin/notify-send -u critical -a WireGuard "WireGuard DOWN — using direct connection" "$1" 2>/dev/null && break
+      done
     }
 
-    enter_home() {
-      if ${systemctl} stop --quiet wg-quick-wg0; then
-        ${logger} -t wg-home-away "home ($iface $status) — wg0 stopped"
-      else
-        ${logger} -t wg-home-away -p warning "home ($iface $status) — failed to stop wg0"
-      fi
-    }
+    exec 9>/run/wg-health.lock
+    ${pkgs.util-linux}/bin/flock -w 30 9 || exit 0
+    prev="$(cat "$state" 2>/dev/null || echo unknown)"
+    sig="$(${ip} route show default | head -1)"
 
-    enter_away() {
-      # Don't start if already running
-      ${systemctl} is-active --quiet wg-quick-wg0 && return 0
-      if ${systemctl} start --quiet wg-quick-wg0; then
-        ${logger} -t wg-home-away "away ($iface $status) — wg0 started"
-      else
-        ${logger} -t wg-home-away -p warning "away ($iface $status) — FAILED to start wg0"
-      fi
-    }
+    if ${atHome}; then
+      ${systemctl} is-active --quiet wg-quick-wg0 && ${systemctl} stop --quiet wg-quick-wg0
+      echo home > "$state"; echo "$sig" > "$netfile"
+      exit 0
+    fi
 
-    if at_home; then enter_home; else enter_away; fi
+    # Don't re-blackhole the same broken network every minute — but still retry
+    # every 10 min in case home came back (else the tunnel never returns while
+    # you sit on one network).
+    if [ "$prev" = failed ] && [ "$(cat "$netfile" 2>/dev/null)" = "$sig" ]; then
+      last=$(${date} -r "$netfile" +%s 2>/dev/null || echo 0)
+      t_now=$(${date} +%s)
+      [ $((t_now - last)) -lt 600 ] && exit 0
+    fi
+
+    ${systemctl} start --quiet wg-quick-wg0 || true
+    ${sleep} 2
+
+    # An idle wg0 sends nothing — the handshake is only triggered by the first
+    # outbound traffic, so a handshake-only check on a fresh tunnel always
+    # fails. Generate the traffic ourselves and judge on the result: either
+    # reply proves the tunnel carries data (server IP = tunnel itself,
+    # Pi-hole = full path incl. forwarding).
+    if ${ping} -c2 -W2 -I wg0 -n 10.69.43.1 >/dev/null 2>&1 \
+       || ${ping} -c2 -W2 -I wg0 -n 192.168.1.100 >/dev/null 2>&1; then
+      [ "$prev" = ok ] || ${logger} -t wg-health "tunnel healthy"
+      echo ok > "$state"; echo "$sig" > "$netfile"
+    else
+      ${systemctl} stop --quiet wg-quick-wg0   # release the full-tunnel route
+      [ "$prev" = failed ] || note "home unreachable — no route through the tunnel"
+      echo failed > "$state"; echo "$sig" > "$netfile"
+    fi
   '';
 in
 {
@@ -92,9 +139,11 @@ in
 
   # Global routing domain: every *.lan query goes to pihole regardless of
   # per-link DNS. When wg0 is up, its per-link `~.` overrides and routes
-  # ALL DNS through the tunnel's CoreDNS.
+  # ALL DNS through the tunnel. Public resolvers back pihole up so a dead
+  # pihole (or a link that hands out no DNS) never hangs resolution.
+  # Order: pihole → Quad9 → Cloudflare.
   services.resolved.settings.Resolve = {
-    DNS = "192.168.1.100";
+    DNS = "192.168.1.100 9.9.9.9 1.1.1.1";
     Domains = "~lan";
     ResolveUnicastSingleLabel = true;
   };
@@ -120,10 +169,16 @@ in
     };
   };
 
+  # Wake the health check on link events (non-blocking — NM must not wait on
+  # the pings/sleeps inside wg-health).
   networking.networkmanager.dispatcherScripts = [
     {
       type = "basic";
-      source = homeProbe;
+      source = pkgs.writeShellScript "wg-dispatch" ''
+        case "$2" in up|dhcp4-change|connectivity-change|down) ;; *) exit 0 ;; esac
+        case "$1"  in wg0|lo|docker*|veth*|br-*|virbr*|tailscale*|"") exit 0 ;; esac
+        ${systemctl} start --no-block wg-health.service
+      '';
     }
   ];
 
@@ -132,8 +187,8 @@ in
     # IPv6 is intentionally NOT tunneled (no ::/0): the server's wg0 has no
     # IPv6 address or NAT66, so routing ::/0 into it blackholed all IPv6 and
     # made dual-stack sites/apps hang. IPv6 now uses the native uplink.
-    # At home the dispatcher keeps this DOWN — pihole + LAN handle
-    # everything natively.
+    # At home wg-health keeps this DOWN — pihole + LAN handle everything
+    # natively.
     wg0 = {
       address = [ "10.69.43.2/24" ];
       # The endpoint is injected in postUp from /persist, so wg-quick can't
@@ -143,14 +198,15 @@ in
       privateKeyFile = "/persist/secrets/wireguard/private.key";
       autostart = false;
 
-      # Endpoint is not committed to the repo — read from /persist at runtime
-      # so the home IP is never in git. Create once on the machine:
-      #   echo "YOUR.HOME.IP:51820" > /persist/secrets/wireguard/endpoint
-      #   chmod 600 /persist/secrets/wireguard/endpoint
+      # /persist/secrets/wireguard/endpoint holds "vpn.rx88.ws:51820" — a
+      # DDNS hostname, NOT a hardcoded IP, so a changing home IP is picked up
+      # automatically. (DNS-only record: a proxied record can't carry WG.)
+      # Migrate once on the machine:
+      #   echo "vpn.rx88.ws:51820" | sudo tee /persist/secrets/wireguard/endpoint
       postUp = ''
-        ${pkgs.wireguard-tools}/bin/wg set wg0 \
+        ${wg} set wg0 \
           peer 7QagNiSoCbm5Yjr6oX9I86yJJOCQF+2LR1WQAQ/wozs= \
-          endpoint "$(cat /persist/secrets/wireguard/endpoint)"
+          endpoint "$(${resolveEndpoint})"
       '';
 
       peers = [
@@ -170,11 +226,35 @@ in
   # tunnel, rather than at the server's CoreDNS container (10.69.43.1). wg0's
   # `~.` route sends EVERY name (including .lan) to pihole, so gravity/filtering
   # applies and there is no CoreDNS middleman to keep alive across restarts.
+  # Quad9 then Cloudflare are secondaries: if pihole is unreachable through
+  # the tunnel, DNS falls back instead of hanging.
   systemd.services.wg-quick-wg0.serviceConfig = {
     ExecStartPost = [
-      "${resolvectl} dns    wg0 192.168.1.100"
+      "${resolvectl} dns    wg0 192.168.1.100 9.9.9.9 1.1.1.1"
       "${resolvectl} domain wg0 '~.'"
     ];
     ExecStopPost = "-${resolvectl} revert wg0";
+  };
+
+  # Health check / fallback / notify (see wgHealth above): every minute,
+  # plus on boot and on NM link events.
+  systemd.services.wg-health = {
+    description = "WireGuard tunnel health check with fallback";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${wgHealth}";
+      TimeoutStartSec = 120;
+    };
+  };
+
+  systemd.timers.wg-health = {
+    description = "Periodic WireGuard tunnel health check";
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnBootSec = "45s";
+      OnUnitActiveSec = "60s";
+      AccuracySec = "10s";
+    };
   };
 }
