@@ -3,9 +3,8 @@
   stdenv,
   fetchurl,
   makeWrapper,
-  glibc,
-  gcc-unwrapped,
   git,
+  nodejs_24,
 }:
 stdenv.mkDerivation rec {
   pname = "codegraph";
@@ -32,14 +31,22 @@ stdenv.mkDerivation rec {
     runHook preInstall
     mkdir -p $out/lib $out/bin
     cp -r codegraph-linux-x64 $out/lib/codegraph
-    patchelf --set-interpreter ${glibc}/lib/ld-linux-x86-64.so.2 \
-      --set-rpath ${
-        lib.makeLibraryPath [
-          gcc-unwrapped.lib
-          glibc
-        ]
-      } \
-      $out/lib/codegraph/node
+
+    # Upstream ships a prebuilt `node` that is a non-PIE (ET_EXEC) binary
+    # hard-wired to load at a low fixed address. The glibc 2.44 loader
+    # segfaults (SIGSEGV/SEGV_ACCERR) while bootstrapping it, so every
+    # `codegraph` invocation dies instantly -- including `ldd` and
+    # `--version`. This reproduces only on newer kernels (observed broken
+    # on 7.2.11, working on 7.2.9/7.2.10) and is independent of the
+    # environment, so it is the bundled node build, not the config.
+    #
+    # Swap it for the distro nodejs_24, which is PIE and loads at a high
+    # randomized base. CodeGraph's own node-version-check requires
+    # Node >= 20 and explicitly blocks Node 25+ (V8 turboshaft WASM Zone
+    # OOM), so 24 is the right major to pin to.
+    rm $out/lib/codegraph/node
+    ln -s ${nodejs_24}/bin/node $out/lib/codegraph/node
+
     makeWrapper $out/lib/codegraph/bin/codegraph $out/bin/codegraph \
       --prefix PATH : ${lib.makeBinPath [ git ]}
     runHook postInstall
