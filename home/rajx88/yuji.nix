@@ -60,6 +60,9 @@
 
   services.ssh-tunnels.enable = true;
 
+  # Home (docked to the 4K pair): lock lazily. Anywhere else: 5 min default.
+  idle.lockTimeoutHome = 30 * 60;
+
   monitorProfiles = {
     enable = true;
     default = "home";

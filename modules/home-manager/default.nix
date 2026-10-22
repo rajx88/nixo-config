@@ -3,5 +3,6 @@
 {
   # List your module files here
   fonts = import ./fonts.nix;
+  idle = import ./idle.nix;
   monitors = import ./monitors.nix;
 }
