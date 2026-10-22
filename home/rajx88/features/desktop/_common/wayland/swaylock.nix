@@ -10,24 +10,55 @@ let
   pactl = "${pkgs.pulseaudio}/bin/pactl";
   brightnessctl = "${pkgs.brightnessctl}/bin/brightnessctl";
   wlopm = "${pkgs.wlopm}/bin/wlopm";
-  isDischarging = "grep -q Discharging /sys/class/power_supply/BAT*/status 2>/dev/null";
 
-  lockTime = 5 * 60;
+  # The home-manager swayidle unit sets PATH to bash's own bin dir only, so
+  # anything invoked from a timeout has to be an absolute store path.
+  awk = "${pkgs.gawk}/bin/awk";
+  xargs = "${pkgs.findutils}/bin/xargs";
+  grep = "${pkgs.gnugrep}/bin/grep";
+  systemctl = "${pkgs.systemd}/bin/systemctl";
+
+  isDischarging = "${grep} -q Discharging /sys/class/power_supply/BAT*/status 2>/dev/null";
+
+  lockTime = config.idle.lockTimeout;
 
   # Retry wrapper for wlopm — the Nvidia legacy driver sometimes drops
   # the wlr-output-power-management request; a second attempt 2s later
   # significantly reduces the failure window.
-  wlopmOff = pkgs.writeShellScript "wlopm-off" ''
-    logger -t swayidle-dpms "Turning DPMS off"
-    ${wlopm} --off '*' 2>&1 | logger -t swayidle-dpms || true
-    sleep 2
-    ${wlopm} --off '*' 2>&1 | logger -t swayidle-dpms || true
-  '';
+  # Must be writeShellApplication: writeShellScript yields a single file, so
+  # the `${wlopmOff}/bin/...` references below resolved to "Not a directory".
+  wlopmOff = pkgs.writeShellApplication {
+    name = "wlopm-off";
+    runtimeInputs = [
+      pkgs.wlopm
+      pkgs.gnugrep
+      pkgs.util-linux
+      pkgs.coreutils
+    ];
+    text = ''
+      logger -t swayidle-dpms "Turning DPMS off"
+      wlopm --off '*' 2>&1 | logger -t swayidle-dpms || true
+      # Only retry when the output is still on: a blind sleep would block
+      # swayidle (-w) and delay the first input after wake.
+      if wlopm 2>/dev/null | grep -q ' on$'; then
+        logger -t swayidle-dpms "Output still on, retrying"
+        sleep 1
+        wlopm --off '*' 2>&1 | logger -t swayidle-dpms || true
+      fi
+    '';
+  };
 
-  wlopmOn = pkgs.writeShellScript "wlopm-on" ''
-    logger -t swayidle-dpms "Turning DPMS on"
-    ${wlopm} --on '*' 2>&1 | logger -t swayidle-dpms || true
-  '';
+  wlopmOn = pkgs.writeShellApplication {
+    name = "wlopm-on";
+    runtimeInputs = [
+      pkgs.wlopm
+      pkgs.util-linux
+    ];
+    text = ''
+      logger -t swayidle-dpms "Turning DPMS on"
+      wlopm --on '*' 2>&1 | logger -t swayidle-dpms || true
+    '';
+  };
 
   afterLockTimeout =
     {
@@ -63,6 +94,43 @@ let
 
   lockScriptBin = mkLockScript { grace = false; }; # keybind — no grace
   lockScriptIdleBin = mkLockScript { grace = true; }; # swayidle — 5s grace
+
+  lockCmd = "${lockScriptIdleBin}/bin/swaylock-lock-idle";
+
+  # "Home" is whatever monitor profile is currently applied; read at timeout
+  # time so docking/undocking is picked up without restarting swayidle.
+  profileLink = "${config.home.homeDirectory}/.config/mango/active-profile.conf";
+  atHome = pkgs.writeShellApplication {
+    name = "idle-at-home";
+    runtimeInputs = [ pkgs.coreutils ];
+    text = ''
+      profile=$(basename "$(readlink ${lib.escapeShellArg profileLink})" .conf)
+      case "$profile" in
+        ${lib.concatStringsSep "|" (map lib.escapeShellArg config.idle.homeProfiles)}) exit 0 ;;
+      esac
+      exit 1
+    '';
+  };
+
+  lockStages =
+    if config.idle.lockTimeoutHome == null then
+      [
+        {
+          timeout = lockTime;
+          command = lockCmd;
+        }
+      ]
+    else
+      [
+        {
+          timeout = lockTime;
+          command = "if ! ${atHome}/bin/idle-at-home; then ${lockCmd}; fi";
+        }
+        {
+          timeout = config.idle.lockTimeoutHome;
+          command = "if ${atHome}/bin/idle-at-home; then ${lockCmd}; fi";
+        }
+      ];
 
   # Skip when hypridle is handling idle/lock (e.g. hyprland uses hyprlock/hypridle)
   enabled = !config.services.hypridle.enable;
@@ -116,33 +184,31 @@ in
           }
         ]
       ++
-        # Lock screen
-        [
-          {
-            timeout = lockTime;
-            command = "${lockScriptIdleBin}/bin/swaylock-lock-idle";
-          }
-        ]
+        # Lock screen (home-aware when lockTimeoutHome is set)
+        lockStages
       ++
         # Mute mic (after lock)
         (afterLockTimeout {
           timeout = 10;
-          command = "${pactl} list sources short | awk '{print $2}' | xargs -I{} ${pactl} set-source-mute {} yes";
-          resumeCommand = "${pactl} list sources short | awk '{print $2}' | xargs -I{} ${pactl} set-source-mute {} no";
+          command = "${pactl} list sources short | ${awk} '{print $2}' | ${xargs} -I{} ${pactl} set-source-mute {} yes";
+          resumeCommand = "${pactl} list sources short | ${awk} '{print $2}' | ${xargs} -I{} ${pactl} set-source-mute {} no";
         })
       ++
-        # DPMS off (after lock)
-        (afterLockTimeout {
-          timeout = 100;
-          command = "${wlopmOff}/bin/wlopm-off";
-          resumeCommand = "${wlopmOn}/bin/wlopm-on";
-        })
+        # Power off outputs (independent of the lock: at home the screen goes
+        # dark at 5 min while the session stays unlocked until 30 min)
+        [
+          {
+            timeout = config.idle.dpmsTimeout;
+            command = "${wlopmOff}/bin/wlopm-off";
+            resumeCommand = "${wlopmOn}/bin/wlopm-on";
+          }
+        ]
       ++
         # If discharging: suspend
         [
           {
             timeout = 900;
-            command = "${isDischarging} && systemctl suspend";
+            command = "${isDischarging} && ${systemctl} suspend";
           }
         ];
   };

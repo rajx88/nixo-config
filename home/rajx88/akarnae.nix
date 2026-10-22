@@ -99,6 +99,9 @@ in
     ./features/dev/orca.nix
   ];
 
+  # Home desktop: lock slowly. Away (laptop) keeps the 5 min default.
+  idle.lockTimeout = 30 * 60;
+
   monitorProfiles = {
     enable = true;
     default = "desktop-120";
