@@ -7,7 +7,7 @@
 }:
 stdenv.mkDerivation rec {
   pname = "icm";
-  version = "0.11.4";
+  version = "0.11.5";
 
   # Prebuilt release asset instead of a source build: compiling this crate with
   # its vendored deps took ~15 minutes per run, and that cost was paid on every
@@ -20,7 +20,7 @@ stdenv.mkDerivation rec {
   #   319e619e809cc80e033b56dfb7ec5977ad886d1a13f9db2ab82022a9ecaca376
   src = fetchurl {
     url = "https://github.com/rtk-ai/icm/releases/download/icm-v${version}/icm-x86_64-unknown-linux-gnu.tar.gz";
-    hash = "sha256-MZ5hnoCcyA4DO1bft+xZd62IbRoT+dsquCAiqeyso3Y=";
+    hash = "sha256-auXk/oU/CKazEonnVBcAbsT90NVlWjPSqqwoy6NZ2iU=";
   };
 
   nativeBuildInputs = [
