@@ -39,27 +39,15 @@ in
     ];
 
     profileExtra = ''
-      ZSH_PINCLUDES="$ZDOTDIR/pincludes"
-
       zstyle ':completion:*' menu select
 
       setopt complete_aliases
       setopt complete_in_word
       setopt glob_complete
-
-      if [[ -d $ZSH_PINCLUDES ]]; then
-      	for file in $ZSH_PINCLUDES/*.zsh(DN); do
-      		if [[ -f $file && -r $file ]]; then
-        	# Source the file
-        	source $file
-      		fi
-      	done
-      fi
-
     '';
 
     initContent = lib.mkBefore ''
-      ZSH_INCLUDES="$ZDOTDIR/includes"
+      ZSH_CONFD="$ZDOTDIR/conf.d"
 
       fpath=($HOME/.local/completions $fpath ${config.xdg.cacheHome}/completions)
 
@@ -94,8 +82,8 @@ in
       typeset -U path PATH
       path=($HOME/.local/bin $path)
 
-      if [[ -d $ZSH_INCLUDES ]]; then
-      for file in $ZSH_INCLUDES/*.zsh(DN); do
+      if [[ -d $ZSH_CONFD ]]; then
+      for file in $ZSH_CONFD/*.zsh(DN); do
       if [[ -f $file && -r $file ]]; then
       # Source the file
       source $file
