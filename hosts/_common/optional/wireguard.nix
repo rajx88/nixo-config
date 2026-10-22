@@ -94,6 +94,14 @@ let
     prev="$(cat "$state" 2>/dev/null || echo unknown)"
     sig="$(${ip} route show default | head -1)"
 
+    # No default route yet (first seconds after boot, or mid link-change)?
+    # Nothing to tunnel over, and "home" is unknowable — stay silent instead
+    # of blackhole-probing and broadcasting a false DOWN. The NM dispatcher
+    # wakes us on up/dhcp4-change when a link appears.
+    if [ -z "$sig" ]; then
+      exit 0
+    fi
+
     if ${atHome}; then
       ${systemctl} is-active --quiet wg-quick-wg0 && ${systemctl} stop --quiet wg-quick-wg0
       echo home > "$state"; echo "$sig" > "$netfile"
