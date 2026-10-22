@@ -34,7 +34,7 @@ let
     for ifc in $(${pkgs.iproute2}/bin/ip -o link show up \
       | ${pkgs.gawk}/bin/awk -F': ' '{print $2}' \
       | ${pkgs.gnugrep}/bin/grep -v -E '^(wg|lo|docker|veth|br-|virbr|tailscale|wl)'); do
-      for host in 192.168.1.1 192.168.1.100; do
+      for host in 192.168.1.1 192.168.1.254; do
         ${ping} -c1 -W1 -I "$ifc" -n "$host" >/dev/null 2>&1 && exit 0
       done
       ${sleep} 0.3
@@ -126,7 +126,7 @@ let
     # reply proves the tunnel carries data (server IP = tunnel itself,
     # Pi-hole = full path incl. forwarding).
     if ${ping} -c2 -W2 -I wg0 -n 10.69.43.1 >/dev/null 2>&1 \
-       || ${ping} -c2 -W2 -I wg0 -n 192.168.1.100 >/dev/null 2>&1; then
+       || ${ping} -c2 -W2 -I wg0 -n 192.168.1.254 >/dev/null 2>&1; then
       [ "$prev" = ok ] || ${logger} -t wg-health "tunnel healthy"
       echo ok > "$state"; echo "$sig" > "$netfile"
     else
@@ -160,7 +160,7 @@ in
   # pihole (or a link that hands out no DNS) never hangs resolution.
   # Order: pihole → Quad9 → Cloudflare.
   services.resolved.settings.Resolve = {
-    DNS = "192.168.1.100 9.9.9.9 1.1.1.1";
+    DNS = "192.168.1.254 9.9.9.9 1.1.1.1";
     Domains = "~lan";
     ResolveUnicastSingleLabel = true;
   };
@@ -239,15 +239,17 @@ in
   # Drive resolved AFTER wg-quick is fully up — avoids a race we hit with PostUp.
   # ExecStopPost reverts so leaving the tunnel doesn't leak stale state.
   #
-  # Point the tunnel straight at pihole (192.168.1.100), reachable through the
-  # tunnel, rather than at the server's CoreDNS container (10.69.43.1). wg0's
-  # `~.` route sends EVERY name (including .lan) to pihole, so gravity/filtering
-  # applies and there is no CoreDNS middleman to keep alive across restarts.
-  # Quad9 then Cloudflare are secondaries: if pihole is unreachable through
-  # the tunnel, DNS falls back instead of hanging.
+  # Point the tunnel straight at the Pi-hole VIP (192.168.1.254), reachable
+  # through the tunnel, rather than at the server's CoreDNS container
+  # (10.69.43.1). The VIP is held by whichever Pi-hole node is alive
+  # (keepalived/VRRP), so this single address survives either node failing.
+  # wg0's `~.` route sends EVERY name (including .lan) to it, so
+  # gravity/filtering applies and there is no CoreDNS middleman to keep alive
+  # across restarts. Quad9 then Cloudflare are secondaries: if the VIP is
+  # unreachable through the tunnel, DNS falls back instead of hanging.
   systemd.services.wg-quick-wg0.serviceConfig = {
     ExecStartPost = [
-      "${resolvectl} dns    wg0 192.168.1.100 9.9.9.9 1.1.1.1"
+      "${resolvectl} dns    wg0 192.168.1.254 9.9.9.9 1.1.1.1"
       "${resolvectl} domain wg0 '~.'"
     ];
     ExecStopPost = "-${resolvectl} revert wg0";
