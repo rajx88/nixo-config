@@ -100,6 +100,8 @@ in
   ];
 
   # Home desktop: lock slowly. Away (laptop) keeps the 5 min default.
+  # Screen-off stays at the 5 min default; the 2-min locked sleep applies
+  # via dpmsTimeoutLocked.
   idle.lockTimeout = 30 * 60;
 
   monitorProfiles = {
