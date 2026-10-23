@@ -61,6 +61,9 @@
   services.ssh-tunnels.enable = true;
 
   # Home (docked to the 4K pair): lock lazily. Anywhere else: 5 min default.
+  # Screen-off stays at the 5 min default everywhere — dark at 5 min at home
+  # while the session stays unlocked until 30 min. The 2-min locked sleep
+  # applies via dpmsTimeoutLocked.
   idle.lockTimeoutHome = 30 * 60;
 
   monitorProfiles = {

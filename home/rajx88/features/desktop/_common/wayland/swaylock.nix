@@ -134,6 +134,50 @@ let
 
   # Skip when hypridle is handling idle/lock (e.g. hyprland uses hyprlock/hypridle)
   enabled = !config.services.hypridle.enable;
+
+  # Lock detector: swaylock is up iff the guard passes. Used for the
+  # lock-gated "go dark sooner" stage, run at fire time.
+  isLocked = pkgs.writeShellApplication {
+    name = "idle-is-locked";
+    runtimeInputs = [ pkgs.procps ];
+    text = ''
+      pgrep -x swaylock >/dev/null 2>&1
+    '';
+  };
+
+  # Screen-off stages. dpmsTimeout applies away from home; at home the screen
+  # stays on longer (dpmsTimeoutHome) while the session stays unlocked;
+  # whenever the lock screen is up the outputs sleep after dpmsTimeoutLocked.
+  dpmsStages =
+    (lib.optionals (config.idle.dpmsTimeoutLocked != null)
+      [
+        {
+          timeout = config.idle.dpmsTimeoutLocked;
+          command = "if ${isLocked}/bin/idle-is-locked; then ${wlopmOff}/bin/wlopm-off; fi";
+          resumeCommand = "${wlopmOn}/bin/wlopm-on";
+        }
+      ])
+    ++ (if config.idle.dpmsTimeoutHome == null then
+      [
+        {
+          timeout = config.idle.dpmsTimeout;
+          command = "${wlopmOff}/bin/wlopm-off";
+          resumeCommand = "${wlopmOn}/bin/wlopm-on";
+        }
+      ]
+    else
+      [
+        {
+          timeout = config.idle.dpmsTimeout;
+          command = "if ! ${atHome}/bin/idle-at-home; then ${wlopmOff}/bin/wlopm-off; fi";
+          resumeCommand = "${wlopmOn}/bin/wlopm-on";
+        }
+        {
+          timeout = config.idle.dpmsTimeoutHome;
+          command = "if ${atHome}/bin/idle-at-home; then ${wlopmOff}/bin/wlopm-off; fi";
+          resumeCommand = "${wlopmOn}/bin/wlopm-on";
+        }
+      ]);
 in
 {
   programs.swaylock = lib.mkIf enabled {
@@ -195,14 +239,9 @@ in
         })
       ++
         # Power off outputs (independent of the lock: at home the screen goes
-        # dark at 5 min while the session stays unlocked until 30 min)
-        [
-          {
-            timeout = config.idle.dpmsTimeout;
-            command = "${wlopmOff}/bin/wlopm-off";
-            resumeCommand = "${wlopmOn}/bin/wlopm-on";
-          }
-        ]
+        # dark at 10 min while the session stays unlocked until 30 min;
+        # away it goes dark at 5 min)
+        dpmsStages
       ++
         # If discharging: suspend
         [
