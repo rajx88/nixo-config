@@ -84,6 +84,15 @@ in
       noctalia &
       mprofile auto &
       mango-lid-state &
+
+      # Re-race the swayidle unit. It carries ConditionEnvironment=WAYLAND_DISPLAY
+      # and After=graphical-session.target, but mango imports the variable into the
+      # systemd user manager a beat after the unit's start attempt. A skipped
+      # condition is not a failure, so Restart=always never fires and the unit sits
+      # dead for the whole session. Import the env (it is live here, inside mango)
+      # and kick the unit once.
+      systemctl --user import-environment WAYLAND_DISPLAY DISPLAY
+      systemctl --user start swayidle.service
     '';
   };
 
