@@ -3,6 +3,7 @@
     kubectl
     kubectx
     talosctl
+    omnictl
 
     argo-rollouts
     kubie
@@ -12,5 +13,6 @@
   home.persistence."/persist".directories = [
     ".kube"
     ".talos"
+    ".config/omni"
   ];
 }
