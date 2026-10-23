@@ -85,6 +85,14 @@ let
   # falling back to swiftshader.
   gpuLibPath = "${lib.makeLibraryPath [ libglvnd ]}:/run/opengl-driver/lib";
 
+  # Every terminal copy on Wayland goes through resources/bin/orca-wayland-clipboard.
+  # That helper dlopen()s libwayland-client.so.0 at runtime instead of linking it,
+  # so autoPatchelfHook cannot add it to DT_NEEDED. NixOS has no /usr/lib for
+  # dlopen to fall back on, so without this the helper exits 69 (EX_UNAVAILABLE)
+  # and the main process reports "Wayland clipboard write failed" — nothing
+  # reaches the clipboard.
+  waylandLibPath = "${lib.getLib wayland}/lib";
+
   # Electron's Linux notification backend dlopen()s libnotify at runtime
   # (shell/browser/notifications/linux/libnotify_notification.cc). autoPatchelfHook
   # only sees DT_NEEDED entries, so a dlopen() target is never recorded and must be
@@ -193,6 +201,7 @@ stdenv.mkDerivation {
       --add-flags "--no-sandbox" \
       --inherit-argv0 \
       --prefix LD_LIBRARY_PATH : "${gpuLibPath}" \
+      --prefix LD_LIBRARY_PATH : "${waylandLibPath}" \
       --prefix LD_LIBRARY_PATH : "${notificationLibPath}" \
       --prefix GI_TYPELIB_PATH : "${lib.getLib at-spi2-core}/lib/girepository-1.0" \
       --prefix PATH : "${runtimePath}"
@@ -204,6 +213,7 @@ stdenv.mkDerivation {
     # display and no sandbox flags.
     makeWrapper $out/lib/orca-ide/resources/bin/orca-ide $out/bin/orca-ide \
       --prefix LD_LIBRARY_PATH : "${gpuLibPath}" \
+      --prefix LD_LIBRARY_PATH : "${waylandLibPath}" \
       --prefix LD_LIBRARY_PATH : "${notificationLibPath}" \
       --prefix PATH : "${runtimePath}"
 
