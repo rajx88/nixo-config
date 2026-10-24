@@ -2,6 +2,7 @@
   home.packages = with pkgs; [
     kubectl
     kubectx
+    kubelogin-oidc # provides kubectl-oidc_login, used by Omni kubeconfigs
     talosctl
     omnictl
 
