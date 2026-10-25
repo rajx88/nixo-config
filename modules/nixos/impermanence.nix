@@ -51,7 +51,6 @@ with lib;
       boot.initrd = lib.mkMerge [
         (lib.mkIf (cfg_impermanence.enable && cfg_encrypt.enable) {
           systemd = {
-            enable = true;
             services.rollback = {
               description = "Rollback BTRFS root subvolume to a pristine state";
               wantedBy = [
