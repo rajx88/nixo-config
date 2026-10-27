@@ -8,7 +8,7 @@
 }:
 stdenv.mkDerivation rec {
   pname = "opencode";
-  version = "2.1.4";
+  version = "2.2.0";
 
   # v2 publishes no GitHub release assets; the prebuilt CLI binary is served
   # from opencode.ai's own CDN, version-pinned and immutable. The manifest at
@@ -17,7 +17,7 @@ stdenv.mkDerivation rec {
   # root-level `opencode` binary, so installPhase is unchanged.
   src = fetchurl {
     url = "https://opencode.ai/files/bin/${version}/opencode-linux-x64.tar.gz";
-    hash = "sha256-Ltr4z5boHexe6ZajGWsDNFz1nloWc9g6RZm7SvxcX20=";
+    hash = "sha256-bVl5cKjMRI8bmp9kVTJYSzOd06uVg7tfBj8T2D5Udo8=";
   };
 
   nativeBuildInputs = [
