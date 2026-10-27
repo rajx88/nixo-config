@@ -1,4 +1,4 @@
-{
+{ config, lib, ... }: {
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
@@ -35,6 +35,16 @@
       };
     };
   };
+
+  # Sandboxed apps (Bruno is an appimageTools/bwrap FHS env) run in a user
+  # namespace that only maps our uid, so the root-owned Nix store symlink target
+  # shows up as "nobody" and OpenSSH aborts with "Bad owner or permissions on
+  # ~/.ssh/config". Install a user-owned copy instead of home-manager's symlink.
+  home.file.".ssh/config".enable = false;
+  home.activation.sshConfigCopy = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    run rm -f "$HOME/.ssh/config"
+    run install -Dm600 ${config.home.file.".ssh/config".source} "$HOME/.ssh/config"
+  '';
 
   home.persistence."/persist".directories = [ ".ssh" ];
 }
