@@ -6,9 +6,6 @@
 }:
 {
   imports = [
-    inputs.nix-barracudavpn.homeManagerModules.proxy
-    inputs.nix-barracudavpn.homeManagerModules.ssh-tunnels
-
     ./global
 
     ./features/desktop/mango
@@ -55,10 +52,6 @@
     ./features/dev/t3code.nix
     ./features/dev/orca.nix
   ];
-
-  programs.proxy.pac.enable = true;
-
-  services.ssh-tunnels.enable = true;
 
   # Home (docked to the 4K pair): lock lazily. Anywhere else: 5 min default.
   # Screen-off stays at the 5 min default everywhere — dark at 5 min at home
