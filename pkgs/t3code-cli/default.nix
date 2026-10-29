@@ -7,14 +7,14 @@
 }:
 let
   pname = "t3code-cli";
-  version = "0.1.3";
+  version = "0.1.4";
 in
 stdenv.mkDerivation {
   inherit pname version;
 
   src = fetchurl {
     url = "https://github.com/pingdotgg/t3code/releases/download/v${version}/t3-${version}-linux-x64.tar.gz";
-    hash = "sha256-Y80PBUfu9iu07OJ/p3m7+eK6hTHMaFQlaLqeeIONxoQ=";
+    hash = "sha256-jXWa/4sg8G/S9NIGU7CbO9/6uI3ud1KGZYIAXLTwMbk=";
   };
 
   # The release root is the directory the `t3` Node-SEA binary resolves its

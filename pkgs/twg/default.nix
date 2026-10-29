@@ -5,7 +5,7 @@
   autoPatchelfHook,
 }:
 let
-  version = "1.3.9";
+  version = "1.4.2";
 in
 stdenv.mkDerivation {
   pname = "twg";
@@ -13,7 +13,7 @@ stdenv.mkDerivation {
 
   src = fetchurl {
     url = "https://teamwork-graph.atlassian.com/cli/twg-linux-x64-v${version}";
-    hash = "sha256-ZqEr1YQoLsVteWY9piVzWHeVErtlbFUJT7ODXGW+HfM=";
+    hash = "sha256-CGZixqoNnj2GyfLwABFbjMJI1jFSqx+T4iLpVRXQUgA=";
   };
 
   nativeBuildInputs = [ autoPatchelfHook ];
