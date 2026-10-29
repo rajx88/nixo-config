@@ -256,27 +256,6 @@
         "type": "github"
       }
     },
-    "nix-barracudavpn": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "systems": "systems_3"
-      },
-      "locked": {
-        "lastModified": 1793269828,
-        "narHash": "sha256-1Hn9JQU+VDh/EcFvAvBbFPQB1P2P7h2uLkAvP3N4oAM=",
-        "ref": "refs/heads/main",
-        "rev": "f869cd06ac586b8ecc10c29eeb61e0aa0bd2a2c2",
-        "revCount": 27,
-        "type": "git",
-        "url": "ssh://git@github.com/rajx88/nix-barracudavpn"
-      },
-      "original": {
-        "type": "git",
-        "url": "ssh://git@github.com/rajx88/nix-barracudavpn"
-      }
-    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1792842277,
@@ -401,10 +380,9 @@
         "impermanence": "impermanence",
         "lanzaboote": "lanzaboote",
         "mango": "mango",
-        "nix-barracudavpn": "nix-barracudavpn",
         "nixpkgs": "nixpkgs_4",
         "nixpkgs-stable": "nixpkgs-stable",
-        "systems": "systems_4",
+        "systems": "systems_3",
         "zen-browser": "zen-browser"
       }
     },
@@ -483,21 +461,6 @@
       }
     },
     "systems_3": {
-      "locked": {
-        "lastModified": 1689347949,
-        "narHash": "sha256-12tWmuL2zgBgZkdoB6qXZsgJEH9LR3oUgpaQq2RbI80=",
-        "owner": "nix-systems",
-        "repo": "default-linux",
-        "rev": "31732fcf5e8fea42e59c2488ad31a0e651500f68",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-systems",
-        "repo": "default-linux",
-        "type": "github"
-      }
-    },
-    "systems_4": {
       "locked": {
         "lastModified": 1689347949,
         "narHash": "sha256-12tWmuL2zgBgZkdoB6qXZsgJEH9LR3oUgpaQq2RbI80=",

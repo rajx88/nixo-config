@@ -11,8 +11,6 @@
     inputs.hardware.nixosModules.common-gpu-nvidia
     inputs.hardware.nixosModules.common-pc-ssd
 
-    inputs.nix-barracudavpn.nixosModules.barracudavpn
-
     ./hardware-configuration.nix
     ../../tmpl/efi-luks-btrfs-impermanence.nix
 
@@ -80,7 +78,6 @@
     # adb.enable = true;
     dconf.enable = true;
     # kdeconnect.enable = true;
-    barracudavpn.enable = true;
   };
 
   services.hardware.openrgb.enable = true;
