@@ -43,11 +43,6 @@
       inputs.home-manager.follows = "home-manager";
     };
 
-    nix-barracudavpn = {
-      url = "git+ssh://git@github.com/rajx88/nix-barracudavpn";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     claude-code.url = "github:sadjow/claude-code-nix";
 
     mango = {
