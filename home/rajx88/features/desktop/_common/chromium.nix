@@ -1,7 +1,5 @@
 {
   pkgs,
-  config,
-  lib,
   ...
 }:
 {
@@ -9,10 +7,6 @@
     enable = true;
     extensions = [
       { id = "aeblfdkhhhdcdjpifhhbdiojplfjncoa"; } # 1Password
-    ];
-    # Set PAC URL via command line if enabled
-    commandLineArgs = lib.optionals (config.programs.proxy.pac.enable or false) [
-      "--proxy-pac-url=${config.programs.proxy.pac.url}"
     ];
   };
 
