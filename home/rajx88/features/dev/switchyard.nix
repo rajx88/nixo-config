@@ -5,15 +5,20 @@
   ...
 }:
 let
-  # NVIDIA NeMo Switchyard: local model router in front of the homelab LiteLLM
+  # NVIDIA NeMo Switchyard: local model router in front of the homelab new-api
   # gateway. Runs on the laptop (not the homelab) as a localhost-only user
   # service. Agents pick a route per task:
   #   sy/claude-auto  — Haiku by default, Sonnet when the agent struggles
   #   sy/claude-heavy — Sonnet by default, Opus when the agent struggles
-  # Claude Code is intentionally NOT routed through this; it keeps its own
-  # opus/sonnet/haiku mapping straight to LiteLLM.
+  # Claude Code is intentionally NOT routed through this. new-api serves both
+  # Copilot subscriptions; switchyard only picks a model per task.
+  #
+  # The router ships no UI and clients only see the route alias. The selected
+  # model is reported per request in the `x-model-router-selected-model`
+  # response header, in the response body's `model` field, and in
+  # ~/.local/state/switchyard/routing.jsonl.
   port = 4123;
-  litellmDir = "${config.home.homeDirectory}/.local/share/litellm";
+  gatewayDir = "${config.home.homeDirectory}/.local/share/newapi";
   stateDir = "${config.home.homeDirectory}/.local/state/switchyard";
 
   model = name: "github_copilot/${name}";
@@ -40,31 +45,51 @@ let
     reasoning = true;
     vision = true;
     context_window = contextWindow;
+    # The built-in vocabulary only knows read/write/edit/bash/grep/glob/list and
+    # a few patch tools. Agent harnesses hand us other names, and an unknown
+    # tool counts as churn: every turn scored "spinning" ~0.75, confidence
+    # stayed under 0.5, and all 16 decisions in one session fall-opened to the
+    # efficient tier. `new` suppresses that false churn signal without favoring
+    # a tier; fetches and code-graph reads are investigation.
+    # Built-in names must stay out (reclassifying them is rejected).
+    tool_semantics = {
+      observe = [
+        "codegraph_codegraph_explore"
+        "codegraph_explore"
+        "webfetch"
+        "websearch"
+      ];
+      new = [
+        "execute"
+        "skill"
+        "question"
+      ];
+    };
   };
 
-  # base_url is filled in at service start from ~/.local/share/litellm/base-url
+  # base_url is filled in at service start from ~/.local/share/newapi/base-url
   # so the gateway hostname stays out of git.
   routes = (pkgs.formats.toml { }).generate "switchyard-routes.toml" {
     schema_version = 1;
-    fallback_client = "litellm";
-    llm_clients.litellm = {
+    fallback_client = "newapi";
+    llm_clients.newapi = {
       format = "anthropic_messages";
-      base_url = "@LITELLM_BASE_URL@";
-      api_key_env = "LITELLM_API_KEY";
+      base_url = "@NEWAPI_BASE_URL@";
+      api_key_env = "NEWAPI_API_KEY";
       max_retries = 2;
     };
     targets = {
       haiku = {
         id = model "claude-haiku-5.5";
-        llm_client = "litellm";
+        llm_client = "newapi";
       };
       sonnet = {
         id = model "claude-sonnet-5.5";
-        llm_client = "litellm";
+        llm_client = "newapi";
       };
       opus = {
         id = model "claude-opus-5.5";
-        llm_client = "litellm";
+        llm_client = "newapi";
       };
     };
     routes = {
@@ -86,21 +111,21 @@ let
         SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
       }
       ''
-        sed 's|@LITELLM_BASE_URL@|https://example.invalid|' ${routes} > check.toml
-        LITELLM_API_KEY=dummy ${lib.getExe pkgs.switchyard} --config check.toml --dry-run
+        sed 's|@NEWAPI_BASE_URL@|https://example.invalid|' ${routes} > check.toml
+        NEWAPI_API_KEY=dummy ${lib.getExe pkgs.switchyard} --config check.toml --dry-run
         cp ${routes} $out
       '';
 
   start = pkgs.writeShellScript "switchyard-start" ''
     set -euo pipefail
-    dir=${litellmDir}
+    dir=${gatewayDir}
     key=$dir/switchyard-key
-    LITELLM_API_KEY=$(cat "$key")
-    export LITELLM_API_KEY
+    NEWAPI_API_KEY=$(cat "$key")
+    export NEWAPI_API_KEY
     base=$(cat "$dir/base-url")
     cfg="$XDG_RUNTIME_DIR/switchyard/routes.toml"
     mkdir -p "$(dirname "$cfg")" ${stateDir}
-    ${pkgs.gnused}/bin/sed "s|@LITELLM_BASE_URL@|$base|" ${checkedRoutes} > "$cfg"
+    ${pkgs.gnused}/bin/sed "s|@NEWAPI_BASE_URL@|$base|" ${checkedRoutes} > "$cfg"
     exec ${lib.getExe pkgs.switchyard} --config "$cfg" \
       --host 127.0.0.1 --port ${toString port} \
       --routing-log-file ${stateDir}/routing.jsonl
@@ -116,7 +141,7 @@ in
       # Wait for the impermanence bind mount holding base-url and the key;
       # a ConditionPathExists here races the mount on first activation.
       RequiresMountsFor = [
-        litellmDir
+        gatewayDir
         stateDir
       ];
     };
@@ -130,7 +155,7 @@ in
   };
 
   # opencode: Anthropic-compatible provider pointing at the local router.
-  # Switchyard holds the LiteLLM key itself, so the client key is a dummy.
+  # Switchyard holds the new-api key itself, so the client key is a dummy.
   # Contributed to the Nix-owned overrides.json (see features/dev/opencode.nix)
   # rather than programs.opencode.settings, so opencode.json stays unmanaged
   # and writable by tooling.
@@ -190,7 +215,7 @@ in
   };
 
   home.persistence."/persist".directories = [
-    ".local/share/litellm" # base-url, switchyard-key (not in git)
+    ".local/share/newapi" # base-url, switchyard-key (not in git)
     ".local/state/switchyard" # routing.jsonl
   ];
 }
