@@ -86,6 +86,8 @@ in
     # ./features/dev/codex.nix
 
     ./features/dev/coding-agents.nix
+    ./features/dev/pi-coding-agent.nix
+    ./features/dev/copilot-cli.nix
     ./features/dev/cursor.nix
     ./features/dev/opencode.nix
     ./features/dev/opencommit.nix
