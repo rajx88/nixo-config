@@ -4,6 +4,7 @@
   # example = pkgs.callPackage ./example { };
   opencode = pkgs.callPackage ./opencode { };
   pi-coding-agent = pkgs.callPackage ./pi-coding-agent { };
+  copilot-cli = pkgs.callPackage ./copilot-cli { };
   codegraph = pkgs.callPackage ./codegraph { };
   omp = pkgs.callPackage ./omp { };
   herdr = pkgs.callPackage ./herdr { };
