@@ -186,11 +186,18 @@ in
     };
   };
 
-  # NetBird is now the tunnel of record (exit node). The WG health check and
-  # its link-event trigger are intentionally NOT auto-started; the tunnel is
-  # brought up by hand with `wg-manual up` when needed (break-glass).
-  # To re-enable automation, restore the wantedBy/timer/dispatcher blocks.
-  networking.networkmanager.dispatcherScripts = [ ];
+  # Wake the health check on link events (non-blocking — NM must not wait on
+  # the pings/sleeps inside wg-health).
+  networking.networkmanager.dispatcherScripts = [
+    {
+      type = "basic";
+      source = pkgs.writeShellScript "wg-dispatch" ''
+        case "$2" in up|dhcp4-change|connectivity-change|down) ;; *) exit 0 ;; esac
+        case "$1"  in wg0|lo|docker*|veth*|br-*|virbr*|tailscale*|"") exit 0 ;; esac
+        ${systemctl} start --no-block wg-health.service
+      '';
+    }
+  ];
 
   networking.wg-quick.interfaces = {
     # Full-tunnel for IPv4 and DNS through home.
@@ -251,8 +258,8 @@ in
   # Health check / fallback / notify (see wgHealth above): every minute,
   # plus on boot and on NM link events.
   systemd.services.wg-health = {
-    description = "WireGuard tunnel health check with fallback (manual; auto-start disabled)";
-    # wantedBy removed: NetBird is the tunnel of record now.
+    description = "WireGuard tunnel health check with fallback";
+    wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       Type = "oneshot";
       ExecStart = "${wgHealth}";
@@ -261,28 +268,12 @@ in
   };
 
   systemd.timers.wg-health = {
-    description = "Periodic WireGuard tunnel health check (manual; timer disabled)";
-    # wantedBy removed: nothing starts this automatically.
+    description = "Periodic WireGuard tunnel health check";
+    wantedBy = [ "timers.target" ];
     timerConfig = {
       OnBootSec = "45s";
       OnUnitActiveSec = "60s";
       AccuracySec = "10s";
     };
   };
-
-  # Break-glass shortcut: `wg-manual up|down|status` (pkexec prompts via polkit).
-  environment.systemPackages = [
-    (pkgs.writeShellScriptBin "wg-manual" ''
-      case "''${1:-}" in
-        up|start)
-          exec ${pkgs.polkit}/bin/pkexec ${systemctl} start wg-quick-wg0 ;;
-        down|stop)
-          exec ${pkgs.polkit}/bin/pkexec ${systemctl} stop wg-quick-wg0 ;;
-        status)
-          exec ${systemctl} status --no-pager wg-quick-wg0 ;;
-        *)
-          echo "usage: wg-manual up|down|status" >&2; exit 2 ;;
-      esac
-    '')
-  ];
 }
