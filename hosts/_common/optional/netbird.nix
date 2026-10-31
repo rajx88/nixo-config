@@ -41,10 +41,11 @@
     };
   };
 
-  # T3 Code (:3773) is reachable ONLY via the overlay interface — LAN clients
-  # cannot reach it, which is the inside/outside boundary we designed for.
-  # Loopback is always allowed, so the desktop app's local attach keeps working.
+  # T3 Code (:3773) is reachable via the overlay interface and, for phones and
+  # laptops on home Wi-Fi without NetBird, from the LAN subnet. Both paths still
+  # require a T3 pairing token for any non-loopback connection.
   networking.firewall.interfaces.wt0.allowedTCPPorts = [ 3773 ];
+  networking.firewall.extraInputRules = "-s 192.168.1.0/24 -p tcp --dport 3773 -j ACCEPT";
 
   # Peer identity must survive impermanence, or every boot re-enrols as a new
   # device (and the old peer lingers in the dashboard forever).
