@@ -45,7 +45,13 @@
   # laptops on home Wi-Fi without NetBird, from the LAN subnet. Both paths still
   # require a T3 pairing token for any non-loopback connection.
   networking.firewall.interfaces.wt0.allowedTCPPorts = [ 3773 ];
-  networking.firewall.extraInputRules = "-s 192.168.1.0/24 -p tcp --dport 3773 -j ACCEPT";
+
+  # `extraInputRules` is nftables-only, so with this host's iptables backend the
+  # home-subnet exception has to be appended via extraCommands. Scoping by
+  # source keeps the port closed on foreign networks (cafe Wi-Fi, etc.).
+  networking.firewall.extraCommands = ''
+    iptables -w -A nixos-fw -s 192.168.1.0/24 -p tcp --dport 3773 -j nixos-fw-accept
+  '';
 
   # Peer identity must survive impermanence, or every boot re-enrols as a new
   # device (and the old peer lingers in the dashboard forever).
