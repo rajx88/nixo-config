@@ -33,7 +33,7 @@ let
     fi
     for ifc in $(${pkgs.iproute2}/bin/ip -o link show up \
       | ${pkgs.gawk}/bin/awk -F': ' '{print $2}' \
-      | ${pkgs.gnugrep}/bin/grep -v -E '^(wg|lo|docker|veth|br-|virbr|tailscale|wl)'); do
+      | ${pkgs.gnugrep}/bin/grep -v -E '^(wg|wt|lo|docker|veth|br-|virbr|tailscale|wl)'); do
       for host in 192.168.1.1 192.168.1.254; do
         ${ping} -c1 -W1 -I "$ifc" -n "$host" >/dev/null 2>&1 && exit 0
       done

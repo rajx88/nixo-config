@@ -66,7 +66,10 @@ in
       # ExecStartPre, so logging into a not-yet-created directory fails the
       # whole start (209/STDOUT). `journalctl --user -u t3code` has it all.
 
-      ExecStart = "${pkgs.t3code-cli}/bin/t3 serve --host 127.0.0.1 --port 3773";
+      # Bind all interfaces; reachability is scoped by the nftables rule in
+      # hosts/_common/optional/netbird.nix, which allows TCP 3773 on `wt0` only.
+      # Loopback stays open for the desktop app's local attach.
+      ExecStart = "${pkgs.t3code-cli}/bin/t3 serve --host 0.0.0.0 --port 3773";
 
       KillMode = "mixed";
       OOMPolicy = "continue";

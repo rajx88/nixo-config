@@ -25,6 +25,7 @@
     ../_common/optional/pipewire.nix
     ../_common/optional/net-debug.nix
     ../_common/optional/libvirt.nix
+    ../_common/optional/netbird.nix
   ];
 
   host.filesystem = {
