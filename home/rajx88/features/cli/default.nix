@@ -36,7 +36,7 @@
     nil # Nix LSP
     nixfmt # Nix formatter
 
-    ltex-ls # Spell checking LSP
+    ltex-ls-plus # Spell checking LSP (ltex-ls was archived upstream)
 
     fastfetch # nix btw
 
