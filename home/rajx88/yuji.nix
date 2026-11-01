@@ -18,6 +18,7 @@
     ./features/desktop/optional/plexdesktop.nix
     ./features/desktop/optional/jellyfin.nix
     ./features/desktop/optional/obsidian.nix
+    ./features/games/pokebonk.nix
     ./features/games/steam.nix
 
     ./features/desktop/optional/keymapp.nix

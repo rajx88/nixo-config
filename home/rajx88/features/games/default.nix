@@ -1,6 +1,7 @@
 { pkgs, ... }: {
   imports = [
     ./lutris.nix
+    ./pokebonk.nix
     ./steam.nix
   ];
 
