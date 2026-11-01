@@ -18,4 +18,5 @@
   t3code-cli = pkgs.callPackage ./t3code-cli { };
   orca-ide = pkgs.callPackage ./orca-ide { };
   bruno = pkgs.callPackage ./bruno { };
+  pokebonk = pkgs.callPackage ./pokebonk { };
 }
