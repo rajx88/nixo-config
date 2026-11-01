@@ -51,14 +51,14 @@
 }:
 let
   pname = "t3code";
-  version = "0.1.5";
+  version = "0.1.6";
 in
 stdenv.mkDerivation {
   inherit pname version;
 
   src = fetchurl {
     url = "https://github.com/pingdotgg/t3code/releases/download/v${version}/T3-Code-${version}-amd64.deb";
-    hash = "sha256-oczjedd7TutmUPMK5KuRjEJVl+0st0A38hWWyJko+n4=";
+    hash = "sha256-b0CQHfhZEO80XL916pIcXgJMZQmUzmjWgGp9D0k+DdU=";
   };
 
   sourceRoot = ".";
