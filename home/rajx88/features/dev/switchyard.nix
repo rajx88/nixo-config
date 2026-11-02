@@ -214,6 +214,26 @@ in
     };
   };
 
+  # pi: same anthropic-messages endpoint as omp. The SDK appends /v1/messages,
+  # so baseUrl has no /v1. Switchyard holds the real key; apiKey is a dummy.
+  home.file.".pi/agent/models.json".text = builtins.toJSON {
+    providers.switchyard = {
+      baseUrl = "http://127.0.0.1:${toString port}";
+      api = "anthropic-messages";
+      apiKey = "switchyard-local";
+      models = lib.mapAttrsToList (id: name: {
+        inherit id name;
+        reasoning = true;
+        input = [
+          "text"
+          "image"
+        ];
+        contextWindow = contextWindow;
+        maxTokens = maxOutput;
+      }) routeNames;
+    };
+  };
+
   home.persistence."/persist".directories = [
     ".local/share/newapi" # base-url, switchyard-key (not in git)
     ".local/state/switchyard" # routing.jsonl
