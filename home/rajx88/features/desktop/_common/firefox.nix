@@ -3,10 +3,14 @@
   inputs,
   ...
 }:
+let
+  uaSwitcher = (import ./ua-switcher-policies.nix { }).uaSwitcherManagedPolicy;
+in
 {
   programs.firefox = {
     enable = true;
     profiles.rajx88.bookmarks = { };
+    policies = uaSwitcher;
   };
 
   # xdg.mimeApps.defaultApplications = {

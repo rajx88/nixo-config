@@ -32,6 +32,6 @@
         Cryptomining = true;
         Fingerprinting = true;
       };
-    };
+    } // (import ./ua-switcher-policies.nix { }).uaSwitcherManagedPolicy;
   };
 }
