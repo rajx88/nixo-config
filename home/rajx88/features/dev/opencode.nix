@@ -89,7 +89,10 @@ in
 
     xdg.configFile."opencode/overrides.json".text = builtins.toJSON config.opencodeOverrides;
 
-    home.sessionVariables.OPENCODE_CONFIG = "$HOME/.config/opencode/overrides.json";
+    # One definition, written to environment.d: the systemd user manager hands
+    # it to every user service (t3code's server) and to everything launched
+    # from the graphical session (terminals, so shells inherit it too).
+    systemd.user.sessionVariables.OPENCODE_CONFIG = "${config.xdg.configHome}/opencode/overrides.json";
 
     # Shared agent state (~/.hindsight, ~/.agents, the skills CLI registry) is
     # persisted in features/dev/coding-agents.nix — not tied to this harness.
