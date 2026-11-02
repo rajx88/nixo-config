@@ -60,7 +60,7 @@
 }:
 let
   pname = "orca-ide";
-  version = "1.4.245";
+  version = "1.4.246";
 
   # The app shells out to python for notebook kernels and to the X11/Wayland
   # clipboard + input tools for its computer-use path (declared as Depends in
@@ -107,7 +107,7 @@ stdenv.mkDerivation {
 
   src = fetchurl {
     url = "https://github.com/stablyai/orca/releases/download/v${version}/orca-ide_${version}_amd64.deb";
-    hash = "sha256-VEIOItSd2p32btTpQ7YoRMlV1P2dXBBZv493ArdgvIk=";
+    hash = "sha256-6HBv6zkKNLvPmkCMtGXeekfXIUgPkh7CtWzxjq+It88=";
   };
 
   sourceRoot = ".";
