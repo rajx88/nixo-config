@@ -154,13 +154,18 @@ in
   # itself reported success.
   networking.networkmanager.unmanaged = [ "interface-name:wg0" ];
 
-  # Global routing domain: every *.lan query goes to pihole regardless of
-  # per-link DNS. When wg0 is up, its per-link `~.` overrides and routes
-  # ALL DNS through the tunnel. Public resolvers back pihole up so a dead
-  # pihole (or a link that hands out no DNS) never hangs resolution.
-  # Order: pihole → Quad9 → Cloudflare.
+  # NOTE: this list contains the pihole VIP only — NO public resolvers.
+  # Previously "192.168.1.254 9.9.9.9 1.1.1.1": resolved round-robins
+  # equally-matched scopes, so for bare names outside ~lan (e.g.
+  # nb.rx88.ws, a hairpin-NAT split-DNS record) it would sometimes ask
+  # Quad9/Cloudflare, get the real public IP, and the cache would serve a
+  # LAN-unroutable answer until flushed — silently breaking the NetBird
+  # management connection. Public fallback for "away" networks comes from
+  # per-link DHCP DNS; the full-tunnel fallback lives on wg0 (~. routing
+  # through the tunnel's DNS below).
   services.resolved.settings.Resolve = {
-    DNS = "192.168.1.254 9.9.9.9 1.1.1.1";
+    # See the comment directly above for the rationale (pihole VIP only).
+    DNS = "192.168.1.254 192.168.1.53";
     Domains = "~lan";
     ResolveUnicastSingleLabel = true;
   };
