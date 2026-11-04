@@ -53,6 +53,43 @@
     iptables -w -A nixos-fw -s 192.168.1.0/24 -p tcp --dport 3773 -j nixos-fw-accept
   '';
 
+  # Exit-node safety net. With an exit node active, NetBird installs
+  # `not fwmark 0x1bd00 lookup 7120` (default dev wt0). In 0.82 its management
+  # and signal gRPC sockets are not reliably fwmarked, so they get routed into
+  # the tunnel, which can only come up via signal: a deadlock that also kills
+  # the host's internet. Pin the control plane to the normal routing table with
+  # a rule that is evaluated before NetBird's (priority 100 < 105/110).
+  systemd.services.netbird-control-bypass = {
+    description = "Keep NetBird control plane out of the exit-node tunnel";
+    wantedBy = [ "multi-user.target" ];
+    wants = [ "network-online.target" ];
+    after = [ "network-online.target" ];
+    path = [
+      pkgs.iproute2
+      pkgs.glibc.bin
+      pkgs.gawk
+    ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      Restart = "on-failure";
+      RestartSec = 10;
+    };
+    script = ''
+      ips=$(getent ahostsv4 nb.rx88.ws | awk '{print $1}' | sort -u)
+      [ -n "$ips" ] || exit 1
+      for ip in $ips; do
+        ip rule del priority 100 to "$ip" lookup main 2>/dev/null || true
+        ip rule add priority 100 to "$ip" lookup main
+      done
+    '';
+    preStop = ''
+      for ip in $(getent ahostsv4 nb.rx88.ws | awk '{print $1}' | sort -u); do
+        ip rule del priority 100 to "$ip" lookup main 2>/dev/null || true
+      done
+    '';
+  };
+
   # Peer identity must survive impermanence, or every boot re-enrols as a new
   # device (and the old peer lingers in the dashboard forever).
   environment.persistence."/persist".directories = [ "/var/lib/netbird" ];
