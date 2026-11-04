@@ -66,7 +66,7 @@
     after = [ "network-online.target" ];
     path = [
       pkgs.iproute2
-      pkgs.glibc.bin
+      pkgs.getent
       pkgs.gawk
     ];
     serviceConfig = {
