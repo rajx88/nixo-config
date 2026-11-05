@@ -11,11 +11,10 @@ let
   hasRadar = lib.any (p: p ? pname && p.pname == "radar") config.home.packages;
 
   radarServerEntry = lib.optionalString hasRadar ''
-    ,
-        "radar": {
-          "type": "http",
-          "url": "http://localhost:9280/mcp"
-        }'';
+    "radar": {
+      "type": "http",
+      "url": "http://localhost:9280/mcp"
+    }'';
 in
 {
   home.packages = [
@@ -24,17 +23,17 @@ in
   ];
 
   # omp-native user MCP config (discovered at ~/.omp/agent/mcp.json).
-  # These servers are also declared in opencode.nix; omp reads this file
-  # with higher precedence (native config beats OpenCode discovery).
+  #
+  # CodeGraph is not an MCP server here: omp is a pi fork and gets it from the
+  # `@vndv/pi-codegraph` extension, installed by features/dev/codegraph.nix.
+  # The CodeGraph MCP server only exposes `codegraph_explore`, so an MCP entry
+  # would be a strict subset of the extension's 8 tools.
   home.file = {
     ".omp/agent/mcp.json".text = ''
       {
         "$schema": "https://raw.githubusercontent.com/can1357/oh-my-pi/main/packages/coding-agent/src/config/mcp-schema.json",
         "mcpServers": {
-          "codegraph": {
-            "command": "codegraph",
-            "args": ["serve", "--mcp"]
-          }${radarServerEntry}
+          ${radarServerEntry}
         }
       }
     '';

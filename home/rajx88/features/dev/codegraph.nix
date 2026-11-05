@@ -1,5 +1,21 @@
-{ pkgs, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 let
+  # pi (and omp, which is a pi fork) get CodeGraph through the
+  # `@vndv/pi-codegraph` extension rather than MCP: it registers the full
+  # codegraph_* toolset and injects its own usage guidance, where the MCP
+  # server only exposes `codegraph_explore`. Both harnesses install extensions
+  # imperatively into their own agent dirs, so converge them here instead of
+  # leaving a manual step that a fresh system would silently miss.
+  codegraphExtension = "npm:@vndv/pi-codegraph@0.1.11";
+
+  hasPi = lib.any (p: (p.pname or "") == "pi-coding-agent") config.home.packages;
+  hasOmp = lib.any (p: (p.pname or "") == "omp") config.home.packages;
+
   # Rebuild indexed projects whose graph was built by an older CodeGraph
   # extraction engine. Incremental auto-sync never re-extracts unchanged
   # files, so a `codegraph index` full rebuild is the only way to pick up
@@ -29,6 +45,29 @@ let
 in
 {
   home.packages = [ pkgs.codegraph ];
+
+  # Runs on every switch but only installs when the harness's own registry
+  # doesn't list the extension yet; failures are non-fatal so an offline
+  # switch still succeeds.
+  home.activation.codegraphAgentExtensions = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    set -u
+    ${lib.optionalString hasPi ''
+      piBin=${pkgs.pi-coding-agent}/bin/pi
+      if ! "$piBin" list 2>/dev/null | grep -qF "@vndv/pi-codegraph"; then
+        echo "codegraph: installing pi extension ${codegraphExtension}"
+        "$piBin" install ${codegraphExtension} \
+          || echo "codegraph: WARN pi extension install failed (network?)" >&2
+      fi
+    ''}
+    ${lib.optionalString hasOmp ''
+      ompBin=${pkgs.omp}/bin/omp
+      if ! "$ompBin" plugin list --json 2>/dev/null | grep -qF '"@vndv/pi-codegraph"'; then
+        echo "codegraph: installing omp extension ${codegraphExtension}"
+        "$ompBin" install ${codegraphExtension} \
+          || echo "codegraph: WARN omp extension install failed (network?)" >&2
+      fi
+    ''}
+  '';
 
   systemd.user.services.codegraph-reindex = {
     Unit = {
