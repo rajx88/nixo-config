@@ -85,6 +85,24 @@
   services.upower.enable = true;
   services.power-profiles-daemon.enable = true;
 
+  # One-off full charge: `sudo systemctl start battery-full`. Runs until the
+  # battery reads 100% or the adapter is unplugged, then restores the Custom
+  # limit. The limit itself lives in the Dell firmware, see
+  # docs/battery-charge-limit.md.
+  systemd.services.battery-full = {
+    description = "Charge the battery to 100% once, then restore the limit";
+    serviceConfig.RuntimeMaxSec = "12h";
+    script = ''
+      bat=/sys/class/power_supply/BAT0
+      ac=/sys/class/power_supply/AC
+      echo Standard > $bat/charge_types
+      while [ "$(cat $ac/online)" = 1 ] && [ "$(cat $bat/capacity)" -lt 100 ]; do
+        sleep 10
+      done
+    '';
+    postStop = "echo Custom > /sys/class/power_supply/BAT0/charge_types";
+  };
+
   hardware = {
     graphics = {
       enable = true;
