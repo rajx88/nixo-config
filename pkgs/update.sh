@@ -29,6 +29,7 @@ PKG_DIRS=(
   "t3code"
   "t3code-cli"
   "brave-origin"
+  "pokebonk"
 )
 PKG_REPOS=(
   "earendil-works/pi"
@@ -41,6 +42,7 @@ PKG_REPOS=(
   "pingdotgg/t3code"
   "pingdotgg/t3code"
   "brave/brave-browser"
+  "CharcherGit/pokebonk-app"
 )
 PKG_URLS=(
   "https://github.com/earendil-works/pi/releases/download/v{VERSION}/pi-linux-x64.tar.gz"
@@ -53,6 +55,7 @@ PKG_URLS=(
   "https://github.com/pingdotgg/t3code/releases/download/v{VERSION}/T3-Code-{VERSION}-amd64.deb"
   "https://github.com/pingdotgg/t3code/releases/download/v{VERSION}/t3-{VERSION}-linux-x64.tar.gz"
   "https://github.com/brave/brave-browser/releases/download/v{VERSION}/brave-origin_{VERSION}_amd64.deb"
+  "https://github.com/CharcherGit/pokebonk-app/releases/download/v{VERSION}/PokeBonk-{VERSION}-linux-x86_64.AppImage"
 )
 
 # ── Argument parsing ──────────────────────────────────────────────────────────

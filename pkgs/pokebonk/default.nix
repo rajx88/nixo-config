@@ -7,14 +7,14 @@
 }:
 let
   pname = "pokebonk";
-  version = "1.3.0";
+  version = "1.4.0";
 
   # Official desktop client, published by the game's author. The download URL is
   # the same one the game itself uses for its in-game "App" button.
   src = fetchurl {
     url = "https://github.com/CharcherGit/pokebonk-app/releases/download/v${version}/PokeBonk-${version}-linux-x86_64.AppImage";
     # sha256 digest from the GitHub release API (assets[].digest)
-    hash = "sha256-Zf+CObCXOJBt7YSmOW9l6efNiRaTXMeLkKhVJ3pIgyA=";
+    hash = "sha256-LYXgl79p5k9FWzkgrdt1IlLlrGZsnWfgp5bRMhaevO0=";
   };
 
   appimageContents = appimageTools.extract { inherit pname version src; };
