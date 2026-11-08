@@ -28,6 +28,7 @@ PKG_DIRS=(
   "radar"
   "t3code"
   "t3code-cli"
+  "brave-origin"
 )
 PKG_REPOS=(
   "earendil-works/pi"
@@ -39,6 +40,7 @@ PKG_REPOS=(
   "skyhook-io/radar"
   "pingdotgg/t3code"
   "pingdotgg/t3code"
+  "brave/brave-browser"
 )
 PKG_URLS=(
   "https://github.com/earendil-works/pi/releases/download/v{VERSION}/pi-linux-x64.tar.gz"
@@ -50,6 +52,7 @@ PKG_URLS=(
   "https://github.com/skyhook-io/radar/releases/download/v{VERSION}/radar_v{VERSION}_linux_amd64.tar.gz"
   "https://github.com/pingdotgg/t3code/releases/download/v{VERSION}/T3-Code-{VERSION}-amd64.deb"
   "https://github.com/pingdotgg/t3code/releases/download/v{VERSION}/t3-{VERSION}-linux-x64.tar.gz"
+  "https://github.com/brave/brave-browser/releases/download/v{VERSION}/brave-origin_{VERSION}_amd64.deb"
 )
 
 # ── Argument parsing ──────────────────────────────────────────────────────────
