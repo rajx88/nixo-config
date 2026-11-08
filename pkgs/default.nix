@@ -6,6 +6,7 @@
   pi-coding-agent = pkgs.callPackage ./pi-coding-agent { };
   copilot-cli = pkgs.callPackage ./copilot-cli { };
   codegraph = pkgs.callPackage ./codegraph { };
+  brave-origin = pkgs.callPackage ./brave-origin { };
   omp = pkgs.callPackage ./omp { };
   herdr = pkgs.callPackage ./herdr { };
   cursor = pkgs.callPackage ./cursor { };
