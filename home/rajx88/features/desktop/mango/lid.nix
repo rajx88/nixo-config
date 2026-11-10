@@ -74,13 +74,13 @@ let
   '';
 in
 {
-  # switchbind=fold,cmd  → on lid close
-  # switchbind=unfold,cmd → on lid open
+  # switchbind=lid_on,cmd  → on lid close
+  # switchbind=lid_off,cmd → on lid open
   # Note: requires HandleLidSwitch=ignore in logind (set at NixOS level)
   wayland.windowManager.mango.settings = lib.mkIf isLaptopFlag {
     switchbind = [
-      "fold,spawn,${lidCloseScript}"
-      "unfold,spawn,${lidOpenScript}"
+      "lid_on,spawn,${lidCloseScript}"
+      "lid_off,spawn,${lidOpenScript}"
     ];
   };
 

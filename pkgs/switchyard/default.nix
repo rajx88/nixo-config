@@ -3,7 +3,7 @@
   rustPlatform,
   fetchFromGitHub,
   pkg-config,
-  openssl,
+  aws-lc,
 }:
 rustPlatform.buildRustPackage {
   pname = "switchyard";
@@ -26,7 +26,11 @@ rustPlatform.buildRustPackage {
   ];
 
   nativeBuildInputs = [ pkg-config ];
-  buildInputs = [ openssl ];
+  # nixpkgs' cargo setup hook exports AWS_LC_SYS_USE_SYSTEM=1, so aws-lc-sys
+  # links against a system AWS-LC instead of building its vendored copy.
+  # Do not add openssl here: its setup hook exports OPENSSL_DIR, which
+  # aws-lc-sys probes before pkg-config and would then reject as "not AWS-LC".
+  buildInputs = [ aws-lc ];
 
   # Integration tests hit live providers.
   doCheck = false;
