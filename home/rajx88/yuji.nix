@@ -166,6 +166,49 @@
       };
     };
 
+    # Ultrawide + laptop panel on the left, vertically centered
+    profiles.ultrawide2 = {
+      monitors = [
+        {
+          name = "eDP-1";
+          width = 1920;
+          height = 1200;
+          preferredMode = true;
+          isLaptop = true;
+          refreshRate = 60;
+          position = "0x120";
+          workspaces = [
+            6
+            7
+            8
+            9
+            10
+          ];
+          layout = "scroller";
+        }
+        {
+          name = "DP-1";
+          width = 3440;
+          height = 1440;
+          preferredMode = true;
+          refreshRate = 60;
+          position = "1920x0";
+          workspaces = [
+            1
+            2
+            3
+            4
+            5
+          ];
+          layout = "scroller";
+          primary = true;
+        }
+      ];
+      detect = {
+        resolutions = [ "3440x1440" ];
+      };
+    };
+
     # Dual 4K 120Hz + laptop centered below left screen
     profiles.office = {
       monitors = [
