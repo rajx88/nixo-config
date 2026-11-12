@@ -96,6 +96,4 @@ in
     '';
   };
 
-  # Polkit agent (wayland-native, works with any wlroots compositor)
-  services.hyprpolkitagent.enable = true;
 }

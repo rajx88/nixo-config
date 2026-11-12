@@ -10,6 +10,9 @@
     ./fonts.nix
     ./gtk.nix
     ./playerctl.nix
+    ./polkit-agent.nix
+    ./superwhisper.nix
+    ./handy.nix
     ./qt.nix
     ./wallpapers
     ./keyring.nix

@@ -1,0 +1,104 @@
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
+let
+  handy = "${pkgs.handy}/bin/handy";
+
+  # Handy has no settings CLI: it keeps everything in an app-owned JSON store
+  # (settings_store.json) that the GUI writes. These are the values worth
+  # pinning; the app merges them over its own defaults and keeps GUI edits
+  # afterwards, so this only seeds a fresh install and never fights the UI.
+  # The model is not seeded: a fresh install gets Handy's first-run wizard,
+  # which downloads/selects one (large-v3 is ~1.7 GB, not an activation job).
+  settings = {
+    settings_schema_version = 2;
+    selected_language = "auto";
+    # Whisper's translate task: Dutch (or any non-English) speech comes out as
+    # English. Only models with translate capability honour it.
+    translate_to_english = true;
+    # Terminals need Ctrl+Shift+V; the default Ctrl+V does nothing in a
+    # terminal. No focus detection needed, unlike Superwhisper.
+    paste_method = "ctrl_shift_v";
+    clipboard_handling = "dont_modify";
+    # The overlay can steal focus on wlroots compositors, which would break
+    # pasting; keep it to the small pill at the bottom instead of the live
+    # waveform, and leave the chimes off.
+    overlay_style = "minimal";
+    overlay_position = "bottom";
+    autostart_enabled = false; # systemd unit below owns startup
+    # The start/stop chimes are surprising on a laptop and overlap when a key
+    # is held; the recording overlay is off for focus reasons, so the tray
+    # icon and the text appearing are the feedback. Flip this to true in the
+    # GUI if you want the cues.
+    audio_feedback = false;
+    # Handy prunes history to this many latest dictations; the default of 5
+    # silently deletes everything older.
+    history_limit = 500;
+    # wtype is the only tool that can inject text into Wayland-native windows
+    # here; auto-fallback otherwise picks enigo, which is X11-only.
+    typing_tool = "wtype";
+    custom_words = [
+      "akarnae"
+      "nixos"
+      "netbird"
+      "ghostty"
+      "mangowm"
+      "nixo-config"
+    ];
+  };
+in
+{
+  home.packages = [
+    pkgs.handy
+
+    # Handy inserts text through the first tool it finds: on Wayland that is
+    # wtype, then dotool/ydotool, then enigo (X11). Without any of them it fell
+    # back to enigo, which cannot type into Wayland-native windows such as
+    # ghostty. dotool would need the input group; wtype is the one that works.
+    pkgs.wtype
+
+    # Clipboard fallback: if the paste method is ever switched to
+    # clipboard/Ctrl+V, Handy shells out to wl-copy/wl-paste.
+    pkgs.wl-clipboard
+  ];
+
+  # Models, history.db, recordings and the transcription hook. The models are
+  # large (Whisper large-v3 ~1.7 GB, Parakeet ~730 MB) and downloaded at
+  # runtime.
+  home.persistence."/persist".directories = [
+    ".local/share/com.pais.handy"
+    ".config/com.pais.handy"
+  ];
+
+  # Handy has its own autostart toggle, but that writes ~/.config/autostart,
+  # which is not persisted here. Keep the startup declarative instead.
+  systemd.user.services.handy = {
+    Unit = {
+      Description = "Handy speech-to-text";
+      After = [ "graphical-session.target" ];
+      PartOf = [ "graphical-session.target" ];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${handy} --start-hidden";
+      Restart = "on-failure";
+      RestartSec = 5;
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
+
+  # Seed the store only when it does not exist yet (fresh install); after that
+  # the GUI owns the file.
+  home.activation.handySettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    store="${config.home.homeDirectory}/.local/share/com.pais.handy/settings_store.json"
+    if [ ! -e "$store" ]; then
+      verboseEcho "Seeding Handy settings"
+      mkdir -p "$(dirname "$store")"
+      printf '%s\n' '${builtins.toJSON { settings = settings; }}' > "$store"
+      chmod 600 "$store"
+    fi
+  '';
+}

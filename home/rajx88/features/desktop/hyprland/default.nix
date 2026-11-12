@@ -27,8 +27,6 @@
     configPackages = [ config.wayland.windowManager.hyprland.package ];
   };
 
-  services.hyprpolkitagent.enable = true;
-
   wayland.windowManager.hyprland = {
     enable = true;
     package = pkgs.hyprland;
