@@ -8,51 +8,22 @@ let
   handy = "${pkgs.handy}/bin/handy";
 
   # Handy has no settings CLI: it keeps everything in an app-owned JSON store
-  # (settings_store.json) that the GUI writes. These are the values worth
-  # pinning; the app merges them over its own defaults and keeps GUI edits
-  # afterwards, so this only seeds a fresh install and never fights the UI.
+  # (settings_store.json) that the GUI writes. Only the two values that make it
+  # work on Wayland are pinned; everything else (translation, language, overlay,
+  # feedback, retention, vocabulary) is Handy's own setting, owned by the GUI.
+  # The app merges these over its defaults and keeps later GUI edits.
   # The model is not seeded: a fresh install gets Handy's first-run wizard,
   # which downloads/selects one (large-v3 is ~1.7 GB, not an activation job).
   settings = {
     settings_schema_version = 2;
-    selected_language = "auto";
-    # Whisper's translate task: Dutch (or any non-English) speech comes out as
-    # English. Only models with translate capability honour it.
-    translate_to_english = true;
     # wtype types the text instead of sending a paste chord, so this works in
-    # terminals and Wayland-native apps without focus/app detection.
+    # terminals and Wayland-native apps without focus/app detection. The tool
+    # itself must be first in Handy's list; enigo is X11-only.
     paste_method = "direct";
-    clipboard_handling = "dont_modify";
-    # The overlay can steal focus on wlroots compositors, which would break
-    # pasting; keep it to the small pill at the bottom instead of the live
-    # waveform, and leave the chimes off.
-    overlay_style = "minimal";
-    overlay_position = "bottom";
-    autostart_enabled = false; # systemd unit below owns startup
-    # The start/stop chimes are surprising on a laptop and overlap when a key
-    # is held; the recording overlay is off for focus reasons, so the tray
-    # icon and the text appearing are the feedback. Flip this to true in the
-    # GUI if you want the cues.
-    audio_feedback = false;
-    # Handy always keeps the 16 kHz WAV of every dictation next to the history
-    # entry (32 KB/s), and 0.9.8 has no "text only" switch. Two weeks bounds it
-    # while keeping recent clips playable; days3 is tighter, never means keep
-    # everything.
-    recording_retention_period = "weeks2";
-    # Only used if the retention period is switched back to the count-based
-    # "preserve_limit"; the default of 5 would prune almost everything.
-    history_limit = 500;
-    # wtype is the only tool that can inject text into Wayland-native windows
-    # here; auto-fallback otherwise picks enigo, which is X11-only.
     typing_tool = "wtype";
-    custom_words = [
-      "akarnae"
-      "nixos"
-      "netbird"
-      "ghostty"
-      "mangowm"
-      "nixo-config"
-    ];
+    # Handy's own retention (never/preserve_limit/days3/weeks2/months3); keep
+    # its audio clips for two weeks, then Handy prunes them itself.
+    recording_retention_period = "weeks2";
   };
 in
 {
