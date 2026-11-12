@@ -84,6 +84,10 @@ in
       noctalia &
       mprofile auto &
       mango-lid-state &
+      # Handy starts here rather than as a systemd unit: the compositor's
+      # autostart already owns the session apps. --start-hidden keeps it in the
+      # tray; there is no ExecStopPost cleanup to preserve, unlike Superwhisper.
+      ${pkgs.handy}/bin/handy --start-hidden &
 
       # Re-race the swayidle unit. It carries ConditionEnvironment=WAYLAND_DISPLAY
       # and After=graphical-session.target, but mango imports the variable into the
