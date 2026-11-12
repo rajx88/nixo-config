@@ -7,6 +7,24 @@
 let
   handy = "${pkgs.handy}/bin/handy";
 
+  prune = pkgs.writeShellScript "handy-prune-recordings" ''
+    set -eu
+    data="''${XDG_DATA_HOME:-$HOME/.local/share}/com.pais.handy"
+    db="$data/history.db"
+    dir="$data/recordings"
+    [ -f "$db" ] || exit 0
+    cutoff=$(( $(${pkgs.coreutils}/bin/date +%s) - 7 * 86400 ))
+    ${pkgs.sqlite}/bin/sqlite3 -cmd '.timeout 5000' -separator '|' "$db" \
+      "select id, file_name from transcription_history where timestamp < $cutoff" |
+      while IFS='|' read -r id file; do
+        [ -n "''${file:-}" ] && ${pkgs.coreutils}/bin/rm -f "$dir/$file"
+        ${pkgs.sqlite}/bin/sqlite3 -cmd '.timeout 5000' "$db" \
+          "delete from transcription_history where id = $id"
+      done
+    # Clips whose history row is already gone.
+    ${pkgs.findutils}/bin/find "$dir" -type f -name '*.wav' -mtime +7 -delete 2>/dev/null || true
+  '';
+
   # Handy has no settings CLI: it keeps everything in an app-owned JSON store
   # (settings_store.json) that the GUI writes. These are the values worth
   # pinning; the app merges them over its own defaults and keeps GUI edits
@@ -35,9 +53,9 @@ let
     # GUI if you want the cues.
     audio_feedback = false;
     # Handy always keeps the 16 kHz WAV of every dictation next to the history
-    # entry (32 KB/s), and 0.9.8 has no "text only" switch. Two weeks bounds it
-    # while keeping recent clips playable; days3 is tighter, never means keep
-    # everything.
+    # entry (32 KB/s) and 0.9.8 has no "text only" switch. Its own retention
+    # only offers 3 days, 2 weeks or 3 months, so keep 2 weeks as a backstop and
+    # prune at 7 days with the timer below.
     recording_retention_period = "weeks2";
     # Only used if the retention period is switched back to the count-based
     # "preserve_limit"; the default of 5 would prune almost everything.
@@ -106,4 +124,25 @@ in
       chmod 600 "$store"
     fi
   '';
+
+  # Trim exactly seven days. Handy's own retention cannot express it: the enum
+  # only has 3 days, 2 weeks and 3 months. Entries older than the cutoff lose
+  # their WAV and their history row together, which is the coupling Handy uses
+  # itself when it prunes.
+  systemd.user.services.handy-prune = {
+    Unit.Description = "Drop Handy history entries and recordings older than 7 days";
+    Service = {
+      Type = "oneshot";
+      ExecStart = "${prune}";
+    };
+  };
+
+  systemd.user.timers.handy-prune = {
+    Unit.Description = "Daily Handy recording retention";
+    Timer = {
+      OnCalendar = "daily";
+      Persistent = true;
+    };
+    Install.WantedBy = [ "timers.target" ];
+  };
 }
