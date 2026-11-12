@@ -19,9 +19,9 @@ let
     # Whisper's translate task: Dutch (or any non-English) speech comes out as
     # English. Only models with translate capability honour it.
     translate_to_english = true;
-    # Terminals need Ctrl+Shift+V; the default Ctrl+V does nothing in a
-    # terminal. No focus detection needed, unlike Superwhisper.
-    paste_method = "ctrl_shift_v";
+    # wtype types the text instead of sending a paste chord, so this works in
+    # terminals and Wayland-native apps without focus/app detection.
+    paste_method = "direct";
     clipboard_handling = "dont_modify";
     # The overlay can steal focus on wlroots compositors, which would break
     # pasting; keep it to the small pill at the bottom instead of the live
@@ -34,8 +34,13 @@ let
     # icon and the text appearing are the feedback. Flip this to true in the
     # GUI if you want the cues.
     audio_feedback = false;
-    # Handy prunes history to this many latest dictations; the default of 5
-    # silently deletes everything older.
+    # Handy always keeps the 16 kHz WAV of every dictation next to the history
+    # entry (32 KB/s), and 0.9.8 has no "text only" switch. Two weeks bounds it
+    # while keeping recent clips playable; days3 is tighter, never means keep
+    # everything.
+    recording_retention_period = "weeks2";
+    # Only used if the retention period is switched back to the count-based
+    # "preserve_limit"; the default of 5 would prune almost everything.
     history_limit = 500;
     # wtype is the only tool that can inject text into Wayland-native windows
     # here; auto-fallback otherwise picks enigo, which is X11-only.
