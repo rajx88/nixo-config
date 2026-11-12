@@ -5,8 +5,6 @@
   ...
 }:
 let
-  handy = "${pkgs.handy}/bin/handy";
-
   # Handy has no settings CLI: it keeps everything in an app-owned JSON store
   # (settings_store.json) that the GUI writes. Only the two values that make it
   # work on Wayland are pinned; everything else (translation, language, overlay,
@@ -49,22 +47,9 @@ in
     ".config/com.pais.handy"
   ];
 
-  # Handy has its own autostart toggle, but that writes ~/.config/autostart,
-  # which is not persisted here. Keep the startup declarative instead.
-  systemd.user.services.handy = {
-    Unit = {
-      Description = "Handy speech-to-text";
-      After = [ "graphical-session.target" ];
-      PartOf = [ "graphical-session.target" ];
-    };
-    Service = {
-      Type = "simple";
-      ExecStart = "${handy} --start-hidden";
-      Restart = "on-failure";
-      RestartSec = 5;
-    };
-    Install.WantedBy = [ "graphical-session.target" ];
-  };
+  # Handy's own autostart toggle writes ~/.config/autostart, which needs
+  # xdg-desktop-autostart.target and persistence to work here, so the mango
+  # autostart script launches it instead (see mango/default.nix).
 
   # Seed the store only when it does not exist yet (fresh install); after that
   # the GUI owns the file.
