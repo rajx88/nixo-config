@@ -19,7 +19,6 @@ let
   '';
   pactl = "${pkgs.pulseaudio}/bin/pactl";
   playerctl = "${config.services.playerctld.package}/bin/playerctl";
-  superwhisper = "${pkgs.superwhisper}/bin/superwhisper";
   handy = "${pkgs.handy}/bin/handy";
 
   notify = "${pkgs.libnotify}/bin/notify-send";
@@ -129,13 +128,9 @@ in
       # ── WireGuard VPN ──
       "SUPER+SHIFT,v,spawn_shell,${wgToggle}"
 
-      # ── Dictation: cancel an in-progress recording ──
-      # The press/release pair lives in `bindc`/`bindcr` below: mango counts a
-      # press bind and its release twin as a conflict unless both carry `c`.
-      "SUPER+CTRL,Escape,spawn,${superwhisper} cancel"
-
-      # ── Handy (second dictation engine, for A/B): press to start, press to stop ──
-      "SUPER+ALT,d,spawn,${handy} --toggle-transcription"
+      # ── Dictation (Handy): press to start, press to stop ──
+      "SUPER,d,spawn,${handy} --toggle-transcription"
+      "SUPER+CTRL,Escape,spawn,${handy} --cancel"
     ]
     ++ (lib.optionals config.services.playerctld.enable [
       "NONE,XF86AudioNext,spawn,${playerctl} next"
@@ -143,15 +138,6 @@ in
       "NONE,XF86AudioPlay,spawn,${playerctl} play-pause"
       "NONE,XF86AudioStop,spawn,${playerctl} stop"
     ]);
-
-    # Push-to-talk: hold SUPER+D to record, release to transcribe.
-    bindc = [
-      "SUPER,d,spawn,${superwhisper} start"
-    ];
-
-    bindcr = [
-      "SUPER,d,spawn,${superwhisper} stop"
-    ];
 
     mousebind = [
       "SUPER,btn_left,moveresize,curmove"
