@@ -20,5 +20,4 @@
   orca-ide = pkgs.callPackage ./orca-ide { };
   bruno = pkgs.callPackage ./bruno { };
   pokebonk = pkgs.callPackage ./pokebonk { };
-  superwhisper = pkgs.callPackage ./superwhisper { };
 }
