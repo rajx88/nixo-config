@@ -52,6 +52,7 @@
     ./features/dev/bruno.nix
     ./features/dev/twg.nix
     ./features/dev/switchyard.nix
+    ./features/dev/newapi-harness.nix
     ./features/dev/t3code.nix
     # Orca disabled for now (not in use). Module kept intact in
     # features/dev/orca.nix — uncomment to re-enable.
