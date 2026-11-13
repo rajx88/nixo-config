@@ -1,5 +1,17 @@
-{ pkgs, ... }: {
-  home.packages = [ pkgs.herdr ];
+{
+  pkgs,
+  lib,
+  ...
+}:
+let
+  mkZshCompletion = import ../../lib/zsh-completion.nix { inherit pkgs lib; };
+in
+{
+  home.packages = [
+    pkgs.herdr
+    # Generated at build time instead of spawning herdr on every shell init.
+    (mkZshCompletion "herdr" pkgs.herdr "herdr" "completion zsh")
+  ];
 
   # ~/.config/herdr holds config.toml (including the first-run `onboarding = false`
   # marker) and session.json; ~/.local/state/herdr holds the agent-detection and

@@ -15,11 +15,15 @@ let
       "type": "http",
       "url": "http://localhost:9280/mcp"
     }'';
+
+  mkZshCompletion = import ../../lib/zsh-completion.nix { inherit pkgs lib; };
 in
 {
   home.packages = [
     pkgs.omp
     pkgs.bun
+    # Generated at build time instead of spawning omp on every shell init.
+    (mkZshCompletion "omp" pkgs.omp "omp" "completions zsh")
   ];
 
   # omp-native user MCP config (discovered at ~/.omp/agent/mcp.json).
@@ -46,10 +50,6 @@ in
     ".omp/agent/extensions/hindsight.js".source =
       config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.hindsight/coding-agents/dist/pi.js";
   };
-
-  programs.zsh.initContent = lib.mkAfter ''
-    source <(omp completions zsh)
-  '';
 
   home.persistence."/persist".directories = [
     ".omp"

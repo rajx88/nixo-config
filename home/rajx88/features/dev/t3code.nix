@@ -9,6 +9,8 @@ let
 
   # XDG: persistent user data lives in `share`, not `~/.config`.
   t3Home = "${home}/.local/share/t3";
+
+  mkZshCompletion = import ../../lib/zsh-completion.nix { inherit pkgs lib; };
 in
 {
   # T3 Code: conversational multi-agent GUI + `t3` CLI/server. Both are
@@ -24,6 +26,8 @@ in
   home.packages = [
     pkgs.t3code
     pkgs.t3code-cli
+    # Generated at build time instead of spawning t3 on every shell init.
+    (mkZshCompletion "t3" pkgs.t3code-cli "t3" "--completions zsh")
   ];
 
   # Makes the CLI resolve to the server's data directory without flags.

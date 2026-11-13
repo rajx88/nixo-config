@@ -8,6 +8,8 @@ let
   # radar's daemon only exists where features/dev/radar.nix is imported (yuji).
   # akarnae has no radar package, so no remote MCP entry there.
   hasRadar = lib.any (p: p ? pname && p.pname == "radar") config.home.packages;
+
+  mkZshCompletion = import ../../lib/zsh-completion.nix { inherit pkgs lib; };
 in
 {
   # OpenCode config owned by Nix. Modules contribute fragments here (e.g.
@@ -28,6 +30,11 @@ in
       enable = true;
       package = pkgs.opencode;
     };
+
+    # Generated at build time instead of spawning opencode on every shell init.
+    home.packages = [
+      (mkZshCompletion "opencode" pkgs.opencode "opencode" "--completions zsh")
+    ];
 
     # Base Nix-owned config. The codegraph MCP lives here so enabling codegraph in
     # the Nix config is enough to wire it — no need to run `codegraph install`.

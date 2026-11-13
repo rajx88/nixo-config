@@ -1,4 +1,17 @@
 {
+  pkgs,
+  lib,
+  ...
+}:
+let
+  mkZshCompletion = import ../../lib/zsh-completion.nix { inherit pkgs lib; };
+in
+{
+  home.packages = [
+    # zeditor is zed-editor's CLI; generate its completion at build time.
+    (mkZshCompletion "zeditor" pkgs.zed-editor "zeditor" "--completions zsh")
+  ];
+
   home.persistence."/persist" = {
     directories = [
       ".local/share/zed"
