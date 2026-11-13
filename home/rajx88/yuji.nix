@@ -53,7 +53,9 @@
     ./features/dev/twg.nix
     ./features/dev/switchyard.nix
     ./features/dev/t3code.nix
-    ./features/dev/orca.nix
+    # Orca disabled for now (not in use). Module kept intact in
+    # features/dev/orca.nix — uncomment to re-enable.
+    # ./features/dev/orca.nix
   ];
 
   # Home (docked to the 4K pair): lock lazily. Anywhere else: 5 min default.
