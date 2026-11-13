@@ -174,10 +174,26 @@ for i in "${!PKG_DIRS[@]}"; do
     (( SKIPPED++ )) || true; continue
   fi
 
-  log_warn "$pkg" "$CURRENT → $LATEST"
-  $CHECK_ONLY && continue
-
   URL="${url_template//\{VERSION\}/$LATEST}"
+
+  # A release can skip an asset entirely (e.g. radar-desktop in v1.20.3). HEAD
+  # the download URL first so that reads as "upstream didn't publish it"
+  # instead of a mystery hash failure. This hits the download endpoint, not
+  # the API, so it doesn't consume the API quota.
+  HTTP_CODE=$(curl -sIL -o /dev/null -w '%{http_code}' "$URL" 2>/dev/null || echo 000)
+  if [[ "$HTTP_CODE" == "404" ]]; then
+    log_warn "$pkg" "v$LATEST publishes no $(basename "$URL") — asset skipped upstream, staying at $CURRENT"
+    (( SKIPPED++ )) || true; continue
+  elif [[ "$HTTP_CODE" != "200" && "$HTTP_CODE" != "302" ]]; then
+    log_err "$pkg" "asset check for $URL returned HTTP $HTTP_CODE"
+    (( FAILED++ )) || true; continue
+  fi
+
+  if $CHECK_ONLY; then
+    log_warn "$pkg" "$CURRENT → $LATEST"
+    continue
+  fi
+
   log_info "$pkg" "fetching hash..."
 
   SRI=$(nix_sri "$URL") || {
