@@ -98,7 +98,9 @@ in
     ./features/dev/bruno.nix
 
     ./features/dev/t3code.nix
-    ./features/dev/orca.nix
+    # Orca disabled for now (not in use). Module kept intact in
+    # features/dev/orca.nix — uncomment to re-enable.
+    # ./features/dev/orca.nix
   ];
 
   # Home desktop: lock slowly. Away (laptop) keeps the 5 min default.
