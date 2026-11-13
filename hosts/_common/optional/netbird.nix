@@ -18,6 +18,14 @@
   config,
   ...
 }:
+let
+  # The netbird in PATH is a wrapper around netbird-client; the wrapper has no
+  # share/ tree, so expose the zsh completion shipped by the underlying package.
+  netbirdCompletions = pkgs.runCommandLocal "netbird-zsh-completion" { } ''
+    install -Dm644 ${pkgs.netbird}/share/zsh/site-functions/_netbird \
+      $out/share/zsh/site-functions/_netbird
+  '';
+in
 {
   services.netbird = {
     enable = true;
@@ -98,4 +106,8 @@
   # socket is group-owned, so the human needs membership to run `netbird`
   # commands without sudo gymnastics.
   users.users.rajx88.extraGroups = [ "netbird" ];
+
+  # netbird itself is a system package; expose its packaged completion to the
+  # human's zsh.
+  home-manager.users.rajx88.home.packages = [ netbirdCompletions ];
 }

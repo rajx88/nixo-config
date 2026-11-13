@@ -16,11 +16,30 @@ in
     ".local/completions"
   ];
 
+  # zsh validates an existing completion dump only by counting the files in
+  # fpath. When a home-manager generation changes the set of completions but
+  # not the count, compinit keeps using the old dump and completions silently
+  # disappear. Drop the dump on every switch so each generation starts clean.
+  # The dump lives in the (ephemeral) cache dir rather than the persisted
+  # ~/.config/zsh, and the old location plus the stray hand-generated _omp
+  # completion are cleaned up here.
+  home.activation.zshCompletionCache = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    run rm -f "$HOME/.config/zsh/.zcompdump" "$HOME/.config/zsh/.zcompdump.zwc"
+    run rm -f "${config.xdg.cacheHome}/zsh/zcompdump"
+    run rm -f "$HOME/.local/completions/_omp"
+  '';
+
   programs.zsh = {
     enable = true;
     # set the ZDOTDIR
     dotDir = config.xdg.configHome + "/zsh";
     enableCompletion = true;
+
+    completionInit = ''
+      _zcompdump="''${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump"
+      mkdir -p "''${_zcompdump:h}"
+      autoload -Uz compinit && compinit -d "$_zcompdump"
+    '';
 
     defaultKeymap = "emacs";
 
@@ -49,10 +68,7 @@ in
     initContent = lib.mkBefore ''
       ZSH_CONFD="$ZDOTDIR/conf.d"
 
-      fpath=($HOME/.local/completions $fpath ${config.xdg.cacheHome}/completions)
-
-      # Enable bash completion compatibility for tools like AWS CLI
-      autoload -Uz bashcompinit && bashcompinit
+      fpath=($HOME/.local/completions ${config.programs.zsh.zsh-abbr.package}/share/zsh/zsh-abbr/completions $fpath)
 
       bindkey -M emacs "^[[3~" delete-char
       bindkey -M viins "^[[3~" delete-char

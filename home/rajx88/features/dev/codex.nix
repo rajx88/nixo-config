@@ -10,10 +10,19 @@ let
     fi
     exec ${pkgs.codex}/bin/codex "$@"
   '';
+
+  # nixpkgs' codex package ships a generated zsh completion, but the wrapper
+  # above only puts the `codex` script on PATH, so the package's share/ tree
+  # never reaches the profile. Link the completion explicitly.
+  codexCompletions = pkgs.runCommandLocal "codex-zsh-completion" { } ''
+    install -Dm644 ${pkgs.codex}/share/zsh/site-functions/_codex \
+      $out/share/zsh/site-functions/_codex
+  '';
 in
 {
   home.packages = [
     codexWrapped
+    codexCompletions
     pkgs.jq # used by the OPENCODE_GO_API_KEY bootstrap below
   ];
 

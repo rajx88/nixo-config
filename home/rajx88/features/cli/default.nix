@@ -1,4 +1,8 @@
-{ pkgs, ... }: {
+{ pkgs, lib, ... }:
+let
+  mkZshCompletion = import ../../lib/zsh-completion.nix { inherit pkgs lib; };
+in
+{
   imports = [
     ./bash.nix
     ./bat.nix
@@ -22,40 +26,45 @@
     ./zsh.nix
   ];
 
-  home.packages = with pkgs; [
-    bottom # System viewer
-    broot # file viewer
-    eza # Better ls
-    ripgrep # Better grep
-    fd # Better find
-    fzf # fuzzy finder
-    httpie # Better curl
-    # diffsitter # Better diff
-    jq # JSON pretty printer and manipulator
+  home.packages =
+    (with pkgs; [
+      bottom # System viewer
+      broot # file viewer
+      eza # Better ls
+      ripgrep # Better grep
+      fd # Better find
+      fzf # fuzzy finder
+      httpie # Better curl
+      # diffsitter # Better diff
+      jq # JSON pretty printer and manipulator
 
-    nil # Nix LSP
-    nixfmt # Nix formatter
+      nil # Nix LSP
+      nixfmt # Nix formatter
 
-    ltex-ls-plus # Spell checking LSP (ltex-ls was archived upstream)
+      ltex-ls-plus # Spell checking LSP (ltex-ls was archived upstream)
 
-    fastfetch # nix btw
+      fastfetch # nix btw
 
-    lazygit
+      lazygit
 
-    tokei
+      tokei
 
-    killall
-    dig
-    dnslookup
+      killall
+      dig
+      dnslookup
 
-    zip
-    unzip
+      zip
+      unzip
 
-    tldr
+      tldr
 
-    nodejs
+      nodejs
 
-    # Stock fish, available on demand (no managed config — launches with defaults)
-    fish
-  ];
+      # Stock fish, available on demand (no managed config — launches with defaults)
+      fish
+    ])
+    ++ [
+      # Generated at build time instead of spawning lazygit on every shell init.
+      (mkZshCompletion "lazygit" pkgs.lazygit "lazygit" "completion zsh")
+    ];
 }

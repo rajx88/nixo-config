@@ -13,12 +13,9 @@
     aws-sso-util
   ];
 
+  # awscli2 ships a proper zsh completion (_aws with a #compdef header), so it
+  # needs no wiring. aws-sso-util has none, so generate it through Click.
   programs.zsh.initContent = ''
-    # awscli2: register bash-style completer (bashcompinit loaded in zsh.nix)
-    # The installed _aws file lacks a #compdef header so compinit skips it
-    complete -C ${pkgs.awscli2}/bin/aws_completer aws
-
-    # aws-sso-util: native zsh completion via Click runtime generation
     eval "$(_AWS_SSO_UTIL_COMPLETE=zsh_source aws-sso-util)"
   '';
 }
