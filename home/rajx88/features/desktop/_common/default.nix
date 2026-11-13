@@ -12,6 +12,7 @@
     ./playerctl.nix
     ./polkit-agent.nix
     ./handy.nix
+    ./handy-postprocess.nix
     ./qt.nix
     ./wallpapers
     ./keyring.nix

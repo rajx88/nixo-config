@@ -9,6 +9,9 @@ let
   # (settings_store.json) that the GUI writes. Only the two values that make it
   # work on Wayland are pinned; everything else (translation, language, overlay,
   # feedback, retention, vocabulary) is Handy's own setting, owned by the GUI.
+  # That includes post-processing: its Custom provider points at the localhost
+  # shim in handy-postprocess.nix (OpenCode Go), and the prompt/model are GUI
+  # values like the rest.
   # The app merges these over its defaults and keeps later GUI edits.
   # The model is not seeded: a fresh install gets Handy's first-run wizard,
   # which downloads/selects one (large-v3 is ~1.7 GB, not an activation job).
