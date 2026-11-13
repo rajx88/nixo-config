@@ -28,6 +28,18 @@ stdenv.mkDerivation rec {
   dontPatchELF = true;
   dontStrip = true;
 
+  # The CLI embeds @parcel/watcher as a Bun `/$bunfs/root/watcher-*.node`
+  # module and extracts it to /tmp before dlopen'ing it for recursive
+  # directory watches. That module links libstdc++.so.6, which NixOS does not
+  # put on a default library path. The extracted module is not a dependency
+  # of the executable, so the executable's DT_RUNPATH is not consulted and
+  # the dlopen fails; opencode then logs "watcher backend not supported" for
+  # every directory watch (file watches fall back to node's non-recursive
+  # fs.watch and keep working). DT_RPATH, unlike DT_RUNPATH, is also used for
+  # transitive/dlopen dependencies, so point it at the C++ runtime the
+  # embedded module needs.
+  cxxLib = lib.getLib stdenv.cc.cc;
+
   unpackPhase = ''
     tar xzf $src
   '';
@@ -41,6 +53,9 @@ stdenv.mkDerivation rec {
     runHook preInstall
     install -Dm755 opencode $out/bin/opencode
     patchelf --set-interpreter ${glibc}/lib/ld-linux-x86-64.so.2 $out/bin/opencode
+    # See cxxLib above: this must be DT_RPATH (--force-rpath), not RUNPATH, so
+    # the dlopen'd @parcel/watcher module resolves libstdc++.so.6.
+    patchelf --force-rpath --set-rpath ${cxxLib}/lib $out/bin/opencode
     # opencode looks for `rg` on PATH and downloads its own copy if missing.
     # Exposing ripgrep from the package's own bin dir keeps it self-contained
     # without a wrapper (a wrapper would rename the process and break agent
