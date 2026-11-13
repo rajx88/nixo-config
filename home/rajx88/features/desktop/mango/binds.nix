@@ -129,7 +129,14 @@ in
       "SUPER+SHIFT,v,spawn_shell,${wgToggle}"
 
       # ── Dictation (Handy): press to start, press to stop ──
-      "SUPER,d,spawn,${handy} --toggle-transcription"
+      # Mango owns the dictation key: Handy's own global shortcut clashes with
+      # a Mango bind, and its `--toggle-transcription` action is the raw
+      # transcript. `--toggle-post-process` runs the same recording through
+      # Handy's post-processing (OpenCode Go via the localhost shim), which is
+      # what we want by default; keep raw on SUPER+ALT,d for verbatim text
+      # (SUPER+SHIFT,d is `mprofile-menu`).
+      "SUPER,d,spawn,${handy} --toggle-post-process"
+      "SUPER+ALT,d,spawn,${handy} --toggle-transcription"
       "SUPER+CTRL,Escape,spawn,${handy} --cancel"
     ]
     ++ (lib.optionals config.services.playerctld.enable [
