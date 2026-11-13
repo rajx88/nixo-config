@@ -1,5 +1,10 @@
 .direnv
 result*
 
+# CodeGraph's index/daemon state is local: the daemon keeps a socket and a
+# live SQLite WAL here, so copying it into the Nix store makes evaluations
+# fail with "file has an unsupported type" / "contents have changed".
+.codegraph/
+
 .idea
 .worktrees

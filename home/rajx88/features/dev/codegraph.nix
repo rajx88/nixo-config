@@ -55,8 +55,10 @@ in
       piBin=${pkgs.pi-coding-agent}/bin/pi
       if ! "$piBin" list 2>/dev/null | grep -qF "@vndv/pi-codegraph"; then
         echo "codegraph: installing pi extension ${codegraphExtension}"
-        "$piBin" install ${codegraphExtension} \
-          || echo "codegraph: WARN pi extension install failed (network?)" >&2
+        # `pi install` shells out to npm, which the activation PATH lacks.
+        PATH="${lib.makeBinPath [ pkgs.nodejs_24 ]}:$PATH" \
+          "$piBin" install ${codegraphExtension} \
+          || echo "codegraph: WARN pi extension install failed (is npm on PATH?)" >&2
       fi
     ''}
     ${lib.optionalString hasOmp ''
