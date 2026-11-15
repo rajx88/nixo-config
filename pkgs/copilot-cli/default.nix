@@ -10,11 +10,11 @@
 }:
 stdenv.mkDerivation rec {
   pname = "copilot-cli";
-  version = "1.0.110";
+  version = "1.0.112";
 
   src = fetchurl {
     url = "https://github.com/github/copilot-cli/releases/download/v${version}/copilot-linux-x64.tar.gz";
-    hash = "sha256-DI6u3teOy4ekA8PkR+TOD+nW2QwTYFhyhz2+L5wvksQ=";
+    hash = "sha256-3+flms8E8Lf1mwJOqdsQGpJGUD6b9xUutmj7sqRpsVE=";
   };
 
   nativeBuildInputs = [
