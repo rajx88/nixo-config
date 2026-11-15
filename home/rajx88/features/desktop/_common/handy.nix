@@ -42,10 +42,17 @@ in
     pkgs.wl-clipboard
   ];
 
-  # Models, history.db, recordings and the transcription hook. The models are
-  # large (Whisper large-v3 ~1.7 GB, Parakeet ~730 MB) and downloaded at
-  # runtime.
+  # Models, history.db, recordings and the transcription hook.
+  # 0.9.x downloads the catalog's GGUFs through hf-hub, which writes them to the
+  # shared Hugging Face cache (~/.cache/huggingface/hub; whisper large-v3 Q5_K_M
+  # is ~1.1 GB) and not to the app's models/ dir, which now only holds
+  # mirror-fallback downloads and manual drop-ins. ~/.cache lives on the wiped
+  # root, and Handy only scans the cache root it resolves at startup, so without
+  # this bind it re-downloads and clears its model selection on every boot.
+  # HF_HOME could move the cache instead, but an unset/overridden env on any
+  # launch path recreates the same "model vanished" bug.
   home.persistence."/persist".directories = [
+    ".cache/huggingface"
     ".local/share/com.pais.handy"
     ".config/com.pais.handy"
   ];
