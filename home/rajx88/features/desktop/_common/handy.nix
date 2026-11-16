@@ -29,6 +29,9 @@ let
 in
 {
   home.packages = [
+    # pkgs.handy is the upstream flake package via the `handy` overlay
+    # (see overlays/default.nix), so it tracks latest with
+    # `nix flake update handy`; nixpkgs' own handy lags unstable by days/weeks.
     pkgs.handy
 
     # Handy inserts text through the first tool it finds: on Wayland that is
