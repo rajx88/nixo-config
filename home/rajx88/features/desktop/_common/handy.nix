@@ -16,7 +16,10 @@ let
   # The model is not seeded: a fresh install gets Handy's first-run wizard,
   # which downloads/selects one (large-v3 is ~1.7 GB, not an activation job).
   settings = {
-    settings_schema_version = 2;
+    # Must track CURRENT_SETTINGS_SCHEMA_VERSION in src-tauri/src/settings.rs
+    # (0.9.8 had 2, 0.10.x has 3); older values are migrated on load, but a
+    # fresh seed should not start behind.
+    settings_schema_version = 3;
     # wtype types the text instead of sending a paste chord, so this works in
     # terminals and Wayland-native apps without focus/app detection. The tool
     # itself must be first in Handy's list; enigo is X11-only.
@@ -46,12 +49,14 @@ in
   ];
 
   # Models, history.db, recordings and the transcription hook.
-  # 0.9.x downloads the catalog's GGUFs through hf-hub, which writes them to the
+  # 0.10.x downloads the catalog's GGUFs through hf-hub, which writes them to the
   # shared Hugging Face cache (~/.cache/huggingface/hub; whisper large-v3 Q5_K_M
   # is ~1.1 GB) and not to the app's models/ dir, which now only holds
-  # mirror-fallback downloads and manual drop-ins. ~/.cache lives on the wiped
-  # root, and Handy only scans the cache root it resolves at startup, so without
-  # this bind it re-downloads and clears its model selection on every boot.
+  # mirror-fallback downloads and manual custom drop-ins. 0.9.8 still used the
+  # app dir, which is why that path stays persisted below too. ~/.cache lives on
+  # the wiped root, and Handy only scans the cache root it resolves at startup,
+  # so without this bind it re-downloads and clears its model selection on every
+  # boot.
   # HF_HOME could move the cache instead, but an unset/overridden env on any
   # launch path recreates the same "model vanished" bug.
   home.persistence."/persist".directories = [
