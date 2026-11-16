@@ -45,6 +45,18 @@
 
     claude-code.url = "github:sadjow/claude-code-nix";
 
+    # Handy from upstream: their flake keeps its own hashes auto-generated
+    # (bun2nix + allowBuiltinFetchGit), so `nix flake update handy` tracks
+    # upstream main with no manual hash bumps. Builds from source locally.
+    handy = {
+      url = "github:cjpais/Handy";
+      inputs.nixpkgs.follows = "nixpkgs";
+      # Handy pins bun2nix 2.0.8, whose flake-parts systems include
+      # x86_64-darwin — nixpkgs 26.11 throws on evaluating that. 2.1.x uses
+      # nix-systems/triplet (no x86_64-darwin) and its overlay is identical.
+      inputs.bun2nix.url = "github:nix-community/bun2nix/2.1.2";
+    };
+
     mango = {
       url = "github:mangowm/mango";
       inputs.nixpkgs.follows = "nixpkgs";
