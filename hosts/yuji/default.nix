@@ -49,6 +49,10 @@
     useDHCP = lib.mkForce false; # NM handles DHCP; dhcpcd conflicts w/ resolved DNS
   };
 
+  services.hardware.bolt.enable = true;
+  # Remember enrolled Thunderbolt docks across impermanent-root reboots.
+  environment.persistence."/persist".directories = [ "/var/lib/boltd" ];
+
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;
     kernelModules = [
