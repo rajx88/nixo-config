@@ -25,6 +25,9 @@ let
     install -Dm644 ${pkgs.netbird}/share/zsh/site-functions/_netbird \
       $out/share/zsh/site-functions/_netbird
   '';
+
+  client = config.services.netbird.clients.netbird;
+  atHome = import ../lib/at-home.nix { inherit pkgs; };
 in
 {
   services.netbird = {
@@ -49,6 +52,16 @@ in
     };
   };
 
+  # Re-establish connections on network changes (Linux defaults to off).
+  # Without it, unplugging from home keeps the control plane pointed at
+  # docker01's LAN address, which away is only reachable through the tunnel
+  # that needs that control plane: everything stalls. Set as its own config.d
+  # drop-in (merged into config.json on service start), because
+  # `clients.netbird.config.X` collides with the submodule's `config` keyword.
+  environment.etc."netbird/config.d/60-network-monitor.json".text = builtins.toJSON {
+    NetworkMonitor = true;
+  };
+
   # T3 Code (:3773) is reachable via the overlay interface and, for phones and
   # laptops on home Wi-Fi without NetBird, from the LAN subnet. Both paths still
   # require a T3 pairing token for any non-loopback connection.
@@ -67,6 +80,11 @@ in
   # the tunnel, which can only come up via signal: a deadlock that also kills
   # the host's internet. Pin the control plane to the normal routing table with
   # a rule that is evaluated before NetBird's (priority 100 < 105/110).
+  #
+  # Only the PUBLIC address is pinned, resolved via public DNS: Pi-hole answers
+  # nb.rx88.ws with docker01's LAN IP, and pinning that would send away-from-
+  # home traffic for docker01 (ssh, Traefik) out the café uplink instead of the
+  # tunnel. At home the LAN route already wins over the tunnel without a rule.
   systemd.services.netbird-control-bypass = {
     description = "Keep NetBird control plane out of the exit-node tunnel";
     wantedBy = [ "multi-user.target" ];
@@ -74,8 +92,8 @@ in
     after = [ "network-online.target" ];
     path = [
       pkgs.iproute2
-      pkgs.getent
-      pkgs.gawk
+      pkgs.dnsutils
+      pkgs.gnugrep
     ];
     serviceConfig = {
       Type = "oneshot";
@@ -84,19 +102,66 @@ in
       RestartSec = 10;
     };
     script = ''
-      ips=$(getent ahostsv4 nb.rx88.ws | awk '{print $1}' | sort -u)
+      ips=$(dig +short +time=3 +tries=1 A nb.rx88.ws @1.1.1.1 || dig +short +time=3 +tries=1 A nb.rx88.ws @9.9.9.9)
+      ips=$(printf '%s\n' "$ips" | grep -E '^[0-9.]+$' | grep -vE '^(10|127|192\.168)\.' | sort -u)
       [ -n "$ips" ] || exit 1
+      while ip rule del priority 100 2>/dev/null; do :; done
       for ip in $ips; do
-        ip rule del priority 100 to "$ip" lookup main 2>/dev/null || true
         ip rule add priority 100 to "$ip" lookup main
       done
     '';
     preStop = ''
-      for ip in $(getent ahostsv4 nb.rx88.ws | awk '{print $1}' | sort -u); do
-        ip rule del priority 100 to "$ip" lookup main 2>/dev/null || true
-      done
+      while ip rule del priority 100 2>/dev/null; do :; done
     '';
   };
+
+  # Exit node home/away, like wg-health did for wg0: off at home (the LAN is
+  # local), on when away (docker01 carries everything, LAN included). NetBird
+  # itself stays connected either way. Runs on every network change, and once
+  # a minute as a backstop.
+  systemd.services.netbird-exit-switch = {
+    description = "Use the NetBird exit node only when away from home";
+    after = [ "${client.service.name}.service" ];
+    path = [
+      client.wrapper
+      pkgs.gnugrep
+      pkgs.gnused
+    ];
+    serviceConfig.Type = "oneshot";
+    script = ''
+      id="Exit Node (docker01)" # the exit node's name in the NetBird dashboard
+
+      # A network change also restarts NetBird (network monitor), so give it
+      # up to 30s to reconnect instead of giving up until the next timer run.
+      for _ in $(seq 15); do
+        list=$(netbird networks list 2>/dev/null) && break
+        sleep 2
+      done
+
+      status=$(printf '%s\n' "''${list:-}" | grep -A2 -F "ID: $id" | sed -n 's/.*Status: //p')
+      [ -n "$status" ] || exit 0 # not offered to this host, or daemon down
+
+      if ${atHome}; then
+        [ "$status" = "Not Selected" ] || netbird networks deselect "$id"
+      else
+        [ "$status" = "Selected" ] || netbird networks select --append "$id"
+      fi
+    '';
+  };
+
+  systemd.timers.netbird-exit-switch = {
+    wantedBy = [ "timers.target" ];
+    timerConfig.OnUnitActiveSec = "60s";
+    timerConfig.OnBootSec = "30s";
+  };
+
+  networking.networkmanager.dispatcherScripts = [
+    {
+      source = pkgs.writeShellScript "netbird-exit-switch-dispatch" ''
+        ${pkgs.systemd}/bin/systemctl start --no-block netbird-exit-switch.service
+      '';
+    }
+  ];
 
   # Peer identity must survive impermanence, or every boot re-enrols as a new
   # device (and the old peer lingers in the dashboard forever).
