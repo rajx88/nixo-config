@@ -18,7 +18,7 @@
     ../_common/users/rajx88
 
     ../_common/optional/zsa.nix
-    ../_common/optional/akko.nix
+    ../_common/optional/keyd.nix
     ../_common/optional/systemd-boot.nix
     ../_common/optional/ly.nix
     ../_common/optional/mango.nix
