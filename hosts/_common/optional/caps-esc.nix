@@ -1,26 +1,40 @@
 # Caps Lock sends Escape on the keyboards this laptop uses.
 #
-# Done as a udev/hwdb keycode remap, not with a userspace remapper: there is no
-# daemon in the input path, so nothing can hang and swallow a keyboard, and a
-# wrong entry can only leave the key behaving as it did (replug, or
-# `udevadm trigger`, to retry).
+# Two mechanisms, on purpose:
 #
-# Matched per device, so the ZSA (remapped in its own firmware, see zsa.nix) is
-# untouched and each binding only applies while that keyboard is present:
-#   0001:0001 - internal keyboard; i8042 in translated mode, so the kernel
-#               reports the set-1 scancode 0x3a for Caps Lock
-#   3151:4003 - the Akko, both HID keyboard interfaces; MSC_SCAN is the HID
-#               usage, 0x07 (keyboard page) << 16 | 0x39 (Caps Lock)
+#   - The Akko goes through keyd. It has no firmware remapping to lean on
+#     (CompX/ROYUAN controller, not QMK), and keyd keeps real layers and
+#     hold-tap available if this ever grows past a plain swap.
 #
-# Over Bluetooth the Akko enumerates under a different device id and stops
-# matching; add that id (from `sudo evtest`) if wireless should be covered too.
-{ ... }:
+#   - The internal keyboard is a udev/hwdb keycode remap instead. That is the
+#     keyboard that must never depend on a userspace daemon, so nothing can
+#     hang and swallow the only keyboard on the machine. The trade-off is a
+#     static swap: no layers, and a new mapping needs a trigger/replug.
+#
+# Both are device-scoped and the ZSA (remapped in its own firmware, see zsa.nix)
+# is listed nowhere:
+#   keyd 3151:4003 - the Akko, both of its HID keyboard interfaces
+#   hwdb 0001:0001 - internal keyboard; i8042 runs in translated mode here, so
+#                    the kernel reports the set-1 scancode 0x3a for Caps Lock
+#
+# Over Bluetooth the Akko enumerates under a different id and keyd stops
+# matching it; read the id from `sudo keyd monitor` in wireless mode and add it
+# to `ids` if that should be covered too.
+{ pkgs, ... }:
 {
+  services.keyd = {
+    enable = true;
+    keyboards.akko = {
+      ids = [ "3151:4003" ];
+      settings.main.capslock = "esc";
+    };
+  };
+
   services.udev.extraHwdb = ''
     evdev:input:b0011v0001p0001*
      KEYBOARD_KEY_3a=esc
-
-    evdev:input:b0003v3151p4003*
-     KEYBOARD_KEY_70039=esc
   '';
+
+  # `keyd monitor` / `keyd reload` for poking at ids and config live.
+  environment.systemPackages = [ pkgs.keyd ];
 }
