@@ -8,11 +8,11 @@
 }:
 stdenv.mkDerivation rec {
   pname = "codegraph";
-  version = "1.6.2";
+  version = "1.6.3";
 
   src = fetchurl {
     url = "https://github.com/colbymchenry/codegraph/releases/download/v${version}/codegraph-linux-x64.tar.gz";
-    hash = "sha256-7wr0FgkhKPsczHI3hgALft9KaXH+YErNCL+Wbk83uCg=";
+    hash = "sha256-q/bntBHGzvHdVd1BsfNBL6lgEwB5PoZ4cPhcIm7sZYc=";
   };
 
   nativeBuildInputs = [
