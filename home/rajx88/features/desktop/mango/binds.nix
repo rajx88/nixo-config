@@ -7,7 +7,7 @@
 let
   terminal = config.home.sessionVariables.TERM;
   vaultPath = config.home.sessionVariables.VAULT_PATH;
-  files = "${pkgs.thunar}/bin/thunar";
+  files = "${pkgs.luciole}/bin/luciole";
 
   grim = "${pkgs.grim}/bin/grim";
   slurp = "${pkgs.slurp}/bin/slurp";

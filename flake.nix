@@ -61,6 +61,14 @@
       url = "github:mangowm/mango";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Native Wayland file manager, ships its own package + Home Manager module.
+    # No release tags yet, so the lock pins a main commit; bump with
+    # `just upp luciole`.
+    luciole = {
+      url = "github:noctalia-dev/luciole";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

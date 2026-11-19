@@ -3,6 +3,7 @@
     # ./swayidle.nix
     ./swaylock.nix
     ./noctalia
+    ./luciole
     ./thunar.nix
     ./fuzzel.nix
   ];
@@ -33,10 +34,15 @@
   };
 
   xdg.portal = {
-    extraPortals = [ pkgs.xdg-desktop-portal-wlr ];
+    extraPortals = [
+      pkgs.xdg-desktop-portal-wlr
+      pkgs.luciole
+    ];
     config = {
       common = {
         default = [ "gtk" ];
+        # Luciole as the Open/Save dialog, falling back to GTK.
+        "org.freedesktop.impl.portal.FileChooser" = [ "luciole" "gtk" ];
         "org.freedesktop.impl.portal.ScreenCast" = [ "wlr" ];
         "org.freedesktop.impl.portal.Screenshot" = [ "wlr" ];
       };

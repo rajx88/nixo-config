@@ -37,7 +37,7 @@ in
         browser = defaultApp "x-scheme-handler/https";
         editor = defaultApp "text/plain";
 
-        files = "${pkgs.thunar}/bin/thunar";
+        files = "${pkgs.luciole}/bin/luciole";
         # Launch 1Password via its desktop entry so we don't pin a store path.
         # Prefer the beta GUI if configured; rely on PATH fallback if desktop entry missing.
         # Desktop entry name is typically "1password".

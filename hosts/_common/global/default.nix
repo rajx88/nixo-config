@@ -46,4 +46,7 @@
   hardware.enableRedistributableFirmware = true;
 
   services.fwupd.enable = true;
+
+  # Trash and sftp:// / smb:// / WebDAV in Luciole (and other GIO apps).
+  services.gvfs.enable = true;
 }
