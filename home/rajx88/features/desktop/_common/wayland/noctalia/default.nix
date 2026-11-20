@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 let
   home = config.home.homeDirectory;
 in
@@ -10,9 +10,14 @@ in
         font_family = "Atkinson Hyperlegible Mono";
         panel = {
           control_center_placement = "floating";
-          launcher_placement = "centered";
-          session_placement = "centered";
-          wallpaper_placement = "centered";
+          # "centered" is not a valid placement in mainline Noctalia
+          # (attached | floating); center it via *_position = "center".
+          launcher_placement = "floating";
+          launcher_position = "center";
+          session_placement = "floating";
+          session_position = "center";
+          wallpaper_placement = "floating";
+          wallpaper_position = "center";
           open_near_click_control_center = true;
           open_near_click_clipboard = true;
           open_near_click_session = true;
@@ -29,6 +34,17 @@ in
       theme = {
         mode = "dark";
         source = "wallpaper";
+        # Hand Noctalia's palette to Luciole via a user template writing
+        # ~/.config/luciole/colors.toml. The built-in "luciole" template only
+        # exists in Noctalia versions newer than 5.5.0; once the installed
+        # Noctalia ships it, this can be replaced by
+        # builtin_ids = [ "luciole" ] (see docs.noctalia.dev → Templates).
+        templates = {
+          user.luciole = {
+            input_path = "${pkgs.luciole}/share/luciole/templates/colors.toml";
+            output_path = "$XDG_CONFIG_HOME/luciole/colors.toml";
+          };
+        };
       };
 
       weather.enabled = true;
