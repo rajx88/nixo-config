@@ -4,13 +4,8 @@
   ...
 }:
 let
-  # The switchyard provider is the local routing path; the newapi provider is
-  # a direct new-api path using the dedicated harness key. Both are generated
-  # here so switchyard.nix can stay focused on the router itself.
-  port = 4123;
-  contextWindow = 400000;
-  maxOutput = 32000;
-
+  # Direct new-api path for the coding-agent harnesses, using the dedicated
+  # harness key so agent traffic has its own quota/limits upstream.
   harnessModels = [
     {
       id = "github_copilot/claude-haiku-5.5";
@@ -73,46 +68,10 @@ let
       maxTokens = 128000;
     }
   ];
-
-  switchyardModels = [
-    {
-      id = "sy/claude-auto";
-      name = "Switchyard auto (Haiku ↔ Sonnet)";
-    }
-    {
-      id = "sy/claude-heavy";
-      name = "Switchyard heavy (Sonnet ↔ Opus)";
-    }
-  ];
 in
 {
-  # omp: anthropic-messages so omp sends a session id (needed for
-  # capable_hold_turns), adaptive thinking so Claude accepts it.
+  # omp: anthropic-messages so Claude accepts adaptive thinking.
   home.file.".omp/agent/models.yml".text = lib.generators.toYAML { } {
-    providers.switchyard = {
-      baseUrl = "http://127.0.0.1:${toString port}";
-      api = "anthropic-messages";
-      auth = "none";
-      models = map (m: {
-        inherit (m) id name;
-        reasoning = true;
-        input = [
-          "text"
-          "image"
-        ];
-        contextWindow = contextWindow;
-        maxTokens = maxOutput;
-        thinking = {
-          mode = "anthropic-adaptive";
-          efforts = [
-            "low"
-            "medium"
-            "high"
-          ];
-        };
-      }) switchyardModels;
-    };
-
     providers.newapi = {
       baseUrl = "https://newapi.rx88.ws";
       api = "anthropic-messages";
@@ -134,24 +93,8 @@ in
   };
 
   # pi: same anthropic-messages endpoint as omp. The SDK appends /v1/messages,
-  # so baseUrl has no /v1. Switchyard holds the real key; apiKey is a dummy.
+  # so baseUrl has no /v1.
   home.file.".pi/agent/models.json".text = builtins.toJSON {
-    providers.switchyard = {
-      baseUrl = "http://127.0.0.1:${toString port}";
-      api = "anthropic-messages";
-      apiKey = "switchyard-local";
-      models = map (m: {
-        inherit (m) id name;
-        reasoning = true;
-        input = [
-          "text"
-          "image"
-        ];
-        contextWindow = contextWindow;
-        maxTokens = maxOutput;
-      }) switchyardModels;
-    };
-
     providers.newapi = {
       baseUrl = "https://newapi.rx88.ws";
       api = "anthropic-messages";
@@ -171,4 +114,9 @@ in
       }) harnessModels;
     };
   };
+
+  # harness-key lives here, so the directory has to survive impermanence.
+  home.persistence."/persist".directories = [
+    ".local/share/newapi"
+  ];
 }
