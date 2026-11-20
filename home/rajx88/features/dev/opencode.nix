@@ -13,7 +13,7 @@ let
 in
 {
   # OpenCode config owned by Nix. Modules contribute fragments here (e.g.
-  # switchyard's provider) and it is rendered to overrides.json, which opencode
+  # providers) and it is rendered to overrides.json, which opencode
   # merges on top of the tool-managed opencode.json via OPENCODE_CONFIG. Keeping
   # everything Nix-owned out of opencode.json means tooling (codegraph install or
   # others) can freely write to opencode.json as an overlay.
