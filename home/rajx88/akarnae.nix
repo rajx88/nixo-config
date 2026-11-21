@@ -58,6 +58,7 @@ in
     ./features/desktop/optional/discord
     ./features/desktop/optional/spotifast.nix
     ./features/desktop/optional/signal.nix
+    ./features/desktop/optional/telegram.nix
     ./features/desktop/optional/ferdium.nix
 
     ./features/games
