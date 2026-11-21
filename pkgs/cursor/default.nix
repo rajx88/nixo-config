@@ -49,11 +49,11 @@
 
 let
   pname = "cursor";
-  version = "3.30.14";
+  version = "3.31.15";
 
   src = fetchurl {
-    url = "https://downloads.cursor.com/production/5f54c8173e5552412beb40702adac16275677fa0/linux/x64/deb/amd64/deb/cursor_3.30.14_amd64.deb";
-    hash = "sha256-yAA+AJ+WpuT9cYX3AWxm1+NuA9j6LiOUGXURkHvNgiY=";
+    url = "https://downloads.cursor.com/production/3eb8c13390837371c7c2f2013dc57fdbc802c753/linux/x64/deb/amd64/deb/cursor_3.31.15_amd64.deb";
+    hash = "sha256-cU+lw3OXQAYOW5CfYikMaURq/yzs1NB8cyuieLChvZo=";
   };
 
   deps = [
