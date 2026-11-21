@@ -68,6 +68,7 @@ in
     ./features/desktop/optional/keymapp.nix
     ./features/desktop/optional/brave-origin.nix
     ./features/desktop/optional/jellyfin.nix
+    ./features/desktop/optional/moonfin.nix
 
     # dev
     ./features/dev/jetbrains.nix
