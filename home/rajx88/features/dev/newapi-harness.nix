@@ -26,15 +26,9 @@ let
       maxTokens = 128000;
     }
     {
-      id = "github_copilot/gemini-4-carbon";
-      name = "Gemini 4 Carbon";
-      contextWindow = 1000000;
-      maxTokens = 65536;
-    }
-    {
-      id = "github_copilot/gemini-4-argon";
-      name = "Gemini 4 Argon";
-      contextWindow = 1000000;
+      id = "github_copilot/gemini-4-neon";
+      name = "Gemini 4 Neon";
+      contextWindow = 1048576;
       maxTokens = 65536;
     }
     {
