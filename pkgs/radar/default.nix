@@ -5,7 +5,7 @@
   autoPatchelfHook,
 }:
 let
-  version = "1.21.1";
+  version = "1.21.2";
 in
 stdenv.mkDerivation {
   pname = "radar";
@@ -13,7 +13,7 @@ stdenv.mkDerivation {
 
   src = fetchurl {
     url = "https://github.com/skyhook-io/radar/releases/download/v${version}/radar_v${version}_linux_amd64.tar.gz";
-    hash = "sha256-vbiYE6WgdHavnTa/RA1SM7JZAyOLKiaZXwd4Q8J2E5o=";
+    hash = "sha256-mV6LpNuL0kMIv7twhi/wVJZMx0L5XO70oX7hUXewvr0=";
   };
 
   sourceRoot = ".";
