@@ -7,6 +7,16 @@
       sync_address = "http://atuin.lan";
       auto_sync = true;
       sync_frequency = "5m";
+
+      threads = {
+        capture = true;
+        capture_tools = true;
+      };
+
+      daemon = {
+        enabled = true;
+        autostart = true;
+      };
     };
   };
 
