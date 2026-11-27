@@ -21,6 +21,7 @@ REPO_ROOT="$(realpath "$PKGS_DIR/..")"
 PKG_DIRS=(
   "pi-coding-agent"
   "copilot-cli"
+  "handy"
   "omp"
   "codegraph"
   "herdr"
@@ -35,6 +36,7 @@ PKG_DIRS=(
 PKG_REPOS=(
   "earendil-works/pi"
   "github/copilot-cli"
+  "cjpais/Handy"
   "can1357/oh-my-pi"
   "colbymchenry/codegraph"
   "herdrdev/herdr"
@@ -49,6 +51,7 @@ PKG_REPOS=(
 PKG_URLS=(
   "https://github.com/earendil-works/pi/releases/download/v{VERSION}/pi-linux-x64.tar.gz"
   "https://github.com/github/copilot-cli/releases/download/v{VERSION}/copilot-linux-x64.tar.gz"
+  "https://github.com/cjpais/Handy/releases/download/v{VERSION}/Handy_{VERSION}_amd64.deb"
   "https://github.com/can1357/oh-my-pi/releases/download/v{VERSION}/omp-linux-x64"
   "https://github.com/colbymchenry/codegraph/releases/download/v{VERSION}/codegraph-linux-x64.tar.gz"
   "https://github.com/herdrdev/herdr/releases/download/v{VERSION}/herdr-linux-x86_64"

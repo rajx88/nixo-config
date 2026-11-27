@@ -2,6 +2,7 @@
 # You can build them using 'nix build .#example'
 { pkgs }: {
   # example = pkgs.callPackage ./example { };
+  handy = pkgs.callPackage ./handy { };
   opencode = pkgs.callPackage ./opencode { };
   pi-coding-agent = pkgs.callPackage ./pi-coding-agent { };
   copilot-cli = pkgs.callPackage ./copilot-cli { };
