@@ -3,6 +3,7 @@
   stdenv,
   fetchurl,
   ripgrep,
+  fd,
   git,
   makeWrapper,
   glibc,
@@ -38,6 +39,7 @@ stdenv.mkDerivation rec {
       --prefix PATH : ${
         lib.makeBinPath [
           ripgrep
+          fd
           git
         ]
       }
