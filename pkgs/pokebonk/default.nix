@@ -25,11 +25,12 @@ let
     # The client is an Electron shell that loads https://pokebonk.com, so this is
     # a window around the live game: game updates arrive without a version bump.
     #
-    # The bundled .desktop launches with --no-sandbox. Drop it: unprivileged user
-    # namespaces work here, and a shell that renders remote content is exactly
-    # where the Chromium sandbox earns its keep. X11 (XWayland) is kept as the
-    # default backend because the game captures the pointer, which native Wayland
-    # still handles worse than XWayland.
+    # The bundled .desktop (1.5.0+) launches with a plain `Exec=AppRun %U` —
+    # upstream dropped its old `--no-sandbox` flag, which unprivileged user
+    # namespaces make unnecessary anyway. Point Exec at the wrapped binary
+    # instead of the AppRun in the AppImage. X11 (XWayland) is kept as the
+    # default backend because the game captures the pointer, which native
+    # Wayland still handles worse than XWayland.
     extraInstallCommands = ''
       install -Dm444 ${appimageContents}/usr/share/icons/hicolor/512x512/apps/PokeBonk.png \
         $out/share/icons/hicolor/512x512/apps/PokeBonk.png
@@ -37,7 +38,7 @@ let
       install -Dm444 ${appimageContents}/pokebonk.desktop \
         $out/share/applications/pokebonk.desktop
       substituteInPlace $out/share/applications/pokebonk.desktop \
-        --replace-fail 'Exec=AppRun --no-sandbox %U' 'Exec=pokebonk %U'
+        --replace-fail 'Exec=AppRun %U' 'Exec=pokebonk %U'
     '';
 
     meta = {
