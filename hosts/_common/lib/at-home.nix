@@ -28,20 +28,27 @@ let
   #   echo "<your-ssid>" | sudo tee /persist/secrets/network/home-ssid
   #   sudo chmod 600 /persist/secrets/network/home-ssid
   #
-  # A string path (not a Nix path literal) keeps flake evaluation happy: the
-  # file is copied into the store at build time. If it is missing the list is
-  # empty and detection falls through to the LAN probe below, which is exactly
-  # the path docked ethernet already takes — so a host without the file still
-  # works, just less decisively.
+  # The file is read by the script at RUN time, not at evaluation time. Flake
+  # evaluation is pure, so `builtins.pathExists` on an absolute path outside
+  # the store is always false (and `readFile` throws), which silently produced
+  # an empty SSID list and disabled the WiFi check. Reading at run time also
+  # keeps the SSID out of the Nix store.
+  #
+  # Root-only (0600) is fine: the only consumer is
+  # tailscale-exit-switch.service, which runs as root.
+  #
+  # If the file is missing or empty, the WiFi check is skipped and detection
+  # falls through to the LAN probe below. That probe only considers wired
+  # links, so a WiFi-only host without the file reads as "away" — the
+  # conservative choice, since "away" keeps the exit node on.
   ssidFile = "/persist/secrets/network/home-ssid";
-  homeSsids = lib.optional (builtins.pathExists ssidFile) (
-    lib.removeSuffix "\n" (builtins.readFile ssidFile)
-  );
 in
 pkgs.writeShellScript "at-home" ''
   set -u
-  if ${pkgs.networkmanager}/bin/nmcli -t -f NAME,TYPE connection show --active 2>/dev/null \
-    | ${pkgs.gnugrep}/bin/grep -qE "^(${pkgs.lib.concatStringsSep "|" homeSsids}):802-11-wireless"; then
+  ssid="$(${pkgs.coreutils}/bin/cat ${lib.escapeShellArg ssidFile} 2>/dev/null || true)"
+  if [ -n "$ssid" ] \
+    && ${pkgs.networkmanager}/bin/nmcli -t -f NAME,TYPE connection show --active 2>/dev/null \
+      | ${pkgs.gnugrep}/bin/grep -qxF "$ssid:802-11-wireless"; then
     exit 0
   fi
   for ifc in $(${pkgs.iproute2}/bin/ip -o link show up \
