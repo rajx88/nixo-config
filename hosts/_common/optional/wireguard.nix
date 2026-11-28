@@ -1,3 +1,16 @@
+# WireGuard client — manual break-glass tunnel to docker01's WG server.
+#
+# STATUS: not imported by any host. The server stack on docker01 was retired on
+# 2026-11-28 (`/opt/app_data/wireguard` removed, image deleted, backup kept at
+# /opt/app_data/_retired/). It had never completed a single handshake, so it was
+# never a working fallback — Tailscale (tailscale.nix / tailscale-exit.nix) is
+# now the only tunnel, and its SaaS control plane is the out-of-band path.
+#
+# Kept so the overlay can be restored without rewriting it: re-import from a
+# host, restore the stack from the tarball, and put back the `wg-quick-wg0`
+# keybind in home/rajx88/features/desktop/mango/binds.nix (removed with this).
+# The peer private key lives at /persist/secrets/wireguard/private.key and is
+# NOT in this repo.
 { pkgs, ... }:
 let
   resolvectl = "${pkgs.systemd}/bin/resolvectl";

@@ -22,18 +22,6 @@ let
   handy = "${pkgs.handy}/bin/handy";
 
   notify = "${pkgs.libnotify}/bin/notify-send";
-  wgToggle = pkgs.writeShellScript "wg-toggle" ''
-    svc=wg-quick-wg0
-    if systemctl is-active --quiet $svc; then
-      pkexec /etc/wg-switch "$svc" ""
-      if ! systemctl is-active --quiet $svc; then
-        ${notify} -u normal "VPN" "wg0 stopped 🔓"
-      fi
-    else
-      pkexec /etc/wg-switch "" $svc || exit 1
-      ${notify} -u critical "VPN" "wg0 started 🔒"
-    fi
-  '';
 in
 {
   wayland.windowManager.mango.settings = {
@@ -124,9 +112,6 @@ in
 
       # ── Screenshot ──
       "SUPER+SHIFT,p,spawn_shell,${screenshot}"
-
-      # ── WireGuard VPN ──
-      "SUPER+SHIFT,v,spawn_shell,${wgToggle}"
 
       # ── Dictation (Handy): press to start, press to stop ──
       # Mango owns the dictation key: Handy's own global shortcut clashes with

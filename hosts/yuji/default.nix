@@ -28,8 +28,8 @@
     ../_common/optional/laptop.nix
     ../_common/optional/openvpn.nix
     ../_common/optional/net-debug.nix
-    ../_common/optional/wireguard.nix
-    ../_common/optional/netbird.nix
+    ../_common/optional/tailscale.nix
+    ../_common/optional/tailscale-exit.nix
   ];
 
   nixpkgs.config.nvidia.acceptLicense = true;

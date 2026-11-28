@@ -1,5 +1,13 @@
 # Netbird client — self-hosted control plane on docker-01 (nb.rx88.ws).
 #
+# STATUS: not imported by any host as of the Tailscale cut-over. akarnae and
+# yuji now use tailscale.nix; this file is kept so the overlay can be restored
+# without rewriting it. The server side (docker01 /opt/app_data/netbird) is
+# still running and is deliberately left up until Tailscale has proven itself.
+# Note that `netbird-exit-switch` was removed from this file during the
+# cut-over — Tailscale owns the away-exit role now, and two owners would both
+# install a default route. Restore it from git together with the imports.
+#
 # Roles: the overlay answers "how do my devices find each other" (and later,
 # optionally, "where does my internet exit"). WireGuard is NOT retired here:
 # `wireguard.nix` stays as a manual break-glass path.
@@ -27,7 +35,6 @@ let
   '';
 
   client = config.services.netbird.clients.netbird;
-  atHome = import ../lib/at-home.nix { inherit pkgs; };
 in
 {
   services.netbird = {
@@ -115,53 +122,13 @@ in
     '';
   };
 
-  # Exit node home/away, like wg-health did for wg0: off at home (the LAN is
-  # local), on when away (docker01 carries everything, LAN included). NetBird
-  # itself stays connected either way. Runs on every network change, and once
-  # a minute as a backstop.
-  systemd.services.netbird-exit-switch = {
-    description = "Use the NetBird exit node only when away from home";
-    after = [ "${client.service.name}.service" ];
-    path = [
-      client.wrapper
-      pkgs.gnugrep
-      pkgs.gnused
-    ];
-    serviceConfig.Type = "oneshot";
-    script = ''
-      id="Exit Node (docker01)" # the exit node's name in the NetBird dashboard
-
-      # A network change also restarts NetBird (network monitor), so give it
-      # up to 30s to reconnect instead of giving up until the next timer run.
-      for _ in $(seq 15); do
-        list=$(netbird networks list 2>/dev/null) && break
-        sleep 2
-      done
-
-      status=$(printf '%s\n' "''${list:-}" | grep -A2 -F "ID: $id" | sed -n 's/.*Status: //p')
-      [ -n "$status" ] || exit 0 # not offered to this host, or daemon down
-
-      if ${atHome}; then
-        [ "$status" = "Not Selected" ] || netbird networks deselect "$id"
-      else
-        [ "$status" = "Selected" ] || netbird networks select --append "$id"
-      fi
-    '';
-  };
-
-  systemd.timers.netbird-exit-switch = {
-    wantedBy = [ "timers.target" ];
-    timerConfig.OnUnitActiveSec = "60s";
-    timerConfig.OnBootSec = "30s";
-  };
-
-  networking.networkmanager.dispatcherScripts = [
-    {
-      source = pkgs.writeShellScript "netbird-exit-switch-dispatch" ''
-        ${pkgs.systemd}/bin/systemctl start --no-block netbird-exit-switch.service
-      '';
-    }
-  ];
+  # Away-exit ownership moved to Tailscale — see `tailscale-exit-switch` in
+  # tailscale.nix. This host used to select NetBird's "Exit Node (docker01)"
+  # whenever away; with Tailscale doing the same, both would install a default
+  # route and traffic would follow whichever won the race. Exactly one overlay
+  # may own that role, so the NetBird switch (service, timer, and
+  # NetworkManager dispatcher) is retired here. To hand the role back, restore
+  # it from git and drop `tailscale-exit-switch` from tailscale.nix.
 
   # Peer identity must survive impermanence, or every boot re-enrols as a new
   # device (and the old peer lingers in the dashboard forever).
